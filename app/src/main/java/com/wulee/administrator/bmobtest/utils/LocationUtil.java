@@ -129,6 +129,7 @@ public class LocationUtil {
             }else{
                 locationInfo.nativePhoneNumber = sbdeviceInfo.append(getDeviceBrand()).append(" ").append(getSystemModel()).toString();
             }
+            locationInfo.deviceId = PhoneUtil.getDeviceId();
             if(!TextUtils.isEmpty(location.getAddrStr())&& !TextUtils.equals(location.getLatitude()+"",aCache.getAsString("lat")) && !TextUtils.equals(location.getLongitude()+"",aCache.getAsString("lon")))
                 submitLocationInfo(locationInfo);
 
@@ -156,6 +157,7 @@ public class LocationUtil {
                 if(e==null){
                     aCache.put("lat",locationInfo.latitude);
                     aCache.put("lon",locationInfo.lontitude);
+                    aCache.put("isUploadLocation","yes");
                     System.out.println("—— 位置同步成功 ——");
                 }else{
                     System.out.println("—— 位置同步失败 ——");

@@ -14,6 +14,7 @@ import com.wulee.administrator.bmobtest.entity.LocationInfo;
 import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 import com.wulee.administrator.bmobtest.service.ScreenService;
 import com.wulee.administrator.bmobtest.utils.LocationUtil;
+import com.wulee.administrator.bmobtest.utils.PhoneUtil;
 
 import java.util.List;
 import java.util.Random;
@@ -50,7 +51,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         addListener();
 
         startService(new Intent(MainActivity.this,ScreenService.class));
-        query();
+
+        if(TextUtils.equals("yes",aCache.getAsString("isUploadLocation"))){
+            query();
+        }
     }
 
 
@@ -134,11 +138,13 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     }
     private void query(){
+        mProgressBar.setVisibility(View.VISIBLE);
         BmobQuery<LocationInfo> query = new BmobQuery<LocationInfo>();
         //查询name叫“王五”的数据
-        query.addWhereEqualTo("nativePhoneNumber", "Meizu MX4");
+        String currDeviceId = PhoneUtil.getDeviceId();
+        query.addWhereEqualTo("deviceId", currDeviceId );
        //返回50条数据，如果不加上这条语句，默认返回10条数据
-        query.setLimit(50);
+        query.setLimit(20);
        //执行查询方法
         query.findObjects(new FindListener<LocationInfo>() {
             @Override
