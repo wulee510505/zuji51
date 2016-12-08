@@ -20,6 +20,16 @@ public class PhoneUtil {
     }
 
     /**
+     * 获取设备的串号
+     */
+    public static String getDeviceId() {
+        TelephonyManager tm = (TelephonyManager)App.context.getSystemService(Context.TELEPHONY_SERVICE);
+        String deviceId = tm.getDeviceId();
+        return deviceId;
+    }
+
+
+    /**
      * 获取手机型号
      */
     public static String getSystemModel() {
