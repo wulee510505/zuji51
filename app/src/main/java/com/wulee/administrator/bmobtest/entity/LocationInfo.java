@@ -10,6 +10,8 @@ public class LocationInfo extends BmobObject {
     public String latitude;
     public String lontitude;
     public String address;
+    public  String imgurl;
+
     public String locationdescribe;
     public String nativePhoneNumber;
 

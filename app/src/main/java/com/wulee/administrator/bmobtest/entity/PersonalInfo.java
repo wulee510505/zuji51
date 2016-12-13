@@ -8,7 +8,7 @@ import cn.bmob.v3.BmobObject;
 
 public class PersonalInfo extends BmobObject {
 
-    public Integer  uid;
+    public String  uuid;
     public String name;
     public String  pwd;
 

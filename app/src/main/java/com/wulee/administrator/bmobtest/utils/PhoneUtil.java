@@ -5,6 +5,8 @@ import android.telephony.TelephonyManager;
 
 import com.wulee.administrator.bmobtest.App;
 
+import java.util.UUID;
+
 /**
  * Created by wulee on 2016/12/8 09:37
  */
@@ -41,5 +43,15 @@ public class PhoneUtil {
      */
     public static String getDeviceBrand() {
         return android.os.Build.BRAND;
+    }
+
+    /**
+     * 获得一个UUID
+     * @return String UUID
+     */
+    public static String getUUID(){
+        String s = UUID.randomUUID().toString();
+        //去掉“-”符号
+        return s.substring(0,8)+s.substring(9,13)+s.substring(14,18)+s.substring(19,23)+s.substring(24);
     }
 }
