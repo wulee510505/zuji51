@@ -14,24 +14,28 @@ import com.wulee.administrator.bmobtest.entity.LocationInfo;
 import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 import com.wulee.administrator.bmobtest.service.ScreenService;
 import com.wulee.administrator.bmobtest.utils.LocationUtil;
+import com.wulee.administrator.bmobtest.utils.MD5Util;
 import com.wulee.administrator.bmobtest.utils.PhoneUtil;
 
+import java.io.File;
 import java.util.List;
-import java.util.Random;
 
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
+import cn.bmob.v3.listener.UploadFileListener;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
 
     private Button btnAdd;
     private Button btnDel;
     private Button btnModfiy;
+    private Button btnUploadImg;
     private TextView tvContent;
     private ProgressBar mProgressBar;
 
@@ -72,21 +76,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         btnAdd.setOnClickListener(this);
         btnDel.setOnClickListener(this);
         btnModfiy.setOnClickListener(this);
+        btnUploadImg.setOnClickListener(this);
     }
 
     private void initView() {
         btnAdd = (Button) findViewById(R.id.btn_add);
         btnDel = (Button) findViewById(R.id.btn_delete);
         btnModfiy = (Button) findViewById(R.id.btn_modfiy);
+        btnUploadImg = (Button) findViewById(R.id.btn_upload_img);
         tvContent = (TextView) findViewById(R.id.tv_content);
         mProgressBar= (ProgressBar) findViewById(R.id.progressBar);
     }
 
     private  void addData(){
         PersonalInfo pi = new PersonalInfo();
-        pi.uid = 1000  + new Random().nextInt(100000);
+        pi.uuid = PhoneUtil.getUUID();
         pi.name = "王五";
-        pi.pwd = "87654321";
+        pi.pwd = MD5Util.MD5("123456");
         pi.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
@@ -154,17 +160,44 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     tvContent.setVisibility(View.VISIBLE);
                     Toast.makeText(MainActivity.this,"查询成功：共"+object.size()+"条数据",Toast.LENGTH_SHORT).show();
                     StringBuilder piSb = new StringBuilder();
+                    String imgUrl = "";
                     for (LocationInfo location : object) {
                         if(!TextUtils.isEmpty(location.address))
                              piSb.append(location.address).append(" ").append(location.locationdescribe).append("\n");
+                        if(!TextUtils.isEmpty(location.imgurl))
+                            imgUrl = location.imgurl;
+
                     }
                     tvContent.setText(piSb.toString());
+
                 }else{
                     Toast.makeText(MainActivity.this,"查询失败"+e.getMessage()+","+e.getErrorCode(),Toast.LENGTH_SHORT).show();
                 }
             }
         });
     }
+
+    private void uploadImg(){
+        String picPath = "/mnt/sdcard/temp.png";
+        final BmobFile bmobFile = new BmobFile(new File(picPath));
+        bmobFile.uploadblock(new UploadFileListener() {
+            @Override
+            public void done(BmobException e) {
+                if(e==null){
+                    Toast.makeText(MainActivity.this,"上传文件成功"+ bmobFile.getFileUrl(),Toast.LENGTH_SHORT).show();
+                }else{
+                    Toast.makeText(MainActivity.this,"上传文件失败",Toast.LENGTH_SHORT).show();
+                }
+            }
+            @Override
+            public void onProgress(Integer value) {
+                // 返回的上传进度（百分比）
+            }
+        });
+    }
+
+
+
 
     @Override
     public void onClick(View view) {
@@ -177,6 +210,9 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             case R.id.btn_modfiy:
                 modfiy();
+                break;
+            case R.id.btn_upload_img:
+                uploadImg();
                 break;
         }
     }
