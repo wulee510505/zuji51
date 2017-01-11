@@ -36,7 +36,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name=".service.ScreenService"/>
+        <activity android:name=".MapActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogActivity.Transparent"/>
+
+        <service android:name=".service.ScreenService" />
 
         <service
             android:name="com.baidu.location.f"

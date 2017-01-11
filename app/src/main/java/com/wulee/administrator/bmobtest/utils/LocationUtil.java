@@ -1,5 +1,6 @@
 package com.wulee.administrator.bmobtest.utils;
 
+import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -9,6 +10,7 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.wulee.administrator.bmobtest.App;
+import com.wulee.administrator.bmobtest.MapActivity;
 import com.wulee.administrator.bmobtest.entity.LocationInfo;
 
 import java.util.List;
@@ -133,6 +135,7 @@ public class LocationUtil {
             if(!TextUtils.isEmpty(location.getAddrStr())&& !TextUtils.equals(location.getLatitude()+"",aCache.getAsString("lat")) && !TextUtils.equals(location.getLongitude()+"",aCache.getAsString("lon")))
                 submitLocationInfo(locationInfo);
 
+            App.context.sendBroadcast(new Intent(MapActivity.ACTION_LOCATION_CHANGE).putExtra("curr_location",location));
             sb.append("\nlocationdescribe : ");
             sb.append(location.getLocationDescribe());// 位置语义化信息
             List<Poi> list = location.getPoiList();// POI数据
