@@ -1,10 +1,12 @@
 package com.wulee.administrator.bmobtest.utils;
 
 import android.content.Context;
+import android.provider.Settings;
 import android.telephony.TelephonyManager;
 
 import com.wulee.administrator.bmobtest.App;
 
+import java.io.UnsupportedEncodingException;
 import java.util.UUID;
 
 /**
@@ -46,12 +48,32 @@ public class PhoneUtil {
     }
 
     /**
-     * 获得一个UUID
+     * 随机生成一个UUID
      * @return String UUID
      */
-    public static String getUUID(){
+    public static String getRandomUUID(){
         String s = UUID.randomUUID().toString();
         //去掉“-”符号
         return s.substring(0,8)+s.substring(9,13)+s.substring(14,18)+s.substring(19,23)+s.substring(24);
+    }
+
+    /**
+     * 获取设备UDID
+     * @return String UUID
+     */
+    public synchronized static String getUDID() {
+        String uuid = "";
+        final String androidId = Settings.Secure.getString(App.context.getContentResolver(), Settings.Secure.ANDROID_ID);
+        try {
+            if (!"9774d56d682e549c".equals(androidId)) {
+                uuid = UUID.nameUUIDFromBytes(androidId.getBytes("utf8")).toString();
+            } else {
+                final String deviceId = ((TelephonyManager) App.context.getSystemService( Context.TELEPHONY_SERVICE )).getDeviceId();
+                uuid = deviceId!=null ? UUID.nameUUIDFromBytes(deviceId.getBytes("utf8")).toString() : UUID.randomUUID().toString();
+            }
+        } catch (UnsupportedEncodingException e) {
+            throw new RuntimeException(e);
+        }
+        return uuid;
     }
 }
