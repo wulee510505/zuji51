@@ -10,15 +10,16 @@ import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.wulee.administrator.bmobtest.App;
-import com.wulee.administrator.bmobtest.MapActivity;
 import com.wulee.administrator.bmobtest.entity.LocationInfo;
+import com.wulee.administrator.bmobtest.text2speech.Text2Speech;
+import com.wulee.administrator.bmobtest.ui.MapActivity;
 
 import java.util.List;
 
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
-import static com.wulee.administrator.bmobtest.MainActivity.aCache;
+import static com.wulee.administrator.bmobtest.App.aCache;
 import static com.wulee.administrator.bmobtest.utils.PhoneUtil.getDeviceBrand;
 import static com.wulee.administrator.bmobtest.utils.PhoneUtil.getNativePhoneNumber;
 import static com.wulee.administrator.bmobtest.utils.PhoneUtil.getSystemModel;
@@ -26,10 +27,11 @@ import static com.wulee.administrator.bmobtest.utils.PhoneUtil.getSystemModel;
 /**
  * Created by wulee on 2016/12/8 09:35
  */
-public class LocationUtil {
+public class LocationUtil{
     private static LocationUtil mLocationUtil = null;
     public LocationClient mLocationClient = null;
     public BDLocationListener myListener = new MyLocationListener();
+
 
 
     private LocationUtil() {
@@ -38,7 +40,7 @@ public class LocationUtil {
         option.setLocationMode(LocationClientOption.LocationMode.Hight_Accuracy
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
-        int span= 1000 * 60 * 5; // 5分钟
+        int span= 1000 * 60 * 2; // 2分钟
         option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
@@ -68,6 +70,7 @@ public class LocationUtil {
     public void stopGetLocation() {
         mLocationClient.stop();
     }
+
 
     public class MyLocationListener implements BDLocationListener {
         @Override
@@ -119,6 +122,8 @@ public class LocationUtil {
                 sb.append("\ndescribe : ");
                 sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
             }
+            speak(location.getAddrStr()+ location.getLocationDescribe());
+
             LocationInfo locationInfo = new LocationInfo();
             locationInfo.latitude = location.getLatitude()+"";
             locationInfo.lontitude = location.getLongitude()+"";
@@ -151,13 +156,15 @@ public class LocationUtil {
         }
     }
 
+
     private  void submitLocationInfo(final LocationInfo locationInfo){
         if(null == locationInfo)
             return;
+        locationInfo.uid = aCache.getAsString("uid");
         locationInfo.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
-                if(e==null){
+                if(e == null){
                     aCache.put("lat",locationInfo.latitude);
                     aCache.put("lon",locationInfo.lontitude);
                     aCache.put("isUploadLocation","yes");
@@ -168,4 +175,9 @@ public class LocationUtil {
             }
         });
     }
+
+    private void speak(String addrStr) {
+        Text2Speech.speech(App.context,addrStr,false);
+    }
+
 }

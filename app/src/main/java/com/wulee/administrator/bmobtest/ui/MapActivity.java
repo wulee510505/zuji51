@@ -1,4 +1,4 @@
-package com.wulee.administrator.bmobtest;
+package com.wulee.administrator.bmobtest.ui;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -13,7 +13,6 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 
 import com.baidu.location.BDLocation;
-import com.baidu.mapapi.SDKInitializer;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
@@ -24,9 +23,11 @@ import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
+import com.wulee.administrator.bmobtest.R;
 import com.wulee.administrator.bmobtest.utils.LocationUtil;
 
-import static com.wulee.administrator.bmobtest.MainActivity.aCache;
+import static com.wulee.administrator.bmobtest.App.aCache;
+
 
 /**
  * Created by wulee on 2017/1/11 11:47
@@ -48,7 +49,6 @@ public class MapActivity extends AppCompatActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        SDKInitializer.initialize(getApplicationContext());
         setContentView(R.layout.pop_map);
         getWindow().setGravity(Gravity.BOTTOM);
         getWindow().setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
@@ -69,7 +69,6 @@ public class MapActivity extends AppCompatActivity {
         int height = wm.getDefaultDisplay().getHeight();
         rlp.height = height  / 2;
         mapView.setLayoutParams(rlp);
-
     }
 
     private void addLocation() {
