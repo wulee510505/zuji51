@@ -9,9 +9,6 @@ import cn.bmob.v3.BmobObject;
 public class PersonalInfo extends BmobObject {
 
     public String  uuid;
-    public String name;
+    public String mobile;
     public String  pwd;
-
-
-
 }

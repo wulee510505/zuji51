@@ -18,6 +18,7 @@ public class LocationAdapter extends BaseQuickAdapter<LocationInfo> {
     protected void convert(BaseViewHolder baseViewHolder, LocationInfo locationInfo) {
 
         baseViewHolder.setText(R.id.tv_location,locationInfo.address);
+        baseViewHolder.setText(R.id.tv_location_desc,locationInfo.locationdescribe);
         baseViewHolder.setText(R.id.tv_time , locationInfo.getCreatedAt());
 
     }

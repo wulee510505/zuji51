@@ -16,4 +16,5 @@ public class LocationInfo extends BmobObject {
     public String nativePhoneNumber;
 
     public String deviceId;
+    public String uid; //用户id
 }
