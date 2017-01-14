@@ -22,7 +22,6 @@ import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 import com.wulee.administrator.bmobtest.service.ScreenService;
 import com.wulee.administrator.bmobtest.utils.LocationUtil;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -44,7 +43,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private static final int STATE_MORE = 1;// 加载更多
     private int PAGE_SIZE = 10;
     private int curPage = 0;
-    List<LocationInfo> mDataList = new ArrayList<LocationInfo>();
     private boolean isRefresh = false;
 
     @Override
@@ -66,6 +64,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        isRefresh = true;
         query(0, STATE_REFRESH);
     }
 
@@ -119,6 +118,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
         public void run () {
+            isRefresh = true;
             query(0, STATE_REFRESH);
             mHandler.postDelayed(this,1000 * 60 * 2);
         }
