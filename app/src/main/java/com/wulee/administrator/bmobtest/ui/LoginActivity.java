@@ -3,7 +3,6 @@ package com.wulee.administrator.bmobtest.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.Button;
@@ -12,13 +11,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wulee.administrator.bmobtest.R;
+import com.wulee.administrator.bmobtest.base.BaseActivity;
 import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 
-import java.util.List;
-
-import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
-import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.SaveListener;
 
 import static com.wulee.administrator.bmobtest.App.aCache;
 
@@ -26,7 +23,7 @@ import static com.wulee.administrator.bmobtest.App.aCache;
  * Created by wulee on 2017/1/12 09:57
  */
 
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener{
+public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     private EditText mEtMobile;
     private EditText mEtPwd;
@@ -77,20 +74,15 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     }
 
     private void doLogin(String mobile, String pwd) {
-        BmobQuery<PersonalInfo> query = new BmobQuery<PersonalInfo>();
-        query.addWhereEqualTo("mobile",mobile);
-        query.addWhereEqualTo("pwd",pwd);
-        //query.addWhereEqualTo("uid",aCache.getAsString("uid"));
-        //执行查询方法
-        query.findObjects(new FindListener<PersonalInfo>() {
+        PersonalInfo user = new PersonalInfo();
+        user.setUsername(mobile);
+        user.setPassword(pwd);
+        user.login(new SaveListener<PersonalInfo>() {
             @Override
-            public void done(List<PersonalInfo> object, BmobException e) {
+            public void done(PersonalInfo user, BmobException e) {
                 if(e == null){
-                   if(object != null && object.size()>0){
-                       aCache.put("has_login","yes");
-
-                       startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                   }
+                    aCache.put("has_login","yes");
+                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
                 }else{
                     Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
                 }

@@ -3,13 +3,13 @@ package com.wulee.administrator.bmobtest.ui;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 
 import com.wulee.administrator.bmobtest.R;
+import com.wulee.administrator.bmobtest.base.BaseActivity;
 
 import static com.wulee.administrator.bmobtest.App.aCache;
 
@@ -18,7 +18,7 @@ import static com.wulee.administrator.bmobtest.App.aCache;
  * Created by wulee on 2016/8/17.
  */
 
-public class SplashActivity extends AppCompatActivity {
+public class SplashActivity extends BaseActivity {
 
     private View startView = null;
     private AlphaAnimation loadAlphaAnimation=null;

@@ -3,12 +3,15 @@ package com.wulee.administrator.bmobtest.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.wulee.administrator.bmobtest.R;
+import com.wulee.administrator.bmobtest.base.BaseActivity;
+import com.wulee.administrator.bmobtest.entity.PersonalInfo;
+import com.wulee.administrator.bmobtest.utils.AppUtils;
+import com.wulee.administrator.bmobtest.utils.LocationUtil;
 
 import static com.wulee.administrator.bmobtest.App.aCache;
 
@@ -16,7 +19,7 @@ import static com.wulee.administrator.bmobtest.App.aCache;
  * Created by wulee on 2017/1/11 16:59
  */
 
-public class SettingActivity extends AppCompatActivity implements View.OnClickListener{
+public class SettingActivity extends BaseActivity implements View.OnClickListener{
 
     private Button btnLogout;
 
@@ -44,6 +47,9 @@ public class SettingActivity extends AppCompatActivity implements View.OnClickLi
         switch (view.getId()){
             case R.id.btn_logout:
                 aCache.put("has_login","no");
+                LocationUtil.getInstance().stopGetLocation();
+                AppUtils.AppExit(this);
+                PersonalInfo.logOut();
                 startActivity(new Intent(this,LoginActivity.class));
                 finish();
             break;
