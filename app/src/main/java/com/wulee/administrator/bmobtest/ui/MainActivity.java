@@ -3,7 +3,6 @@ package com.wulee.administrator.bmobtest.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -15,19 +14,22 @@ import android.widget.Toast;
 import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.wulee.administrator.bmobtest.R;
 import com.wulee.administrator.bmobtest.adapter.LocationAdapter;
+import com.wulee.administrator.bmobtest.base.BaseActivity;
 import com.wulee.administrator.bmobtest.entity.LocationInfo;
+import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 import com.wulee.administrator.bmobtest.service.ScreenService;
 import com.wulee.administrator.bmobtest.utils.LocationUtil;
 
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
 import static com.wulee.administrator.bmobtest.App.aCache;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
+public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
     private RecyclerView mRecyclerView;
@@ -105,8 +107,11 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             return;
         }
         mProgressBar.setVisibility(View.VISIBLE);
+        PersonalInfo piInfo = BmobUser.getCurrentUser(PersonalInfo.class);
         BmobQuery<LocationInfo> query = new BmobQuery<LocationInfo>();
-        query.addWhereEqualTo("uid", aCache.getAsString("uid") );
+        query.addWhereEqualTo("piInfo", piInfo);    // 查询当前用户的所有位置信息
+        query.include("piInfo");// 希望在查询位置信息的同时也把当前用户的信息查询出来
+        query.order("-createdAt");
        //返回50条数据，如果不加上这条语句，默认返回10条数据
         query.setLimit(50);
        //执行查询方法

@@ -11,11 +11,13 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.wulee.administrator.bmobtest.App;
 import com.wulee.administrator.bmobtest.entity.LocationInfo;
+import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 import com.wulee.administrator.bmobtest.text2speech.Text2Speech;
 import com.wulee.administrator.bmobtest.ui.MapActivity;
 
 import java.util.List;
 
+import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -160,7 +162,9 @@ public class LocationUtil{
     private  void submitLocationInfo(final LocationInfo locationInfo){
         if(null == locationInfo)
             return;
-        locationInfo.uid = aCache.getAsString("uid");
+        PersonalInfo user = BmobUser.getCurrentUser(PersonalInfo.class);
+        //添加一对一关联
+        locationInfo.piInfo = user;
         locationInfo.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {
