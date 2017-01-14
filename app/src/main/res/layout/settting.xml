@@ -10,6 +10,14 @@
         android:layout_height="48dp"
         android:background="@color/colorAccent">
 
+        <ImageView
+            android:id="@+id/iv_back"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="15dp"
+            android:src="@mipmap/icon_back" />
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -27,6 +35,23 @@
             android:layout_marginRight="15dp"
             android:src="@mipmap/icon_save" />
     </RelativeLayout>
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="常用地址"
+        android:textColor="@color/baseGrayNor"
+        android:textSize="16sp"
+        android:paddingBottom="10dp"
+        android:paddingLeft="15dp"
+        android:paddingRight="15dp"
+        android:paddingTop="10dp"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -71,6 +96,12 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:background="@color/divider_color" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -115,6 +146,10 @@
         </LinearLayout>
     </RelativeLayout>
 
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/divider_color" />
 
     <Button
         android:id="@+id/btn_logout"
