@@ -84,7 +84,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                     aCache.put("has_login","yes");
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                 }else{
-                    Toast.makeText(LoginActivity.this, "登录失败", Toast.LENGTH_SHORT).show();
+                    toast("登录失败:" + e.getMessage());
                 }
             }
         });

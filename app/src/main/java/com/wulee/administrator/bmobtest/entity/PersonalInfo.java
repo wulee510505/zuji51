@@ -8,5 +8,12 @@ import cn.bmob.v3.BmobUser;
 
 public class PersonalInfo extends BmobUser {
 
-    public Integer  age;
+    public Double  homeLat;
+    public Double  homeLon;
+    public String  homeAddress;
+
+    public Double  companyLat;
+    public Double  companyLon;
+    public String  companyAddress;
+
 }
