@@ -19,7 +19,7 @@
             android:textSize="18sp" />
 
         <ImageView
-            android:id="@+id/iv_setting"
+            android:id="@+id/iv_save"
             android:layout_width="25dp"
             android:layout_height="25dp"
             android:layout_alignParentRight="true"
@@ -60,10 +60,11 @@
                 android:textColor="@color/baseGrayNor"
                 android:textSize="15sp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/et_home"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_text_rec"
                 android:hint=""
                 android:textColor="@color/baseGrayNor"
                 android:textSize="15sp" />
@@ -103,10 +104,11 @@
                 android:textColor="@color/baseGrayNor"
                 android:textSize="15sp" />
 
-            <EditText
+            <TextView
                 android:id="@+id/et_company"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_text_rec"
                 android:hint=""
                 android:textColor="@color/baseGrayNor"
                 android:textSize="15sp" />
