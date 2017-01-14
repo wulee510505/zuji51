@@ -35,6 +35,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private TextView mEtCompany;
     private Button btnLogout;
     private ImageView ivSave;
+    private ImageView ivBack;
 
     private Double  homeLat;
     private Double  homeLon;
@@ -55,6 +56,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void addListerer() {
+        ivBack.setOnClickListener(this);
         ivSave.setOnClickListener(this);
         mEtHome.setOnClickListener(this);
         mEtCompany.setOnClickListener(this);
@@ -62,6 +64,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initView() {
+        ivBack = (ImageView) findViewById(R.id.iv_back);
         ivSave = (ImageView) findViewById(R.id.iv_save);
         btnLogout = (Button) findViewById(R.id.btn_logout);
         mEtHome = (TextView) findViewById(R.id.et_home);
@@ -75,6 +78,9 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     @Override
     public void onClick(View view) {
         switch (view.getId()){
+            case R.id.iv_back:
+                finish();
+                break;
             case R.id.btn_logout:
                 aCache.put("has_login","no");
                 LocationUtil.getInstance().stopGetLocation();

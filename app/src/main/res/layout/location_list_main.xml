@@ -16,7 +16,7 @@
             android:layout_centerInParent="true"
             android:textSize="18sp"
             android:textColor="@color/color_white"
-            android:text="我的轨迹"/>
+            android:text="我的足迹"/>
 
 
         <ImageView
@@ -30,17 +30,18 @@
     </RelativeLayout>
 
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recyclerview"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_below="@id/rl_title"
-        android:overScrollMode="never"
-        android:scrollbars="none" />
+        android:orientation="vertical">
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:id="@+id/progressBar" />
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:overScrollMode="never"
+            android:scrollbars="none" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </RelativeLayout>

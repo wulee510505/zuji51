@@ -124,7 +124,6 @@ public class LocationUtil{
                 sb.append("\ndescribe : ");
                 sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
             }
-            //speak(location.getAddrStr()+ location.getLocationDescribe());
 
             LocationInfo locationInfo = new LocationInfo();
             locationInfo.latitude = location.getLatitude()+"";
@@ -172,6 +171,7 @@ public class LocationUtil{
                     aCache.put("lat",locationInfo.latitude);
                     aCache.put("lon",locationInfo.lontitude);
                     aCache.put("isUploadLocation","yes");
+                    speak(locationInfo.address+ locationInfo.locationdescribe);
                     System.out.println("—— 位置同步成功 ——");
                 }else{
                     System.out.println("—— 位置同步失败 ——");
