@@ -51,5 +51,5 @@ dependencies {
     compile 'com.github.CymChad:BaseRecyclerViewAdapterHelper:v1.9.7'
     compile files('libs/android_text2speech.jar')
     compile files('libs/baidumapapi_search_v4_2_0.jar')
-
+    compile 'com.mylhyl:acp:1.1.7'
 }

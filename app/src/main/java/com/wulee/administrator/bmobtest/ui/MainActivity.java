@@ -69,7 +69,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         BmobUpdateAgent.update(this);
     }
 
-
     @Override
     protected void onResume() {
         super.onResume();
