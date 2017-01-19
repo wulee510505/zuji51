@@ -1,5 +1,6 @@
 package com.wulee.administrator.bmobtest.utils;
 
+import android.Manifest;
 import android.content.Intent;
 import android.text.TextUtils;
 import android.util.Log;
@@ -9,6 +10,9 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
+import com.mylhyl.acp.Acp;
+import com.mylhyl.acp.AcpListener;
+import com.mylhyl.acp.AcpOptions;
 import com.wulee.administrator.bmobtest.App;
 import com.wulee.administrator.bmobtest.entity.LocationInfo;
 import com.wulee.administrator.bmobtest.entity.PersonalInfo;
@@ -65,8 +69,17 @@ public class LocationUtil{
 
 
     public void startGetLocation() {
-        mLocationClient.start();
-        mLocationClient.requestLocation();
+        Acp.getInstance(App.context).request(new AcpOptions.Builder().setPermissions(Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.READ_PHONE_STATE
+        ).build(), new AcpListener() {
+            @Override
+            public void onGranted() {
+                mLocationClient.start();
+                mLocationClient.requestLocation();
+            }
+            @Override
+            public void onDenied(List<String> permissions) {
+            }
+        });
     }
 
     public void stopGetLocation() {
