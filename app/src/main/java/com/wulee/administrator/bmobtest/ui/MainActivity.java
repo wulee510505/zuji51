@@ -3,10 +3,12 @@ package com.wulee.administrator.bmobtest.ui;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +40,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private RecyclerView mRecyclerView;
     private LocationAdapter mAdapter;
 
+    private ImageView ivMenu;
     private ImageView ivSetting;
+
+    private DrawerLayout mDrawerLayout;
+
 
     private static final int STATE_REFRESH = 0;// 下拉刷新
     private static final int STATE_MORE = 1;// 加载更多
@@ -72,6 +78,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void addListener() {
+        ivMenu.setOnClickListener(this);
         ivSetting.setOnClickListener(this);
         mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
             @Override
@@ -107,6 +114,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void initView() {
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
+        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
+        mDrawerLayout.setScrimColor(0x00000000);
+
+        ivMenu = (ImageView) findViewById(R.id.iv_menu);
         ivSetting = (ImageView) findViewById(R.id.iv_setting);
         swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipeLayout);
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview);
@@ -181,7 +193,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         switch (view.getId()) {
             case R.id.iv_setting:
                 startActivity(new Intent(this,SettingActivity.class));
-            break;
+                break;
+            case R.id.iv_menu:
+                OpenLeftMenu();
+                break;
 
         }
     }
@@ -189,5 +204,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public void onBackPressed() {
         //do nothing
+    }
+
+
+    /**
+     * 打开左侧Menu的监听事件
+     */
+    public void OpenLeftMenu() {
+        mDrawerLayout.openDrawer(Gravity.LEFT);
+    }
+    /**
+     * 关闭Menu
+     */
+    public boolean CloseMenu() {
+        if (mDrawerLayout != null && (mDrawerLayout.isDrawerOpen(Gravity.LEFT)
+                || mDrawerLayout.isDrawerOpen(Gravity.RIGHT))) {
+            mDrawerLayout.closeDrawers();
+            return true;
+        }
+        return false;
     }
 }

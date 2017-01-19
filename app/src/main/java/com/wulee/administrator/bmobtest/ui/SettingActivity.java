@@ -4,7 +4,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -13,14 +12,10 @@ import com.baidu.mapapi.model.LatLng;
 import com.wulee.administrator.bmobtest.R;
 import com.wulee.administrator.bmobtest.base.BaseActivity;
 import com.wulee.administrator.bmobtest.entity.PersonalInfo;
-import com.wulee.administrator.bmobtest.utils.AppUtils;
-import com.wulee.administrator.bmobtest.utils.LocationUtil;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
-
-import static com.wulee.administrator.bmobtest.App.aCache;
 
 /**
  * Created by wulee on 2017/1/11 16:59
@@ -33,7 +28,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
 
     private TextView mEtHome;
     private TextView mEtCompany;
-    private Button btnLogout;
     private ImageView ivSave;
     private ImageView ivBack;
 
@@ -60,13 +54,11 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         ivSave.setOnClickListener(this);
         mEtHome.setOnClickListener(this);
         mEtCompany.setOnClickListener(this);
-        btnLogout.setOnClickListener(this);
     }
 
     private void initView() {
         ivBack = (ImageView) findViewById(R.id.iv_back);
         ivSave = (ImageView) findViewById(R.id.iv_save);
-        btnLogout = (Button) findViewById(R.id.btn_logout);
         mEtHome = (TextView) findViewById(R.id.et_home);
         mEtCompany = (TextView) findViewById(R.id.et_company);
 
@@ -79,14 +71,6 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.iv_back:
-                finish();
-                break;
-            case R.id.btn_logout:
-                aCache.put("has_login","no");
-                LocationUtil.getInstance().stopGetLocation();
-                AppUtils.AppExit(this);
-                PersonalInfo.logOut();
-                startActivity(new Intent(this,LoginActivity.class));
                 finish();
                 break;
             case R.id.et_home:

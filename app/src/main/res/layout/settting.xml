@@ -151,15 +151,4 @@
         android:layout_height="1dp"
         android:background="@color/divider_color" />
 
-    <Button
-        android:id="@+id/btn_logout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_button"
-        android:textColor="@color/color_white"
-        android:layout_marginTop="40dp"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
-        android:textSize="18sp"
-        android:text="退出"/>
 </LinearLayout>
