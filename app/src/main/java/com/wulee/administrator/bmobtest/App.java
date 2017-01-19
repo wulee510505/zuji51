@@ -26,6 +26,7 @@ public class App extends Application {
         SDKInitializer.initialize(context);
 
         initBmobSDK();
+        //BmobUpdateAgent.initAppVersion();
     }
 
     private void initBmobSDK() {
