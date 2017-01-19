@@ -29,6 +29,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private EditText mEtPwd;
     private Button  mBtnLogin;
     private TextView tvRegist;
+    private TextView tvForgetPwd;
+
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -42,6 +44,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
     private void addListener() {
         mBtnLogin.setOnClickListener(this);
         tvRegist.setOnClickListener(this);
+        tvForgetPwd.setOnClickListener(this);
     }
 
     private void initView() {
@@ -49,6 +52,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
         mEtPwd = (EditText) findViewById(R.id.et_pwd);
         mBtnLogin = (Button) findViewById(R.id.btn_login);
         tvRegist = (TextView) findViewById(R.id.tv_regist);
+        tvForgetPwd = (TextView) findViewById(R.id.tv_forget_pwd);
     }
 
     @Override
@@ -69,7 +73,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 break;
             case R.id.tv_regist:
                 startActivity(new Intent(this,RegistActivity.class));
-            break;
+                break;
+            case R.id.tv_forget_pwd:
+                startActivity(new Intent(this,ReSetPwdActivity.class));
+                break;
         }
     }
 

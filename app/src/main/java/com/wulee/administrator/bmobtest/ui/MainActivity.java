@@ -28,6 +28,7 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.update.BmobUpdateAgent;
 
 import static com.wulee.administrator.bmobtest.App.aCache;
 
@@ -58,6 +59,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         startService(new Intent(MainActivity.this,ScreenService.class));
 
         mHandler.postDelayed(mRunnable,1000);
+
+        BmobUpdateAgent.update(this);
     }
 
 
