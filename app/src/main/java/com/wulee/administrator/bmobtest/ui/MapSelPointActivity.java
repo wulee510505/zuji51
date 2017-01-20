@@ -3,7 +3,6 @@ package com.wulee.administrator.bmobtest.ui;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
@@ -26,8 +25,6 @@ import com.baidu.mapapi.search.geocode.OnGetGeoCoderResultListener;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeOption;
 import com.baidu.mapapi.search.geocode.ReverseGeoCodeResult;
 import com.wulee.administrator.bmobtest.R;
-
-import java.io.File;
 
 public class MapSelPointActivity extends Activity implements OnGetGeoCoderResultListener {
     /**
@@ -63,16 +60,6 @@ public class MapSelPointActivity extends Activity implements OnGetGeoCoderResult
      * 定位的位置
      */
     private BDLocation currentLoction;
-
-    /**
-     * SD卡的路径
-     */
-    private String mSDCardPath = null;
-
-    /**
-     * App在SD卡中的目录名
-     */
-    private static final String APP_FOLDER_NAME = "intvehapp";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -230,18 +217,12 @@ public class MapSelPointActivity extends Activity implements OnGetGeoCoderResult
                         .title(result.getAddress())                                         //标题
 
         );
-        baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result
-                .getLocation()));
-        //Toast.makeText(MapSelPointActivity.this, result.getAddress(), Toast.LENGTH_LONG).show();
-        /**
-         * 弹出InfoWindow，显示信息
-         */
+        baiduMap.setMapStatus(MapStatusUpdateFactory.newLatLng(result.getLocation()));
+
         returnResult(result);
     }
 
-    /**
-     * 弹出InfoWindow，显示信息
-     */
+
     public void returnResult(ReverseGeoCodeResult result) {
         Intent intent  = getIntent();
         intent.putExtra("address",result.getAddress());
@@ -250,37 +231,4 @@ public class MapSelPointActivity extends Activity implements OnGetGeoCoderResult
         finish();
     }
 
-
-
-    /**
-     * 获取SD卡路径
-     * @return
-     */
-        private String getSdcardDir() {
-            if (Environment.getExternalStorageState().equalsIgnoreCase(Environment.MEDIA_MOUNTED)) {
-                return Environment.getExternalStorageDirectory().toString();
-            }
-            return null;
-        }
-
-    /**
-     * 初始化SD卡，在SD卡路径下新建文件夹：App目录名，文件中包含了很多东西，比如log、cache等等
-     * @return
-     */
-    private boolean initDirs() {
-        mSDCardPath = getSdcardDir();
-        if (mSDCardPath == null) {
-            return false;
-        }
-        File f = new File(mSDCardPath, APP_FOLDER_NAME);
-        if (!f.exists()) {
-            try {
-                f.mkdir();
-            } catch (Exception e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        return true;
-    }
 }
