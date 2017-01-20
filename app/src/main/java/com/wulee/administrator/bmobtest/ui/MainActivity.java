@@ -13,6 +13,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.chad.library.adapter.base.BaseQuickAdapter;
@@ -24,12 +25,16 @@ import com.wulee.administrator.bmobtest.entity.PersonalInfo;
 import com.wulee.administrator.bmobtest.service.ScreenService;
 import com.wulee.administrator.bmobtest.utils.LocationUtil;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 
 import static com.wulee.administrator.bmobtest.App.aCache;
@@ -52,6 +57,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private int curPage = 0;
     private boolean isRefresh = false;
 
+    private TextView tvTime;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -67,6 +74,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mHandler.postDelayed(mRunnable,1000);
 
         BmobUpdateAgent.update(this);
+    }
+
+    /*
+      * 获取服务器时间
+     */
+    private void syncServerTime() {
+        Bmob.getServerTime(new QueryListener<Long>() {
+            @Override
+            public void done(Long time, BmobException e) {
+                if(e == null){
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+                    String times = formatter.format(new Date(time * 1000L));
+                    tvTime.setText(times);
+                }else{
+                    toast("获取服务器时间失败:" + e.getMessage());
+                }
+            }
+        });
     }
 
     @Override
@@ -123,6 +148,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mRecyclerView = (RecyclerView)findViewById(R.id.recyclerview);
 
         mAdapter = new LocationAdapter(R.layout.location_list_item,null);
+        View headerView = LayoutInflater.from(this).inflate(R.layout.location_list_header,null);
+        tvTime = (TextView) headerView.findViewById(R.id.tv_server_time);
+        mAdapter.addHeaderView(headerView);
+
         //mRecyclerView.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL, 2, ContextCompat.getColor(this,R.color.divider_color)));
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
@@ -134,7 +163,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         public void run () {
             isRefresh = true;
             query(0, STATE_REFRESH);
-            mHandler.postDelayed(this,1000 * 60 * 2);
+            syncServerTime();
+            mHandler.postDelayed(this,1000 * 60 * 1);
         }
     };
 
