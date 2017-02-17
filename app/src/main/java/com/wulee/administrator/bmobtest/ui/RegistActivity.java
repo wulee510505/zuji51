@@ -70,10 +70,10 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
                     Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
                 }
-               if(TextUtils.isEmpty(authCode)){
+              /* if(TextUtils.isEmpty(authCode)){
                     Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
                     return;
-                }
+                }*/
                 doRegist(mobile,pwd);
             break;
             case R.id.btn_pincode:
@@ -103,7 +103,18 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
         piInfo.setMobilePhoneNumber(mobile);
         piInfo.setUsername(mobile);
         piInfo.setPassword(pwd);
-        piInfo.signOrLogin(authCode, new SaveListener<PersonalInfo>() {
+       /* piInfo.signOrLogin(authCode, new SaveListener<PersonalInfo>() {
+            @Override
+            public void done(PersonalInfo user,BmobException e) {
+                if(e==null){
+                    Toast.makeText(RegistActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
+                    startActivity(new Intent(RegistActivity.this,LoginActivity.class));
+                }else{
+                    toast("注册失败:" + e.getMessage());
+                }
+            }
+        });*/
+        piInfo.signUp(new SaveListener<PersonalInfo>() {
             @Override
             public void done(PersonalInfo user,BmobException e) {
                 if(e==null){

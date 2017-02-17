@@ -27,6 +27,9 @@ public class App extends Application {
 
         initBmobSDK();
         //BmobUpdateAgent.initAppVersion();
+
+        Bmob.initialize(this,"ac67374a92fdca635c75eb6388e217a4");
+
     }
 
     private void initBmobSDK() {
@@ -38,4 +41,5 @@ public class App extends Application {
                 .build();
         Bmob.initialize(config);
     }
+    
 }
