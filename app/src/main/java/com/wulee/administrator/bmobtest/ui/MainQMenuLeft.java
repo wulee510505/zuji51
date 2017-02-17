@@ -29,6 +29,7 @@ import static com.wulee.administrator.bmobtest.App.aCache;
 public class MainQMenuLeft extends Fragment implements View.OnClickListener {
 
     private static final String REQ_CHECK_UPDATE = "menu_check_update";
+    private static final int REQUEST_CODE_IMAGE = 100;
 
     private Context mContext;
 
@@ -59,7 +60,7 @@ public class MainQMenuLeft extends Fragment implements View.OnClickListener {
         tvLoginOut = (TextView) view.findViewById(R.id.mml_loginout_tv);
         tvLoginOut.setOnClickListener(this);
         tvCheckUpdate.setOnClickListener(this);
-
+        rbImage.setOnClickListener(this);
 
         PersonalInfo piInfo = BmobUser.getCurrentUser(PersonalInfo.class);
         if(null != piInfo){
@@ -80,9 +81,10 @@ public class MainQMenuLeft extends Fragment implements View.OnClickListener {
              case R.id.mml_checkupdate_tv:
                  BmobUpdateAgent.update(mContext);
                  break;
+             case R.id.circle_img_header:
+
+                 break;
          }
 
     }
-
-
 }
