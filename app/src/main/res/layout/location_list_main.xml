@@ -62,7 +62,7 @@
 
     <fragment
         android:id="@+id/id_left_menu"
-        android:name="com.wulee.administrator.bmobtest.ui.MainQMenuLeft"
+        android:name="com.wulee.administrator.zuji.ui.MainQMenuLeft"
         android:layout_width="220dp"
         android:layout_height="match_parent"
         android:layout_gravity="left"

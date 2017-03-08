@@ -4,12 +4,14 @@ android {
     compileSdkVersion 24
     buildToolsVersion '25.0.0'
     defaultConfig {
-        applicationId "com.wulee.administrator.bmobtest"
+        applicationId "com.wulee.administrator.zuji"
         minSdkVersion 15
-        targetSdkVersion 24
+        targetSdkVersion 23
         versionCode 1
         versionName "1.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+        multiDexEnabled true
     }
     buildTypes {
         release {
@@ -31,8 +33,7 @@ dependencies {
     androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:cardview-v7:24.1.1'
-    compile 'com.android.support:appcompat-v7:24.2.1'
+    compile 'com.android.support:cardview-v7:23.1.1'
     testCompile 'junit:junit:4.12'
     //以下SDK开发者请根据需要自行选择
     //bmob-sdk：Bmob的android sdk包，包含了Bmob的数据存储、文件等服务，以下是最新的bmob-sdk:
@@ -52,4 +53,6 @@ dependencies {
     compile files('libs/android_text2speech.jar')
     compile files('libs/baidumapapi_search_v4_2_0.jar')
     compile 'com.mylhyl:acp:1.1.7'
+    compile files('libs/BmobStat_v1.1_170114.jar')
+
 }
