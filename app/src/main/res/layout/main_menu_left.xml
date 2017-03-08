@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.wulee.administrator.bmobtest.widget.CircleImageView
+            <com.wulee.administrator.zuji.widget.CircleImageView
                 android:id="@+id/circle_img_header"
                 android:layout_width="82dp"
                 android:layout_height="82dp"

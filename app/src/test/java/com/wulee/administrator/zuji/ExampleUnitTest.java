@@ -1,4 +1,4 @@
-package com.wulee.administrator.bmobtest;
+package com.wulee.administrator.zuji;
 
 import org.junit.Test;
 

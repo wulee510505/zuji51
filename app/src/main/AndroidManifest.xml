@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wulee.administrator.bmobtest">
+    package="com.wulee.administrator.zuji">
 
     <!--允许联网 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -28,47 +28,47 @@
     <uses-permission android:name="android.permission.MODIFY_AUDIO_SETTINGS" />
 
     <application
-        android:name=".App"
+        android:name="com.wulee.administrator.zuji.App"
         android:allowBackup="true"
         android:icon="@mipmap/icon"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.SplashActivity">
+        <activity android:name="com.wulee.administrator.zuji.ui.SplashActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.MainActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
-        <activity android:name=".ui.MapActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.MapActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent"/>
 
-        <activity android:name=".ui.SettingActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.SettingActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.RegistActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.RegistActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.ReSetPwdActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.ReSetPwdActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.LoginActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.LoginActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name=".ui.MapSelPointActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.MapSelPointActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
@@ -78,7 +78,7 @@
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
         </activity>
 
-        <service android:name=".service.ScreenService" />
+        <service android:name="com.wulee.administrator.zuji.service.ScreenService" />
         <service android:name="com.liangmayong.text2speech.Text2SpeechService" />
 
         <service
