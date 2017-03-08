@@ -53,6 +53,5 @@ dependencies {
     compile files('libs/android_text2speech.jar')
     compile files('libs/baidumapapi_search_v4_2_0.jar')
     compile 'com.mylhyl:acp:1.1.7'
-    compile files('libs/BmobStat_v1.1_170114.jar')
 
 }
