@@ -36,7 +36,6 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
-
 import static com.wulee.administrator.zuji.App.aCache;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -221,7 +220,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.iv_setting:
-                startActivity(new Intent(this,SettingActivity.class));
+                startActivity(new Intent(this,ZuJiMapActivity.class));
                 break;
             case R.id.iv_menu:
                 OpenLeftMenu();
@@ -232,7 +231,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onBackPressed() {
-        //do nothing
+        //既没有阻碍用户操作（回到桌面），又没有关闭掉我们的应用（后台运行中），间接提高 App 的存活时间
+        Intent launcherIntent = new Intent(Intent.ACTION_MAIN);
+        launcherIntent.addCategory(Intent.CATEGORY_HOME);
+        startActivity(launcherIntent);
     }
 
 
