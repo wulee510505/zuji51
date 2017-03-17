@@ -1,10 +1,12 @@
 package com.wulee.administrator.zuji.ui;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
@@ -27,6 +29,7 @@ import com.wulee.administrator.zuji.utils.LocationUtil;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import cn.bmob.v3.Bmob;
@@ -35,7 +38,9 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
+
 import static com.wulee.administrator.zuji.App.aCache;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -118,6 +123,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 }
             }
         });
+        mAdapter.setOnRecyclerViewItemLongClickListener(new BaseQuickAdapter.OnRecyclerViewItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(View view, int pos) {
+                showDeleteDialog(pos);
+                return false;
+            }
+        });
+
         swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -156,6 +169,49 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mRecyclerView.setAdapter(mAdapter);
     }
 
+
+    private void showDeleteDialog(final int pos) {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle("提示");
+        builder.setMessage("确定要删除吗？");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                final List<LocationInfo> dataList = mAdapter.getData();
+                String objectId = null;
+                if(dataList != null && dataList.size()>0){
+                    LocationInfo locationInfo = dataList.get(pos);
+                    objectId = locationInfo.getObjectId();
+                }
+                final LocationInfo location = new LocationInfo();
+                location.setObjectId(objectId);
+                final String finalObjectId = objectId;
+                location.delete(new UpdateListener() {
+                    @Override
+                    public void done(BmobException e) {
+                        if(e == null){
+                            List<LocationInfo> list =  dataList;
+                            Iterator<LocationInfo> iter = list.iterator();
+                            while(iter.hasNext()){
+                                LocationInfo locationBean = iter.next();
+                                if(locationBean.equals(finalObjectId)){
+                                    iter.remove();
+                                    break;
+                                }
+                            }
+                            isRefresh = true;
+                            query(0, STATE_REFRESH);
+                            Toast.makeText(MainActivity.this, "删除成功", Toast.LENGTH_SHORT).show();
+                        }else{
+                            Toast.makeText(MainActivity.this, "删除失败："+e.getMessage()+","+e.getErrorCode(), Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.create().show();
+    }
 
     private Handler mHandler = new Handler();
     private Runnable mRunnable = new Runnable() {
