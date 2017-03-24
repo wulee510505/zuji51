@@ -55,4 +55,5 @@ dependencies {
     compile files('libs/Bmob_Push_V1.0.0beta_20160627.jar')
     compile 'org.greenrobot:greendao:3.2.0'
     compile 'org.greenrobot:greendao-generator:2.2.0'
+    compile 'com.facebook.stetho:stetho:1.4.2'
 }
