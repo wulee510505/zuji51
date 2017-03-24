@@ -17,7 +17,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.wulee.administrator.zuji.widget.CircleImageView
+            <ImageView
                 android:id="@+id/circle_img_header"
                 android:layout_width="82dp"
                 android:layout_height="82dp"
@@ -68,6 +68,21 @@
         android:orientation="vertical"
         android:layout_alignParentBottom="true">
 
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#cdcdcd"/>
+
+        <TextView
+            android:id="@+id/mml_pushmsg_tv"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
+            android:gravity="center_vertical"
+            android:padding="15dp"
+            android:text="消息"
+            android:textColor="@color/color_white"/>
 
         <View
             android:layout_width="match_parent"
