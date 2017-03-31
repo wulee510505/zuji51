@@ -31,7 +31,6 @@ import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.service.ScreenService;
 import com.wulee.administrator.zuji.service.UploadLocationService;
 import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
-import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.widget.FloatingButton;
 
@@ -82,6 +81,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initView();
         addListener();
 
+        startService(new Intent(MainActivity.this,UploadLocationService.class));
         startService(new Intent(MainActivity.this,ScreenService.class));
 
         mHandler.postDelayed(mRunnable,1000);
@@ -114,9 +114,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
-        if(!AppUtils.isServiceRunning("com.wulee.administrator.zuji.service.UploadLocationService")){
-            startService(new Intent(this,UploadLocationService.class));
-        }
+
         isRefresh = true;
         query(0, STATE_REFRESH);
     }
