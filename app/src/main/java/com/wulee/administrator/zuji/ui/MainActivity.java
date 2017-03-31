@@ -86,7 +86,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         mHandler.postDelayed(mRunnable,1000);
 
-        BmobUpdateAgent.update(this);
+        BmobUpdateAgent.forceUpdate(this);
 
         mReceiver = new LocationChangeReceiver();
         IntentFilter filter  = new IntentFilter(LocationUtil.ACTION_LOCATION_CHANGE);
