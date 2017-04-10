@@ -5,10 +5,11 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
 
@@ -16,6 +17,9 @@ import static android.view.ViewGroup.LayoutParams.WRAP_CONTENT;
  *  原版DatePicker
  */
 public class DatePicker2 extends LinearLayout {
+    private final String Tag = DatePicker2.class.getSimpleName();
+
+
     private DPTManager mTManager;// 主题管理器
     private DPLManager mLManager;// 语言管理器
 
@@ -58,12 +62,6 @@ public class DatePicker2 extends LinearLayout {
         LayoutParams lpWeek = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lpWeek.weight = 1;
 
-        // 标题栏子元素布局参数
-//        //左箭头
-//        RelativeLayout.LayoutParams lpLeft =
-//                new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-//        lpLeft.addRule(RelativeLayout.CENTER_VERTICAL);
-//        lpLeft.setMargins(40,0,0,0);
         //年
         RelativeLayout.LayoutParams lpYear =
                 new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
@@ -96,24 +94,20 @@ public class DatePicker2 extends LinearLayout {
         tvMonth.setTextColor(getResources().getColor(R.color.green));
 
         // 确定显示
-//        tvEnsure = new TextView(context);
-//        tvEnsure.setText(mLManager.titleEnsure());
-//        tvEnsure.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-//        tvEnsure.setTextColor(mTManager.colorTitle());
-//        tvEnsure.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != onDateSelectedListener) {
-//                    onDateSelectedListener.onDateSelected(monthView.getDateSelected());
-//                }
-//            }
-//        });
-//        //右箭头
-//        ImageView ivRight=new ImageView(context);
-//        ivRight.setImageResource(R.drawable.sward);
+        tvEnsure = new TextView(context);
+        tvEnsure.setText(mLManager.titleEnsure());
+        tvEnsure.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
+        tvEnsure.setTextColor(mTManager.colorTitle());
+        tvEnsure.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (null != onDateSelectedListener) {
+                    onDateSelectedListener.onDateSelected(monthView.getDateSelected());
+                }
+            }
+        });
 
 
-//        rlTitle.addView(ivLeft,lpLeft);
         rlTitle.addView(tvYear, lpYear);
         rlTitle.addView(tvMonth, lpMonth);
 //        rlTitle.addView(ivRight, lpEnsure);
@@ -158,26 +152,26 @@ public class DatePicker2 extends LinearLayout {
         monthView.setOnDateScrollChangeListener(new MonthView.OnDateScrollChangeListener() {
             @Override
             public void scrollLeft(int year, int month) {
-//                String str = "向左滑动=="+"年份="+year+"--月份=="+month;
-//                Toast.makeText(context,str, Toast.LENGTH_SHORT).show();
+                  String str = "向左滑动=="+"年份="+year+"--月份=="+month;
+                  Log.i(Tag,str);
             }
 
             @Override
             public void scrollRight(int year, int month) {
-//                String str = "向右滑动=="+"年份="+year+"--月份=="+month;
-//                Toast.makeText(context,str, Toast.LENGTH_SHORT).show();
+                String str = "向右滑动=="+"年份="+year+"--月份=="+month;
+                Log.i(Tag,str);
             }
 
             @Override
             public void scrollTop(int year, int month) {
-//                String str = "向上滑动=="+"年份="+year+"--月份=="+month;
-//                Toast.makeText(context,str, Toast.LENGTH_SHORT).show();
+                String str = "向上滑动=="+"年份="+year+"--月份=="+month;
+                Log.i(Tag,str);
             }
 
             @Override
             public void scrollBottom(int year, int month) {
-//                String str = "向下滑动=="+"年份="+year+"--月份=="+month;
-//                Toast.makeText(context,str, Toast.LENGTH_SHORT).show();
+                String str = "向下滑动=="+"年份="+year+"--月份=="+month;
+                Log.i(Tag,str);
             }
         });
         addView(monthView, llParams);
