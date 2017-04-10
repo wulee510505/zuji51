@@ -23,9 +23,6 @@ public class DatePicker extends LinearLayout {
     private Context mContext;
 
     private MonthView monthView;// 月视图
-//    private TextView tvYear, tvMonth;// 年份 月份显示
-//    private TextView tvEnsure;// 确定按钮显示
-
 
     private TextView myMonth; //左边月份显示
     private TextView myTitle; //中间签到文字显示
@@ -90,49 +87,6 @@ public class DatePicker extends LinearLayout {
         llWeek.setPadding(0, llWeekPadding, 0, llWeekPadding);
         LayoutParams lpWeek = new LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
         lpWeek.weight = 1;
-
-        // 标题栏子元素布局参数
-//        RelativeLayout.LayoutParams lpYear =
-//                new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-//        lpYear.addRule(RelativeLayout.CENTER_VERTICAL);
-//        RelativeLayout.LayoutParams lpMonth =
-//                new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-//        lpMonth.addRule(RelativeLayout.CENTER_IN_PARENT);
-//        RelativeLayout.LayoutParams lpEnsure =
-//                new RelativeLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT);
-//        lpEnsure.addRule(RelativeLayout.CENTER_VERTICAL);
-//        lpEnsure.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-
-        // --------------------------------------------------------------------------------标题栏
-        // 年份显示
-//        tvYear = new TextView(context);
-//        tvYear.setText("2015");
-//        tvYear.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-//        tvYear.setTextColor(mTManager.colorTitle());
-//
-//        // 月份显示
-//        tvMonth = new TextView(context);
-//        tvMonth.setText("六月");
-//        tvMonth.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 20);
-//        tvMonth.setTextColor(mTManager.colorTitle());
-//
-//        // 确定显示
-//        tvEnsure = new TextView(context);
-//        tvEnsure.setText(mLManager.titleEnsure());
-//        tvEnsure.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 16);
-//        tvEnsure.setTextColor(mTManager.colorTitle());
-//        tvEnsure.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                if (null != onDateSelectedListener) {
-//                    onDateSelectedListener.onDateSelected(monthView.getDateSelected());
-//                }
-//            }
-//        });
-//
-//        rlTitle.addView(tvYear, lpYear);
-//        rlTitle.addView(tvMonth, lpMonth);
-//        rlTitle.addView(tvEnsure, lpEnsure);
 
 
         RelativeLayout.LayoutParams lpMyMonth =
