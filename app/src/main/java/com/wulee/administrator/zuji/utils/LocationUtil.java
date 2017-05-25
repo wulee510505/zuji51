@@ -40,6 +40,9 @@ public class LocationUtil{
 
     public static final String ACTION_LOCATION_CHANGE = "action_location_change";
 
+    private static double lastlat = 0; //最新一次定位的纬度
+    private static double lastlon = 0; //最新一次定位的经度度
+
     private LocationUtil() {
         mLocationClient = new LocationClient(App.context);     //声明LocationClient类
         LocationClientOption option = new LocationClientOption();
@@ -137,8 +140,16 @@ public class LocationUtil{
                 sb.append("\ndescribe : ");
                 sb.append("无法获取有效定位依据导致定位失败，一般是由于手机的原因，处于飞行模式下一般会造成这种结果，可以试着重启手机");
             }
+            if(!TextUtils.isEmpty(location.getCity()))
+               aCache.put("location_city",location.getCity());
 
-            aCache.put("location_city",location.getCity());
+            if(location.getLatitude() == 0 || location.getLongitude()  == 0)
+                return;
+
+            if(OtherUtil.equal(location.getLatitude(),lastlat) && OtherUtil.equal(location.getLongitude(),lastlon))//避免上传相同的位置到云端
+                return;
+            lastlat = location.getLatitude();
+            lastlon = location.getLongitude();
 
             LocationInfo locationInfo = new LocationInfo();
             locationInfo.setLatitude(location.getLatitude()+"");
@@ -175,6 +186,8 @@ public class LocationUtil{
 
     private  void submitLocationInfo(final LocationInfo locationInfo){
         if(null == locationInfo)
+            return;
+        if(!OtherUtil.hasLogin())
             return;
         PersonInfo user = BmobUser.getCurrentUser(PersonInfo.class);
         //添加一对一关联

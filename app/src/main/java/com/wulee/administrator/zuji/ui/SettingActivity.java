@@ -13,6 +13,7 @@ import com.baidu.mapapi.model.LatLng;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.utils.OtherUtil;
 
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -40,6 +41,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     private Double  companyLon;
     private String  companyAddress;
 
+
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         ivSave = (ImageView) findViewById(R.id.iv_save);
         mEtHome = (TextView) findViewById(R.id.et_home);
         mEtCompany = (TextView) findViewById(R.id.et_company);
+
 
         PersonInfo user = BmobUser.getCurrentUser(PersonInfo.class);
         if(user != null){
@@ -94,10 +97,12 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                 PersonInfo user = BmobUser.getCurrentUser(PersonInfo.class);
                 if(null == user)
                     return;
-
-                if(equal(user.getHomeLat() , homeLat) && equal(user.getHomeLon(),homeLon) && equal(user.getCompanyLat(),companyLat) && equal(user.getCompanyLon(),companyLon)){
-                    return;
+                if(user.getHomeLat() != null && user.getHomeLon() != null && user.getCompanyLat() != null && user.getCompanyLon() != null){
+                    if(OtherUtil.equal(user.getHomeLat() , homeLat) && OtherUtil.equal(user.getHomeLon(),homeLon) && OtherUtil.equal(user.getCompanyLat(),companyLat) && OtherUtil.equal(user.getCompanyLon(),companyLon)){
+                        return;
+                    }
                 }
+
                 if(TextUtils.isEmpty(homeAddress)){
                     toast("请选择家庭地址");
                     return;
@@ -161,16 +166,4 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
         }
     }
 
-    /**
-     * 判断两个double类型值是否相等
-     * @param num1
-     * @param num2
-     * @return
-     */
-    private boolean equal(double num1,double num2) {
-        if((num1-num2>-0.000001)&&(num1-num2)<0.000001)
-            return true;
-        else
-            return false;
-    }
 }

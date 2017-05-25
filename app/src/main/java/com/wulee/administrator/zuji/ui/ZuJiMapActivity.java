@@ -3,29 +3,39 @@ package com.wulee.administrator.zuji.ui;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
+import android.view.WindowManager;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.baidu.location.BDLocation;
 import com.baidu.mapapi.map.BaiduMap;
 import com.baidu.mapapi.map.BitmapDescriptor;
 import com.baidu.mapapi.map.BitmapDescriptorFactory;
+import com.baidu.mapapi.map.InfoWindow;
 import com.baidu.mapapi.map.MapStatus;
 import com.baidu.mapapi.map.MapStatusUpdateFactory;
 import com.baidu.mapapi.map.MapView;
+import com.baidu.mapapi.map.Marker;
 import com.baidu.mapapi.map.MarkerOptions;
 import com.baidu.mapapi.map.MyLocationData;
 import com.baidu.mapapi.map.OverlayOptions;
+import com.baidu.mapapi.map.PolygonOptions;
+import com.baidu.mapapi.map.Stroke;
 import com.baidu.mapapi.model.LatLng;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.LocationInfo;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import cn.bmob.v3.BmobQuery;
@@ -40,7 +50,7 @@ import static com.wulee.administrator.zuji.App.aCache;
  * Created by wulee on 2017/3/15 11:47
  */
 
-public class ZuJiMapActivity extends BaseActivity {
+public class ZuJiMapActivity extends BaseActivity implements BaiduMap.OnMarkerClickListener{
 
 
     public static final String ACTION_LOCATION_CHANGE = "action_location_change";
@@ -48,7 +58,7 @@ public class ZuJiMapActivity extends BaseActivity {
     private MapView mapView;
     private BaiduMap mBaiduMap;
 
-    private List<LocationInfo> zujiList;
+    private List<LatLng> locationList;
     private final int MSG_QUERY_ZUJI_DATA_OK = 1000;
 
     private Handler mHandler = new Handler(){
@@ -68,8 +78,10 @@ public class ZuJiMapActivity extends BaseActivity {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.zuji_map);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
+        setContentView(R.layout.zuji_map);
 
         initView();
         queryData();
@@ -78,7 +90,9 @@ public class ZuJiMapActivity extends BaseActivity {
     private void initView() {
         mapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mapView.getMap();
+        mBaiduMap.setOnMarkerClickListener(this);
     }
+
 
     /**
      * 查询数据
@@ -93,7 +107,7 @@ public class ZuJiMapActivity extends BaseActivity {
         query.include("piInfo");// 希望在查询位置信息的同时也把当前用户的信息查询出来
         query.order("-createdAt");
         // 设置每页数据个数
-        query.setLimit(50);
+        //query.setLimit(50);
         query.findObjects(new FindListener<LocationInfo>() {
             @Override
             public void done(List<LocationInfo> dataList, BmobException e) {
@@ -113,6 +127,9 @@ public class ZuJiMapActivity extends BaseActivity {
 
     private void addLocation(List<LocationInfo> dataList) {
         LatLng lastLocation = null;
+        locationList = new ArrayList<>();
+        LocationInfo.SortClass sort = new LocationInfo.SortClass();
+        Collections.sort(dataList,sort);
         for (int i = 0; i < dataList.size(); i++) {
             LocationInfo location = dataList.get(i);
             //定义Maker坐标点
@@ -124,17 +141,49 @@ public class ZuJiMapActivity extends BaseActivity {
                     .position(point)
                     .icon(bitmap);
             //在地图上添加Marker，并显示
-            mBaiduMap.addOverlay(option);
-
+            Marker marker = (Marker) mBaiduMap.addOverlay(option);
+            //为marker添加识别标记信息
+            Bundle bundle = new Bundle();
+            bundle.putSerializable("info", location);
+            marker.setExtraInfo(bundle);
             if(i == 0){
                 lastLocation = new LatLng(Double.parseDouble(location.getLatitude()), Double.parseDouble(location.getLontitude()));
             }
+
+            locationList.add(point);
         }
+        if(locationList.size()>3){
+            OverlayOptions ooPolygon = new PolygonOptions().points(locationList)
+                    .stroke(new Stroke(2, 0xAA00FF00)).fillColor(0x00FFFFFF);
+            mBaiduMap.addOverlay(ooPolygon);
+        }
+
         MapStatus.Builder builder = new MapStatus.Builder();
         builder.target(lastLocation).zoom(18.0f);
         mBaiduMap.animateMapStatus(MapStatusUpdateFactory.newMapStatus(builder.build()));
     }
 
+    @Override
+    public boolean onMarkerClick(Marker marker) {
+        // 获得marker中的数据
+        LocationInfo location = (LocationInfo) marker.getExtraInfo().get("info");
+        // 生成一个TextView用户在地图中显示InfoWindow
+        TextView tvLocation = new TextView(getApplicationContext());
+        tvLocation.setBackgroundResource(R.color.light_red);
+        tvLocation.setPadding(15, 15, 8, 35);
+        tvLocation.setTextColor(Color.WHITE);
+        tvLocation.setText(location.getUpdatedAt() + "\n" + location.getAddress());
+        tvLocation.setTextSize(14);
+        // 将marker所在的经纬度的信息转化成屏幕上的坐标
+        final LatLng ll = marker.getPosition();
+        Point p = mBaiduMap.getProjection().toScreenLocation(ll);
+        p.y -= 47;
+        LatLng llInfo = mBaiduMap.getProjection().fromScreenLocation(p);
+        InfoWindow window = new InfoWindow(tvLocation,llInfo,-20);
+        // 显示InfoWindow
+        mBaiduMap.showInfoWindow(window);
+        return true;
+    }
 
 
     public class LocationChangeReceiver extends BroadcastReceiver {
