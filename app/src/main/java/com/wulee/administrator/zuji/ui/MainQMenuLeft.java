@@ -1,10 +1,12 @@
 package com.wulee.administrator.zuji.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,6 +27,7 @@ import cn.bmob.v3.update.UpdateResponse;
 import cn.bmob.v3.update.UpdateStatus;
 
 import static com.wulee.administrator.zuji.App.aCache;
+import static com.wulee.administrator.zuji.R.id.about_me_tv;
 import static com.wulee.administrator.zuji.R.id.mml_setting_tv;
 
 
@@ -34,15 +37,12 @@ import static com.wulee.administrator.zuji.R.id.mml_setting_tv;
  */
 public class MainQMenuLeft extends Fragment implements View.OnClickListener {
 
-    private static final String REQ_CHECK_UPDATE = "menu_check_update";
-    private static final int REQUEST_CODE_IMAGE = 100;
-
     private Context mContext;
 
     private ImageView rbImage;
     private TextView mTvMobile;
     private TextView tvVersionName;
-    private TextView tvSign,tvFeedBack,tvMsg,tvSetting,tvLoginOut,tvCheckUpdate; // 登录、退出登录提示语
+    private TextView tvSign,tvFeedBack,tvMsg,tvSetting,tvLoginOut,tvCheckUpdate,tvAboutme; // 登录、退出登录提示语
 
     @Nullable
     @Override
@@ -69,6 +69,7 @@ public class MainQMenuLeft extends Fragment implements View.OnClickListener {
         tvSetting = (TextView) view.findViewById(mml_setting_tv);
         tvCheckUpdate = (TextView) view.findViewById(R.id.mml_checkupdate_tv);
         tvLoginOut = (TextView) view.findViewById(R.id.mml_loginout_tv);
+        tvAboutme= (TextView) view.findViewById(R.id.about_me_tv);
 
         tvSign.setOnClickListener(this);
         tvFeedBack.setOnClickListener(this);
@@ -77,6 +78,7 @@ public class MainQMenuLeft extends Fragment implements View.OnClickListener {
         tvLoginOut.setOnClickListener(this);
         tvCheckUpdate.setOnClickListener(this);
         rbImage.setOnClickListener(this);
+        tvAboutme.setOnClickListener(this);
 
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         if(null != piInfo){
@@ -91,11 +93,7 @@ public class MainQMenuLeft extends Fragment implements View.OnClickListener {
     public void onClick(View v) {
          switch (v.getId()){
              case R.id.mml_loginout_tv:
-                 aCache.put("has_login","no");
-                 LocationUtil.getInstance().stopGetLocation();
-                 AppUtils.AppExit(mContext);
-                 PersonInfo.logOut();
-                 startActivity(new Intent(mContext,LoginActivity.class));
+                 showLogoutDialog();
                  break;
              case R.id.mml_pushmsg_tv:
                  startActivity(new Intent(mContext,PushMsgListActivity.class));
@@ -135,7 +133,28 @@ public class MainQMenuLeft extends Fragment implements View.OnClickListener {
              case mml_setting_tv:
                  startActivity(new Intent(mContext,SettingActivity.class));
                  break;
+             case about_me_tv:
+                 startActivity(new Intent(mContext,AboutMeActivity.class));
+                 break;
          }
+    }
 
+
+    private void showLogoutDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
+        builder.setTitle("提示");
+        builder.setMessage("确定要退出吗？");
+        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                aCache.put("has_login","no");
+                LocationUtil.getInstance().stopGetLocation();
+                AppUtils.AppExit(mContext);
+                PersonInfo.logOut();
+                startActivity(new Intent(mContext,LoginActivity.class));
+            }
+        });
+        builder.setNegativeButton("取消", null);
+        builder.create().show();
     }
 }

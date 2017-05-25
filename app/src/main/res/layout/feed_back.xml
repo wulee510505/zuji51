@@ -41,6 +41,8 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:overScrollMode="never"
+        android:scrollbars="none"
         android:layout_weight="1">
 
         <EditText
@@ -63,7 +65,7 @@
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@drawable/bg_button"
-        android:textColor="@color/white"
+        android:textColor="#fff"
         android:textSize="18sp"
         android:text="保存" />
 

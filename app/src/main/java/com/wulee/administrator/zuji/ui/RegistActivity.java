@@ -12,6 +12,7 @@ import android.widget.Toast;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.utils.OtherUtil;
 
 import cn.bmob.v3.BmobSMS;
 import cn.bmob.v3.exception.BmobException;
@@ -66,10 +67,19 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
                     Toast.makeText(this, "请输入手机号", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(!OtherUtil.isMobile(mobile)){
+                    Toast.makeText(this, "请输入正确的手机号", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 if(TextUtils.isEmpty(pwd)){
                     Toast.makeText(this, "请输入密码", Toast.LENGTH_SHORT).show();
                     return;
                 }
+                if(!OtherUtil.isPassword(pwd)){
+                    Toast.makeText(this, "密码由6~16位数字和英文字母组成", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+
               /* if(TextUtils.isEmpty(authCode)){
                     Toast.makeText(this, "请输入验证码", Toast.LENGTH_SHORT).show();
                     return;
@@ -99,6 +109,7 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
 
 
     private void doRegist(String mobile, String pwd) {
+        showProgressDialog(false);
         PersonInfo piInfo = new PersonInfo();
         piInfo.setMobilePhoneNumber(mobile);
         piInfo.setUsername(mobile);
@@ -117,6 +128,7 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
         piInfo.signUp(new SaveListener<PersonInfo>() {
             @Override
             public void done(PersonInfo user,BmobException e) {
+                stopProgressDialog();
                 if(e==null){
                     Toast.makeText(RegistActivity.this, "注册成功", Toast.LENGTH_SHORT).show();
                     startActivity(new Intent(RegistActivity.this,LoginActivity.class));

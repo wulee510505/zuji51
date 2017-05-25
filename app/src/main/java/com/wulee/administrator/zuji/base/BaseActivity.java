@@ -1,11 +1,16 @@
 package com.wulee.administrator.zuji.base;
 
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
+import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.utils.AppUtils;
+import com.wulee.administrator.zuji.utils.SystemBarTintManager;
 import com.wulee.administrator.zuji.widget.BaseProgressDialog;
 
 /**
@@ -15,13 +20,18 @@ public class BaseActivity extends AppCompatActivity {
     private BaseProgressDialog mProgressDialog = null;
 
     @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+
+        setStateBarColor();
+    }
+
+    @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
         // 结束Activity&从堆栈中移除
         AppUtils.getAppManager().finishActivity(this);
-
-
     }
 
     @Override
@@ -83,6 +93,37 @@ public class BaseActivity extends AppCompatActivity {
         if (mProgressDialog.cancel()) {
             mProgressDialog = null;
         }
+    }
+
+    /**
+     * 改变状态栏颜色
+     */
+    private void setStateBarColor() {
+        int res = R.color.colorAccent;
+        if(-1 != getStateBarColor()) {
+            res = getStateBarColor();
+        }
+        SystemBarTintManager tintManager = new SystemBarTintManager(this);
+        tintManager.setStatusBarTintEnabled(true);
+        tintManager.setStatusBarTintResource(res);
+    }
+
+    protected int getStateBarColor() {
+        return -1;
+    }
+
+
+    /**
+     * 检查网络连接
+     * @return
+     */
+    public boolean checkInternetConnection() {
+        NetworkInfo info = null;
+        if (info == null) {
+            ConnectivityManager manager = (ConnectivityManager) getSystemService(CONNECTIVITY_SERVICE);
+            info = manager.getActiveNetworkInfo();
+        }
+        return info != null && info.isAvailable();
     }
 
 }
