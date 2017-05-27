@@ -1,11 +1,13 @@
 package com.wulee.administrator.zuji;
 
-import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
+import com.umeng.socialize.PlatformConfig;
+import com.umeng.socialize.UMShareAPI;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.entity.Constant;
@@ -22,7 +24,7 @@ import cn.finalteam.okhttpfinal.OkHttpFinalConfiguration;
  * Created by wulee on 2016/12/8 09:37
  */
 
-public class App extends Application {
+public class App extends MultiDexApplication {
 
    public static Context context;
     public static ACache aCache;
@@ -48,6 +50,15 @@ public class App extends Application {
 
         OkHttpFinalConfiguration.Builder builder = new OkHttpFinalConfiguration.Builder();
         OkHttpFinal.getInstance().init(builder.build());
+
+        initUMShareSDK();
+    }
+
+
+    private void initUMShareSDK() {
+        UMShareAPI.get(this);
+        PlatformConfig.setWeixin("wx4956c9ae7673c30d", "3ce5fa67d3b4b071be532d1fc3da5720");
+        PlatformConfig.setWeixin("1106189026", "fyeuctD7ZssYvDcw");
     }
 
     private static void initDB(){
