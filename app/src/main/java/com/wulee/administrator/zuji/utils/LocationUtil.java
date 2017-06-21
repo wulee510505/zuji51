@@ -10,6 +10,8 @@ import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
+import com.baidu.mapapi.model.LatLng;
+import com.baidu.mapapi.utils.SpatialRelationUtil;
 import com.liangmayong.text2speech.Text2Speech;
 import com.mylhyl.acp.Acp;
 import com.mylhyl.acp.AcpListener;
@@ -40,9 +42,6 @@ public class LocationUtil{
 
     public static final String ACTION_LOCATION_CHANGE = "action_location_change";
 
-    private static double lastlat = 0; //最新一次定位的纬度
-    private static double lastlon = 0; //最新一次定位的经度度
-
     private LocationUtil() {
         mLocationClient = new LocationClient(App.context);     //声明LocationClient类
         LocationClientOption option = new LocationClientOption();
@@ -50,7 +49,7 @@ public class LocationUtil{
         );//可选，默认高精度，设置定位模式，高精度，低功耗，仅设备
         option.setCoorType("bd09ll");//可选，默认gcj02，设置返回的定位结果坐标系
         int span= 1000 * 60 * 2; // 2分钟
-        option.setScanSpan(span);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
+        option.setScanSpan(0);//可选，默认0，即仅定位一次，设置发起定位请求的间隔需要大于等于1000ms才是有效的
         option.setIsNeedAddress(true);//可选，设置是否需要地址信息，默认不需要
         option.setOpenGps(true);//可选，默认false,设置是否使用gps
         option.setLocationNotify(true);//可选，默认false，设置是否当GPS有效时按照1S/1次频率输出GPS结果
@@ -146,11 +145,22 @@ public class LocationUtil{
             if(location.getLatitude() == 0 || location.getLongitude()  == 0)
                 return;
 
-            if(OtherUtil.equal(location.getLatitude(),lastlat) && OtherUtil.equal(location.getLongitude(),lastlon))//避免上传相同的位置到云端
-                return;
-            lastlat = location.getLatitude();
-            lastlon = location.getLongitude();
+            Log.i("location","获取位置信息成功---->"+ DateTimeUtils.getFullTime(System.currentTimeMillis()));
+            if(!TextUtils.isEmpty(aCache.getAsString("lat")) &&!TextUtils.isEmpty(aCache.getAsString("lon"))  ){
+                if(OtherUtil.equal(location.getLatitude(),Double.parseDouble(aCache.getAsString("lat"))) && OtherUtil.equal(location.getLongitude(),Double.parseDouble(aCache.getAsString("lon"))))//避免上传相同的位置到云端
+                    return;
 
+                double lastlat = Double.parseDouble(aCache.getAsString("lat"));
+                double lastlon = Double.parseDouble(aCache.getAsString("lon"));
+
+                if(lastlat > 0 && lastlon >0){
+                    LatLng lastLatLng = new LatLng(lastlat,lastlon);
+                    boolean isContains  = SpatialRelationUtil.isCircleContainsPoint(lastLatLng, 5, new LatLng(location.getLatitude(),location.getLongitude()));
+                    if(isContains){
+                        return;
+                    }
+                }
+            }
             LocationInfo locationInfo = new LocationInfo();
             locationInfo.setLatitude(location.getLatitude()+"");
             locationInfo.setLontitude(location.getLongitude()+"");
@@ -181,6 +191,11 @@ public class LocationUtil{
             }
             Log.i("Location", sb.toString());
         }
+
+        @Override
+        public void onConnectHotSpotMessage(String s, int i) {
+
+        }
     }
 
 
@@ -199,8 +214,9 @@ public class LocationUtil{
                     DBHandler.insertLocationInfo(locationInfo);
                     aCache.put("lat",locationInfo.getLatitude());
                     aCache.put("lon",locationInfo.getLontitude());
+
                     aCache.put("isUploadLocation","yes");
-                    speak(locationInfo.getAddress() + locationInfo.getLocationdescribe());
+                    speak("您当前位置是"+ locationInfo.getAddress() + locationInfo.getLocationdescribe());
                     System.out.println("—— 位置同步成功 ——");
                 }else{
                     System.out.println("—— 位置同步失败 ——");
