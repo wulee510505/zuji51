@@ -14,6 +14,7 @@ import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PushMessage;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
 import com.wulee.administrator.zuji.utils.GsonUtil;
+import com.wulee.administrator.zuji.utils.OtherUtil;
 
 import cn.bmob.push.PushConstants;
 
@@ -30,6 +31,9 @@ public class PushMsgReceiver extends BroadcastReceiver {
         // TODO Auto-generated method stub
         if(intent.getAction().equals(PushConstants.ACTION_MESSAGE)){
 
+            if(!OtherUtil.hasLogin())
+                return;
+
             String jsonMessage = intent.getStringExtra("msg");
 
             Text2Speech.speech(context,"您有一条新的消息",false);
@@ -41,8 +45,10 @@ public class PushMsgReceiver extends BroadcastReceiver {
                             .setContentTitle("新消息")
                             .setContentText(pushMessage.getContent());
             Intent resultIntent = new Intent(context, PushMsgListActivity.class);
+
+
             PendingIntent resultPendingIntent = PendingIntent.getActivity(
-                    context, 0, resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+                    context, 0 , resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(resultPendingIntent);
 
             Notification notification = mBuilder.build();

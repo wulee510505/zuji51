@@ -6,11 +6,13 @@ import android.support.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
+import com.umeng.socialize.Config;
 import com.umeng.socialize.PlatformConfig;
 import com.umeng.socialize.UMShareAPI;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.entity.Constant;
+import com.wulee.administrator.zuji.utils.CrashHandlerUtil;
 
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
@@ -35,8 +37,11 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
         context = getApplicationContext();
         aCache = ACache.get(this);
+
+        Config.DEBUG = true;
 
         SDKInitializer.initialize(context);
 
@@ -52,12 +57,16 @@ public class App extends MultiDexApplication {
         OkHttpFinal.getInstance().init(builder.build());
 
         initUMShareSDK();
+
+        //崩溃处理
+        CrashHandlerUtil crashHandlerUtil = CrashHandlerUtil.getInstance();
+        crashHandlerUtil.init(this);
     }
 
 
     private void initUMShareSDK() {
         UMShareAPI.get(this);
-        PlatformConfig.setWeixin("wx4956c9ae7673c30d", "3ce5fa67d3b4b071be532d1fc3da5720");
+        PlatformConfig.setWeixin("wx1073aba850d8e7e9", "cab9b8657c10ed5c8c07ab78a4649935");
         PlatformConfig.setWeixin("1106189026", "fyeuctD7ZssYvDcw");
     }
 
