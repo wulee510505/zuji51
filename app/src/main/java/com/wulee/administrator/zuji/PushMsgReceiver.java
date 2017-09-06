@@ -17,6 +17,7 @@ import com.wulee.administrator.zuji.utils.GsonUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 
 import cn.bmob.push.PushConstants;
+import de.greenrobot.event.EventBus;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
 
@@ -45,17 +46,16 @@ public class PushMsgReceiver extends BroadcastReceiver {
                             .setContentTitle("新消息")
                             .setContentText(pushMessage.getContent());
             Intent resultIntent = new Intent(context, PushMsgListActivity.class);
-
-
             PendingIntent resultPendingIntent = PendingIntent.getActivity(
                     context, 0 , resultIntent, PendingIntent.FLAG_UPDATE_CURRENT);
             mBuilder.setContentIntent(resultPendingIntent);
-
             Notification notification = mBuilder.build();
 
             NotificationManager notificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
             notificationManager.notify(0, notification);
+
+
+            EventBus.getDefault().post(pushMessage);
         }
     }
-
 }

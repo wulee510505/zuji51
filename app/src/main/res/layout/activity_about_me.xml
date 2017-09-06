@@ -34,14 +34,14 @@
             android:singleLine="true"
             android:text=""
             android:textColor="@color/color_white"
-            android:textSize="17sp" />
+            android:textSize="18sp" />
 
         <ImageView
             android:id="@+id/iv_share"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:onClick="shareClick"
-            android:visibility="gone"
+            android:visibility="visible"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
