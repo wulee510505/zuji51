@@ -15,15 +15,16 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.coorchice.library.SuperTextView;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.StepRankingAdapter;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.StepInfo;
+import com.wulee.administrator.zuji.utils.DateTimeUtils;
 import com.wulee.administrator.zuji.utils.Pedometer;
 import com.wulee.administrator.zuji.utils.SortList;
+import com.wulee.administrator.zuji.widget.ProgressWheel;
 import com.wulee.administrator.zuji.widget.RecycleViewDivider;
 
 import java.text.SimpleDateFormat;
@@ -38,6 +39,11 @@ import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
+import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.listener.UpdateListener;
+
+import static com.wulee.administrator.zuji.App.aCache;
 
 
 public class StepActivity extends BaseActivity {
@@ -46,8 +52,6 @@ public class StepActivity extends BaseActivity {
     ImageView ivBack;
     @InjectView(R.id.title)
     TextView title;
-    @InjectView(R.id.tv_step_count)
-    SuperTextView tvStepCount;
     @InjectView(R.id.tv_ranking)
     TextView tvRanking;
     @InjectView(R.id.tv_line)
@@ -60,6 +64,8 @@ public class StepActivity extends BaseActivity {
     ProgressBar progressBar;
     @InjectView(R.id.iv_history)
     ImageView ivHistory;
+    @InjectView(R.id.progress_step)
+    ProgressWheel progressStep;
 
     private Pedometer pedometer;
     private OnStepCountChangeReceiver mReceiver;
@@ -141,12 +147,12 @@ public class StepActivity extends BaseActivity {
         msList.sortByMethod(dataList, "getCount", true);
 
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
-        if(null != piInfo){
+        if (null != piInfo) {
             for (int i = 0; i < dataList.size(); i++) {
                 StepInfo step = dataList.get(i);
-                if(null != step){
-                    if(TextUtils.equals(step.personInfo.getObjectId(),piInfo.getObjectId())){
-                        tvRanking.setText("第 " + (i+1) + " 名");
+                if (null != step) {
+                    if (TextUtils.equals(step.personInfo.getObjectId(), piInfo.getObjectId())) {
+                        tvRanking.setText("第 " + (i + 1) + " 名");
                     }
                 }
             }
@@ -162,32 +168,110 @@ public class StepActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.iv_back,R.id.iv_history})
+    @OnClick({R.id.iv_back, R.id.iv_history})
     public void onViewClicked(View v) {
         switch (v.getId()) {
             case R.id.iv_back:
                 finish();
                 break;
             case R.id.iv_history:
-                startActivity(new Intent(StepActivity.this,StepHistoryActivity.class));
+                startActivity(new Intent(StepActivity.this, StepHistoryActivity.class));
                 break;
         }
     }
-
 
 
     class OnStepCountChangeReceiver extends BroadcastReceiver {
         @Override
         public void onReceive(Context context, Intent intent) {
             if (TextUtils.equals(ACTION_ON_STEP_COUNT_CHANGE, intent.getAction())) {
-                tvStepCount.setText(pedometer.getStepCount() + ""); // 支付宝步数统计就是依据了此原理
+                // 支付宝步数统计就是依据了此原理
+                progressStep.setStepCountText(pedometer.getStepCount() + "");
+
+                uploadStepInfo(pedometer.getStepCount());
             }
         }
     }
+
+
+    /**
+     * 上传计步信息
+     */
+    private void uploadStepInfo(final int stepcount) {
+        final PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
+
+        BmobQuery<StepInfo> bmobQuery = new BmobQuery<>();
+        bmobQuery.addWhereEqualTo("personInfo", piInfo);
+        bmobQuery.findObjects(new FindListener<StepInfo>() {
+            @Override
+            public void done(List<StepInfo> list, BmobException e) {
+                if (e == null) {
+                    if (list != null && list.size() > 0) {
+                        String currdateStr = DateTimeUtils.formatTime(new Date());
+                        for (StepInfo step : list) {
+                            if (TextUtils.equals(step.getCreatedAt().substring(0, 10), currdateStr)) {//认为一天只创建一条数据，保证数据的唯一性
+                                aCache.put("step_info_id", step.getObjectId());
+                            }
+                        }
+                    }
+
+                    final StepInfo stepInfo = new StepInfo();
+                    stepInfo.setCount(stepcount);
+                    //添加一对一关联
+                    stepInfo.personInfo = piInfo;
+                    final String stepInfoId = aCache.getAsString("step_info_id");
+                    if (TextUtils.isEmpty(stepInfoId)) {
+                        stepInfo.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String objId, BmobException e) {
+                                if (e == null) {
+                                    aCache.put("step_info_id", objId);
+                                    System.out.println("—— 步数同步成功 ——");
+                                } else {
+                                    System.out.println("—— 步数同步失败 ——");
+                                }
+                            }
+                        });
+                    } else {
+                        BmobQuery<StepInfo> query = new BmobQuery<StepInfo>();
+                        query.getObject(stepInfoId, new QueryListener<StepInfo>() {
+                            @Override
+                            public void done(StepInfo stepInfo, BmobException e) {
+                                if(e == null && stepInfo != null){
+                                    stepInfo.setCount(stepcount);
+                                    stepInfo.update(stepInfoId, new UpdateListener() {
+                                        @Override
+                                        public void done(BmobException e) {
+                                            if (e == null) {
+                                                System.out.println("—— 步数更新成功 ——");
+                                            } else {
+                                                System.out.println("—— 步数更新失败 ——");
+                                            }
+                                        }
+                                    });
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        });
+    }
+
 
     @Override
     protected void onPause() {
         super.onPause();
         pedometer.unRegister();
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(mReceiver != null){
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+        }
     }
 }

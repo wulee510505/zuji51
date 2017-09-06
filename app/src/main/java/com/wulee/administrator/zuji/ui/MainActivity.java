@@ -11,11 +11,9 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,7 +30,9 @@ import com.wulee.administrator.zuji.service.UploadLocationService;
 import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
 import com.wulee.administrator.zuji.utils.GlideImageLoader;
 import com.wulee.administrator.zuji.utils.LocationUtil;
-import com.wulee.administrator.zuji.widget.FloatingButton;
+import com.wulee.administrator.zuji.utils.Pedometer;
+import com.wulee.administrator.zuji.widget.AnimArcButtons;
+import com.yanzhenjie.permission.AndPermission;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
 
@@ -51,7 +51,7 @@ import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 
-import static com.wulee.administrator.zuji.App.aCache;
+
 public class MainActivity extends BaseActivity implements View.OnClickListener {
 
 
@@ -60,9 +60,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private EasyRecyclerView mRecyclerView;
     private LocationAdapter mAdapter;
 
-    private ImageView ivMenu;
-    private ImageView ivSetting;
-    private FloatingButton floatingButton ;
     private DrawerLayout mDrawerLayout;
 
 
@@ -77,6 +74,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     private LocationChangeReceiver mReceiver;
 
+    private AnimArcButtons menuBtns;
+
+    private Pedometer pedometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,8 +86,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         initView();
         addListener();
 
+        if(!LocationUtil.getInstance().startGetLocation()){
+            AndPermission.defaultSettingDialog(this).show();
+        }
+
         startService(new Intent(MainActivity.this,UploadLocationService.class));
         startService(new Intent(MainActivity.this,ScreenService.class));
+
+        getLocationList(0, STATE_REFRESH);
 
         mHandler.postDelayed(mRunnable,1000);
 
@@ -96,11 +102,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mReceiver = new LocationChangeReceiver();
         IntentFilter filter  = new IntentFilter(LocationUtil.ACTION_LOCATION_CHANGE);
         registerReceiver(mReceiver,filter);
+
+        pedometer = new Pedometer(this);
+    }
+
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(menuBtns.isOpen())
+            menuBtns.closeMenu();
+
+        pedometer.register();
     }
 
     /*
-      * 获取服务器时间
-     */
+          * 获取服务器时间
+         */
     private void syncServerTime() {
         Bmob.getServerTime(new QueryListener<Long>() {
             @Override
@@ -118,9 +136,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     }
 
     private void addListener() {
-        floatingButton.setOnClickListener(this);
-        ivMenu.setOnClickListener(this);
-        ivSetting.setOnClickListener(this);
         mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
             @Override
             public void onItemClick(View view, int pos) {
@@ -160,8 +175,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 getLocationList(curPage, STATE_MORE);
             }
         });
-
-
+        menuBtns.setOnButtonClickListener(new AnimArcButtons.OnButtonClickListener() {
+            @Override
+            public void onButtonClick(View v, int id) {
+               switch (id){
+                   case 0:
+                       startActivity(new Intent(MainActivity.this,WeatherActivity.class).putExtra("curr_time",currServerTime));
+                       break;
+                   case 1:
+                       if (pedometer.hasStepSensor()) {
+                           startActivity(new Intent(MainActivity.this, StepActivity.class));
+                       } else {
+                           Toast.makeText(MainActivity.this, "设备没有计步传感器", Toast.LENGTH_SHORT).show();
+                       }
+                       break;
+                   case 2:
+                       startActivity(new Intent(MainActivity.this,FunPicActivity.class));
+                       break;
+               }
+            }
+        });
     }
 
     private void initView() {
@@ -169,25 +202,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
         mDrawerLayout.setScrimColor(0x00000000);
 
-        floatingButton = (FloatingButton) findViewById(R.id.floatingbutton);
-        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) floatingButton.getLayoutParams();
-        rlp.rightMargin =  120;
-        rlp.bottomMargin = 120;
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);
-        rlp.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
-        floatingButton.setLayoutParams(rlp);
+        menuBtns = (AnimArcButtons) findViewById(R.id.arc_menu_button);
 
-        bannerLayout = (Banner) findViewById(R.id.banner);
+
+        View headerView = LayoutInflater.from(this).inflate(R.layout.main_listview_header,null);
+
+        bannerLayout = (Banner)headerView.findViewById(R.id.banner);
         bannerLayout.setVisibility(View.GONE);
 
-        ivMenu = (ImageView) findViewById(R.id.iv_menu);
-        ivSetting = (ImageView) findViewById(R.id.iv_setting);
         swipeLayout = (SwipeRefreshLayout)findViewById(R.id.swipeLayout);
         mRecyclerView = (EasyRecyclerView)findViewById(R.id.recyclerview);
 
         mAdapter = new LocationAdapter(R.layout.location_list_item,null);
         tvTime = (TextView)findViewById(R.id.tv_server_time);
 
+        mAdapter.addHeaderView(headerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
 
@@ -200,6 +229,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private void initBannerInfo() {
         final List<String> urls =  new ArrayList<>();
         BmobQuery<BannerInfo> query = new BmobQuery<>();
+        query.order("index");  // 根据createdAt字段降序显示数据
         query.findObjects(new FindListener<BannerInfo>() {
             @Override
             public void done(List<BannerInfo> list, BmobException e) {
@@ -273,7 +303,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         public void run () {
             isRefresh = true;
             getLocationList(0, STATE_REFRESH);
-            syncServerTime();
+            //syncServerTime();
             mHandler.postDelayed(this,1000 * 60 * 2);
         }
     };
@@ -283,9 +313,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      * 分页获取数据
      */
     private void getLocationList(final int page, final int actionType){
-        if(!TextUtils.equals("yes",aCache.getAsString("isUploadLocation"))){
-            return;
-        }
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         BmobQuery<LocationInfo> query = new BmobQuery<LocationInfo>();
         query.addWhereEqualTo("piInfo", piInfo);    // 查询当前用户的所有位置信息
@@ -326,17 +353,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.iv_setting:
-                startActivity(new Intent(this,ZuJiMapActivity.class));
-                break;
-            case R.id.iv_menu:
-                OpenLeftMenu();
-                break;
-            case R.id.floatingbutton:
-                startActivity(new Intent(this,WeatherActivity.class).putExtra("curr_time",currServerTime));
-                break;
-        }
+
     }
 
     @Override
@@ -381,7 +398,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        unregisterReceiver(mReceiver);
+        if(mReceiver != null){
+            unregisterReceiver(mReceiver);
+            mReceiver = null;
+         }
+        pedometer.register();
     }
 
     @Override
@@ -397,4 +418,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //结束轮播
         bannerLayout.stopAutoPlay();
     }
+
 }

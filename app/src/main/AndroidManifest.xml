@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.wulee.administrator.zuji">
+    package="com.wulee.administrator.zuji"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <!--允许联网 -->
     <uses-permission android:name="android.permission.INTERNET" />
@@ -46,6 +47,11 @@
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.wulee.administrator.zuji.ui.MainNewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait" />
+
         <activity android:name="com.wulee.administrator.zuji.ui.MapActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
@@ -60,9 +66,6 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize"/>
 
-        <activity android:name="com.wulee.administrator.zuji.ui.SignActivity"
-            android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait" />
         <activity android:name="com.wulee.administrator.zuji.ui.FeedBackActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
@@ -114,6 +117,28 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.wulee.administrator.zuji.ui.CircleMainActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
+        <activity android:name="com.wulee.administrator.zuji.ui.PublishCircleActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
+
+        <activity android:name="com.wulee.administrator.zuji.ui.BigImageActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogActivity.Transparent"/>
+
+        <activity android:name="com.wulee.administrator.zuji.ui.FunPicActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
+        <activity android:name="com.wulee.administrator.zuji.ui.JokeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
         <activity
             android:name="cn.bmob.v3.update.UpdateDialogActivity"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" >
@@ -125,6 +150,19 @@
         <activity
             android:name=".ui.pushmsg.MsgDetailActivity"
             android:configChanges="orientation|keyboardHidden" />
+
+
+        <!-- 解决 Android N 7.0 上 报错：android.os.FileUriExposedException-->
+        <provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="com.wulee.administrator.zuji.android7.fileprovider"
+            android:grantUriPermissions="true"
+            android:exported="false"
+            tools:replace="android:authorities">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths" />
+        </provider>
 
         <!--bmob推送start-->
         <service
@@ -212,11 +250,9 @@
             android:noHistory="true" >
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
                 <category android:name="android.intent.category.DEFAULT" />
                 <category android:name="android.intent.category.BROWSABLE" />
-
-                <data android:scheme="tencent1106189026" />
+                <data android:scheme="tencent1106248240" />
             </intent-filter>
         </activity>
         <activity
@@ -224,6 +260,7 @@
             android:screenOrientation="portrait"
             android:theme="@android:style/Theme.Translucent.NoTitleBar"
             android:configChanges="orientation|keyboardHidden|screenSize"/>
+
     </application>
 
 </manifest>
