@@ -2,6 +2,7 @@ package com.wulee.administrator.zuji.ui;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -10,6 +11,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
@@ -30,10 +32,10 @@ import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.ui.fragment.CircleFragment;
-import com.wulee.administrator.zuji.ui.fragment.HomeFragment;
 import com.wulee.administrator.zuji.ui.fragment.JokeFragment;
 import com.wulee.administrator.zuji.ui.fragment.MainBaseFrag;
 import com.wulee.administrator.zuji.ui.fragment.NewsFragment;
+import com.wulee.administrator.zuji.ui.fragment.ZujiFragment;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.ConfigKey;
@@ -119,6 +121,20 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         mViewPager = (ViewPager) findViewById(R.id.mviewpager);
         mRg = (RadioGroup) findViewById(R.id.mnc_rg);
         navigationView = (NavigationView) findViewById(R.id.nav_view);
+
+        //自定义menu菜单icon和title颜色
+        int[][] states = new int[][]{
+                new int[]{ -android.R.attr.state_checked},
+                new int[]{android.R.attr.state_checked}
+        };
+        int[] colors = new int[]{              ContextCompat.getColor(this,R.color.ctv_black_2),
+                ContextCompat.getColor(this,R.color.colorAccent)
+        };
+        ColorStateList csl = new ColorStateList(states, colors);
+
+        navigationView.setItemTextColor(csl);
+        navigationView.setItemIconTintList(csl);
+
         menuHeaderView = navigationView.inflateHeaderView(R.layout.nav_menu_header);
 
         ivHeader = (ImageView) menuHeaderView.findViewById(R.id.circle_img_header);
@@ -342,8 +358,8 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
             Fragment retFragment = null;
             switch (position) {
                 case 0:
-                    retFragment = new HomeFragment();
-                    mainBaseFrags[0] = (HomeFragment) retFragment;
+                    retFragment = new ZujiFragment();
+                    mainBaseFrags[0] = (ZujiFragment) retFragment;
                     break;
                 case 1:
                     retFragment = new CircleFragment();
