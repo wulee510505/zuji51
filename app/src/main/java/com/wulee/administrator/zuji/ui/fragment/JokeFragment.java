@@ -20,8 +20,8 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.FunPicAdapter;
 import com.wulee.administrator.zuji.adapter.JokeAdapter;
 import com.wulee.administrator.zuji.entity.FunPicInfo;
-import com.wulee.administrator.zuji.entity.FunPicUrl;
 import com.wulee.administrator.zuji.entity.JokeInfo;
+import com.wulee.administrator.zuji.entity.JokeUrl;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -142,13 +142,13 @@ public class JokeFragment extends MainBaseFrag {
 
     private String getJokeText() {
         final String[] defUrl = {""};
-        BmobQuery<FunPicUrl> query = new BmobQuery<>();
-        query.findObjects(new FindListener<FunPicUrl>() {
+        BmobQuery<JokeUrl> query = new BmobQuery<>();
+        query.findObjects(new FindListener<JokeUrl>() {
             @Override
-            public void done(List<FunPicUrl> list, BmobException e) {
+            public void done(List<JokeUrl> list, BmobException e) {
                 if (e == null) {
                     if (list != null && list.size() > 0) {
-                        String url = list.get(1).getUrl();
+                        String url = list.get(0).getUrl();
                         if (!TextUtils.isEmpty(url))
                             defUrl[0] = url;
 
@@ -165,13 +165,13 @@ public class JokeFragment extends MainBaseFrag {
 
     private String getJokePic() {
         final String[] defUrl = {""};
-        BmobQuery<FunPicUrl> query = new BmobQuery<>();
-        query.findObjects(new FindListener<FunPicUrl>() {
+        BmobQuery<JokeUrl> query = new BmobQuery<>();
+        query.findObjects(new FindListener<JokeUrl>() {
             @Override
-            public void done(List<FunPicUrl> list, BmobException e) {
+            public void done(List<JokeUrl> list, BmobException e) {
                 if (e == null) {
                     if (list != null && list.size() > 0) {
-                        String url = list.get(2).getUrl();
+                        String url = list.get(1).getUrl();
                         if (!TextUtils.isEmpty(url))
                             defUrl[0] = url;
 

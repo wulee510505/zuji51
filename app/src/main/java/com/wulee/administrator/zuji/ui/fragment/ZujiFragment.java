@@ -8,11 +8,9 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,6 +29,7 @@ import com.wulee.administrator.zuji.service.UploadLocationService;
 import com.wulee.administrator.zuji.ui.FunPicActivity;
 import com.wulee.administrator.zuji.ui.MapActivity;
 import com.wulee.administrator.zuji.ui.StepActivity;
+import com.wulee.administrator.zuji.ui.ZuJiMapActivity;
 import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
 import com.wulee.administrator.zuji.utils.GlideImageLoader;
 import com.wulee.administrator.zuji.utils.LocationUtil;
@@ -53,10 +52,12 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 
+import static com.wulee.administrator.zuji.ui.MainNewActivity.OpenLeftMenu;
+
 /**
  * Created by wulee on 2017/9/6 09:52
  */
-public class HomeFragment extends MainBaseFrag{
+public class ZujiFragment extends MainBaseFrag{
 
     private View mRootView;
 
@@ -66,7 +67,6 @@ public class HomeFragment extends MainBaseFrag{
     private LocationAdapter mAdapter;
 
     private BaseTitleLayout titleLayout;
-    private DrawerLayout mDrawerLayout;
 
     private Context mContext;
 
@@ -139,12 +139,12 @@ public class HomeFragment extends MainBaseFrag{
             @Override
             public void onLeftClickListener() {
                 super.onLeftClickListener();
-
+                OpenLeftMenu();
             }
-
             @Override
             public void onRightImg1ClickListener() {
                 super.onRightImg1ClickListener();
+                startActivity(new Intent(mContext, ZuJiMapActivity.class));
             }
         });
         mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
@@ -210,10 +210,6 @@ public class HomeFragment extends MainBaseFrag{
 
     private void initView(View view) {
         titleLayout = (BaseTitleLayout) view.findViewById(R.id.titlelayout);
-
-        mDrawerLayout = (DrawerLayout)view.findViewById(R.id.id_drawerLayout);
-        mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, Gravity.RIGHT);
-        mDrawerLayout.setScrimColor(0x00000000);
 
         menuBtns = (AnimArcButtons) view.findViewById(R.id.arc_menu_button);
 

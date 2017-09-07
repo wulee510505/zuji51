@@ -49,7 +49,7 @@
         <item name="android:layout_height">match_parent</item>
         <item name="android:paddingLeft">0dip</item>
         <item name="android:paddingRight">0dip</item>
-        <item name="android:paddingTop">0dip</item>
+        <item name="android:paddingTop">2dip</item>
         <item name="android:paddingBottom">3dip</item>
         <item name="android:gravity">bottom|center_horizontal</item>
         <item name="android:layout_weight">1.0</item>

@@ -35,25 +35,25 @@
             <RadioButton
                 android:id="@+id/mnc_rbnt_one"
                 style="@style/main_tabs_radiobtn"
-                android:background="@drawable/tab_home"
-                android:text="首页" />
+                android:drawableTop="@drawable/tab_zuji"
+                android:text="足迹" />
 
             <RadioButton
                 android:id="@+id/mnc_rbnt_two"
                 style="@style/main_tabs_radiobtn"
-                android:background="@drawable/tab_home"
+                android:drawableTop="@drawable/tab_circle"
                 android:text="圈子" />
 
             <RadioButton
                 android:id="@+id/mnc_rbnt_three"
                 style="@style/main_tabs_radiobtn"
-                android:background="@drawable/tab_home"
+                android:drawableTop="@drawable/tab_joke"
                 android:text="笑话" />
 
             <RadioButton
                 android:id="@+id/mnc_rbnt_four"
                 style="@style/main_tabs_radiobtn"
-                android:background="@drawable/tab_home"
+                android:drawableTop="@drawable/tab_news"
                 android:text="新闻" />
         </RadioGroup>
     </LinearLayout>
@@ -65,5 +65,7 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
+        app:itemTextColor="@drawable/nav_menu_text_color"
+        app:itemIconTint="@null"
         app:menu="@menu/menu_left" />
 </android.support.v4.widget.DrawerLayout>
