@@ -19,6 +19,7 @@ import com.huxq17.swipecardsview.SwipeCardsView;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.FunPicAdapter;
 import com.wulee.administrator.zuji.adapter.JokeAdapter;
+import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.FunPicInfo;
 import com.wulee.administrator.zuji.entity.JokeInfo;
 import com.wulee.administrator.zuji.entity.JokeUrl;
@@ -39,6 +40,8 @@ import cn.bmob.v3.listener.FindListener;
 import cn.finalteam.okhttpfinal.BaseHttpRequestCallback;
 import cn.finalteam.okhttpfinal.HttpRequest;
 import okhttp3.Headers;
+
+import static com.wulee.administrator.zuji.App.aCache;
 
 /**
  * Created by wulee on 2017/9/6 09:52
@@ -104,7 +107,8 @@ public class JokeFragment extends MainBaseFrag {
                 //请求网络前
                 @Override
                 public void onStart() {
-                    progressBar.setVisibility(View.VISIBLE);
+                    if(progressBar != null)
+                       progressBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
@@ -140,50 +144,69 @@ public class JokeFragment extends MainBaseFrag {
     };
 
 
-    private String getJokeText() {
-        final String[] defUrl = {""};
-        BmobQuery<JokeUrl> query = new BmobQuery<>();
-        query.findObjects(new FindListener<JokeUrl>() {
-            @Override
-            public void done(List<JokeUrl> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        String url = list.get(0).getUrl();
-                        if (!TextUtils.isEmpty(url))
-                            defUrl[0] = url;
+    private void  getJokeText() {
+        final Message msg = new Message();
 
-                        Message msg = new Message();
-                        msg.obj = defUrl[0];
+        final String[] jokeTextUrl = {""};
 
-                        mHandler.sendMessage(msg);
+        String saveUrl = aCache.getAsString(Constant.KEY_JOKE_TEXT_URL);
+        if(!TextUtils.isEmpty(saveUrl)){
+            jokeTextUrl[0] =  saveUrl;
+
+            msg.obj = jokeTextUrl[0];
+            mHandler.sendMessage(msg);
+        }else{
+            BmobQuery<JokeUrl> query = new BmobQuery<>();
+            query.findObjects(new FindListener<JokeUrl>() {
+                @Override
+                public void done(List<JokeUrl> list, BmobException e) {
+                    if (e == null) {
+                        if (list != null && list.size() > 0) {
+                            String url = list.get(0).getUrl();
+                            if (!TextUtils.isEmpty(url)){
+                                jokeTextUrl[0] = url;
+                                aCache.put(Constant.KEY_JOKE_TEXT_URL,url,Constant.JOKE_TEXT_OR_PIC_URL_SAVE_TIME);
+
+                                msg.obj = jokeTextUrl[0];
+                                mHandler.sendMessage(msg);
+                            }
+                        }
                     }
                 }
-            }
-        });
-        return defUrl[0];
+            });
+        }
     }
 
-    private String getJokePic() {
-        final String[] defUrl = {""};
-        BmobQuery<JokeUrl> query = new BmobQuery<>();
-        query.findObjects(new FindListener<JokeUrl>() {
-            @Override
-            public void done(List<JokeUrl> list, BmobException e) {
-                if (e == null) {
-                    if (list != null && list.size() > 0) {
-                        String url = list.get(1).getUrl();
-                        if (!TextUtils.isEmpty(url))
-                            defUrl[0] = url;
+    private void  getJokePic() {
+        final Message msg = new Message();
 
-                        Message msg = new Message();
-                        msg.obj = defUrl[0];
+        final String[] jokePicUrl = {""};
+        String saveUrl = aCache.getAsString(Constant.KEY_JOKE_PIC_URL);
+        if(!TextUtils.isEmpty(saveUrl)){
+            jokePicUrl[0] =  saveUrl;
 
-                        mHandler.sendMessage(msg);
+            msg.obj = jokePicUrl[0];
+            mHandler.sendMessage(msg);
+        }else{
+            BmobQuery<JokeUrl> query = new BmobQuery<>();
+            query.findObjects(new FindListener<JokeUrl>() {
+                @Override
+                public void done(List<JokeUrl> list, BmobException e) {
+                    if (e == null) {
+                        if (list != null && list.size() > 0) {
+                            String url = list.get(1).getUrl();
+                            if (!TextUtils.isEmpty(url)){
+                                jokePicUrl[0] = url;
+                                aCache.put(Constant.KEY_JOKE_PIC_URL,url,Constant.JOKE_TEXT_OR_PIC_URL_SAVE_TIME);
+
+                                msg.obj = jokePicUrl[0];
+                                mHandler.sendMessage(msg);
+                            }
+                        }
                     }
                 }
-            }
-        });
-        return defUrl[0];
+            });
+        }
     }
 
 
@@ -194,34 +217,60 @@ public class JokeFragment extends MainBaseFrag {
      * @return
      */
     private List<JokeInfo> jsonParse(String json) {
-        try {
-            List<JokeInfo> jokelist = new ArrayList<>();
-            JSONObject jsonObject = new JSONObject(json);
-            int errorCode = jsonObject.getInt("error_code");
-            if (errorCode == 0) {
-                JSONArray jsonArray = jsonObject.getJSONArray("result");
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JokeInfo joke = new JokeInfo();
-                    JSONObject picData = jsonArray.getJSONObject(i);
-                    String id = picData.getString("hashId");
-                    String content = picData.getString("content");
-                    String url = "";
-                    if(jokeType == TYPE_JOKE_PIC){
-                        url = picData.optString("url");
+        if(jokeType == TYPE_JOKE_PIC){
+            try {
+                List<JokeInfo> jokelist = new ArrayList<>();
+                JSONObject jsonObject = new JSONObject(json);
+                int errorCode = jsonObject.getInt("error_code");
+                if (errorCode == 0) {
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JokeInfo joke = new JokeInfo();
+                        JSONObject picData = jsonArray.getJSONObject(i);
+                        String id = picData.getString("hashId");
+                        String content = picData.getString("content");
+                        String url = picData.optString("url");
+
+                        joke.setHashId(id);
+                        joke.setContent(content);
+                        joke.setUrl(url);
+                        jokelist.add(joke);
                     }
-                    joke.setHashId(id);
-                    joke.setContent(content);
-                    joke.setUrl(url);
-                    jokelist.add(joke);
+                    return jokelist;
+                } else {
+                    Toast.makeText(mContext, "获取数据失败", Toast.LENGTH_SHORT).show();
                 }
-                return jokelist;
-            } else {
-                Toast.makeText(mContext, "获取数据失败", Toast.LENGTH_SHORT).show();
+            } catch (JSONException e) {
+                e.printStackTrace();
+                LogUtil.e("JsonParseActivity", "json解析出现了问题");
             }
-        } catch (JSONException e) {
-            e.printStackTrace();
-            LogUtil.e("JsonParseActivity", "json解析出现了问题");
+        }else  if(jokeType == TYPE_JOKE_TEXT){
+            try {
+                List<JokeInfo> jokelist = new ArrayList<>();
+                JSONObject jsonObject = new JSONObject(json);
+                int errorCode = jsonObject.getInt("error_code");
+                if (errorCode == 0) {
+                    JSONArray jsonArray = jsonObject.getJSONArray("result");
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JokeInfo joke = new JokeInfo();
+                        JSONObject picData = jsonArray.getJSONObject(i);
+                        String id = picData.getString("hashId");
+                        String content = picData.getString("content");
+
+                        joke.setHashId(id);
+                        joke.setContent(content);
+                        jokelist.add(joke);
+                    }
+                    return jokelist;
+                } else {
+                    Toast.makeText(mContext, "获取数据失败", Toast.LENGTH_SHORT).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+                LogUtil.e("JsonParseActivity", "json解析出现了问题");
+            }
         }
+
         return null;
     }
 
