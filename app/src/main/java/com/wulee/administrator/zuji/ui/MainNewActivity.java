@@ -3,6 +3,9 @@ package com.wulee.administrator.zuji.ui;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -32,6 +35,7 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.ui.fragment.CircleFragment;
 import com.wulee.administrator.zuji.ui.fragment.JokeFragment;
 import com.wulee.administrator.zuji.ui.fragment.MainBaseFrag;
@@ -42,12 +46,19 @@ import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.ConfigKey;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
+import com.wulee.administrator.zuji.utils.OtherUtil;
+import com.wulee.administrator.zuji.utils.PhoneUtil;
+import com.wulee.administrator.zuji.widget.CoolImageView;
+import com.zhouwei.blurlibrary.EasyBlur;
 
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.BmobUpdateListener;
+import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 import cn.bmob.v3.update.UpdateResponse;
 import cn.bmob.v3.update.UpdateStatus;
 
+import static cn.bmob.v3.BmobUser.getCurrentUser;
 import static com.wulee.administrator.zuji.App.aCache;
 
 /**
@@ -94,19 +105,79 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         }
         initSelectTab(pos);
         sendFragmentFirstSelectedMsg(pos);
+
+
+        long lastShowNoticeTime = 0L;
+        try {
+            String timeStr = aCache.getAsString(Constant.KEY_LAST_SHOW_NOTICE_TIME);
+            if(!TextUtils.isEmpty(timeStr)){
+                lastShowNoticeTime = Long.parseLong(timeStr);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        long interal = System.currentTimeMillis() - lastShowNoticeTime;
+        if(interal > Constant.SHOW_NOTICE_INTERVAL){
+            startActivity(new Intent(this,NoticeActivity.class));
+        }
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-
         initMenuHeaderInfo();
+
+        long lastUpdateCurrPersonInfoTime = 0L;
+        try {
+            String timeStr = aCache.getAsString(Constant.KEY_LAST_UPDATE_CURR_PERSONINFO_TIME);
+            if(!TextUtils.isEmpty(timeStr)){
+                lastUpdateCurrPersonInfoTime = Long.parseLong(timeStr);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        long interal = System.currentTimeMillis() - lastUpdateCurrPersonInfoTime;
+        if(interal > Constant.UPDATE_CURR_PERSONINFO_INTERVAL){
+            final PersonInfo personInfo = getCurrentUser(PersonInfo.class);
+            personInfo.update(new UpdateListener() {
+                @Override
+                public void done(BmobException e) {
+                    if(e == null){
+                        aCache.put(Constant.KEY_LAST_UPDATE_CURR_PERSONINFO_TIME,String.valueOf(System.currentTimeMillis()));
+                        personInfo.setMobile(DBHandler.getCurrPesonInfo().getMobile());
+                        DBHandler.insertPesonInfo(personInfo);
+                    }else{
+                        if(e.getErrorCode() == 206){
+                            OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
+                            aCache.put("has_login","no");
+                            LocationUtil.getInstance().stopGetLocation();
+                            AppUtils.AppExit(MainNewActivity.this);
+                            PersonInfo.logOut();
+                            startActivity(new Intent(MainNewActivity.this,LoginActivity.class));
+                        }
+                    }
+                }
+            });
+        }
     }
 
     @Override
     protected void onStart() {
         super.onStart();
-        BmobUpdateAgent.forceUpdate(this);
+       long lastCheckUpdateTime = 0L;
+        try {
+            String timeStr = aCache.getAsString(Constant.KEY_LAST_CHECK_UPDATE_TIME);
+            if(!TextUtils.isEmpty(timeStr)){
+                lastCheckUpdateTime = Long.parseLong(timeStr);
+            }
+        } catch (NumberFormatException e) {
+            e.printStackTrace();
+        }
+        long interal = System.currentTimeMillis() - lastCheckUpdateTime;
+        if(interal > Constant.CHECK_UPDATE_INTERVAL){
+            BmobUpdateAgent.forceUpdate(this);
+            aCache.put(Constant.KEY_LAST_CHECK_UPDATE_TIME,String.valueOf(System.currentTimeMillis()));
+        }
     }
 
     private void init() {
@@ -139,6 +210,17 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
         menuHeaderView = navigationView.inflateHeaderView(R.layout.nav_menu_header);
 
+        CoolImageView ivBg = (CoolImageView) menuHeaderView.findViewById(R.id.iv_menu_header_bg);
+        Drawable drawable = ivBg.getBackground();
+        BitmapDrawable bd = (BitmapDrawable) drawable;
+        Bitmap bm = bd.getBitmap();
+        Bitmap finalBitmap = EasyBlur.with(this)
+                .bitmap(bm) //要模糊的图片
+                .radius(50)//模糊半径
+                .scale(4)//指定模糊前缩小的倍数
+                .policy(EasyBlur.BlurPolicy.FAST_BLUR)//使用fastBlur
+                .blur();
+        ivBg.setImageBitmap(finalBitmap);
         ivHeader = (ImageView) menuHeaderView.findViewById(R.id.circle_img_header);
         mTvName = (TextView) menuHeaderView.findViewById(R.id.tv_name);
         mTvMobile = (TextView) menuHeaderView.findViewById(R.id.tv_mobile);
@@ -157,7 +239,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                 mTvName.setText(personalInfo.getName());
             else
                 mTvName.setText("游客");
-            mTvMobile.setText(personalInfo.getMobile());
+            mTvMobile.setText(PhoneUtil.encryptTelNum(personalInfo.getMobile()));
             ImageUtil.setCircleImageView(ivHeader,personalInfo.getHeader_img_url(),R.mipmap.icon_user_def,this);
         }
     }
@@ -295,6 +377,9 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
             showLogoutDialog();
         }else  if (id ==  R.id.item_pushmsg) {
             startActivity(new Intent(this,PushMsgListActivity.class));
+        }else  if (id ==  R.id.item_msg_board) {
+            PersonInfo personInfo = getCurrentUser(PersonInfo.class);
+            startActivity(new Intent(this,MessageBoardActivity.class).putExtra("piInfo",personInfo));
         }else  if (id ==  R.id.item_checkupdate) {
             BmobUpdateAgent.setUpdateListener(new BmobUpdateListener() {
                 @Override
@@ -423,4 +508,5 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         }
         return super.dispatchKeyEvent(event);
     }
+
 }

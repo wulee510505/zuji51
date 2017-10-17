@@ -104,6 +104,10 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.wulee.administrator.zuji.ui.UserInfoActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
         <activity android:name="com.wulee.administrator.zuji.ui.StepActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
@@ -117,14 +121,23 @@
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustPan" />
 
-        <activity android:name="com.wulee.administrator.zuji.ui.BigImageActivity"
+        <activity android:name="com.wulee.administrator.zuji.ui.BigSingleImgActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent"/>
 
+        <activity android:name="com.wulee.administrator.zuji.ui.BigMultiImgActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
         <activity android:name="com.wulee.administrator.zuji.ui.FunPicActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
+
+        <activity android:name="com.wulee.administrator.zuji.ui.NoticeActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:theme="@style/DialogActivity.Transparent2"/>
 
         <activity
             android:name="cn.bmob.v3.update.UpdateDialogActivity"
@@ -138,6 +151,11 @@
             android:name=".ui.pushmsg.MsgDetailActivity"
             android:configChanges="orientation|keyboardHidden" />
 
+
+        <activity android:name="com.wulee.administrator.zuji.ui.MessageBoardActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustPan" />
 
         <!-- 解决 Android N 7.0 上 报错：android.os.FileUriExposedException-->
         <provider
@@ -182,6 +200,7 @@
         <receiver android:name=".PushMsgReceiver">
             <intent-filter >
                 <action android:name="cn.bmob.push.action.MESSAGE"/>
+                <action android:name="action_hide_push_msg_notification"/>
             </intent-filter>
         </receiver>
 

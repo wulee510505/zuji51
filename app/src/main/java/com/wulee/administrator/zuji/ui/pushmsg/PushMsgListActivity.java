@@ -18,6 +18,8 @@ import com.wulee.administrator.zuji.database.bean.PushMessage;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.wulee.administrator.zuji.PushMsgReceiver.ACTION_HIDE_PUSH_MSG_NOTIFICATION;
+
 
 /**
  * Created by wulee on 2017/2/28 21:15
@@ -60,12 +62,12 @@ public class PushMsgListActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnRecyclerViewItemClickListener(new BaseQuickAdapter.OnRecyclerViewItemClickListener() {
+        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
             @Override
-            public void onItemClick(View view, int pos) {
+            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
                 List<PushMessage> dataList = mAdapter.getData();
                 if(null != dataList && dataList.size()>0){
-                    PushMessage msg = dataList.get(pos);
+                    PushMessage msg = dataList.get(position);
                     if(null != msg){
                         Intent intent = new Intent(PushMsgListActivity.this,MsgDetailActivity.class);
                         intent.putExtra("msg",msg);
@@ -77,6 +79,8 @@ public class PushMsgListActivity extends BaseActivity {
     }
 
     private void initData() {
+        sendBroadcast(new Intent(ACTION_HIDE_PUSH_MSG_NOTIFICATION));
+
         mPb.setVisibility(View.VISIBLE);
         List<PushMessage> list = DBHandler.getAllPushMessage();
         if(null != list && list.size()>0){
