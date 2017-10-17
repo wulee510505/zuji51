@@ -1,8 +1,10 @@
 package com.wulee.administrator.zuji.ui;
 
+import android.Manifest;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -17,25 +19,33 @@ import android.widget.Toast;
 
 import com.jph.takephoto.app.TakePhoto;
 import com.jph.takephoto.app.TakePhotoActivity;
+import com.jph.takephoto.model.CropOptions;
 import com.jph.takephoto.model.TResult;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
+import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.ActionSheet;
+import com.yanzhenjie.permission.AndPermission;
+import com.yanzhenjie.permission.PermissionListener;
 
 import java.io.File;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
+
+import static cn.bmob.v3.BmobUser.getCurrentUser;
+import static com.wulee.administrator.zuji.App.aCache;
 
 
 /**
@@ -90,7 +100,7 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
 
     private void initData() {
         title.setText("个人中心");
-        PersonInfo personInfo = DBHandler.getCurrPesonInfo();
+        PersonInfo personInfo =  DBHandler.getCurrPesonInfo();
         if (null != personInfo) {
             if (!TextUtils.isEmpty(personInfo.getName()))
                 etName.setText(personInfo.getName());
@@ -111,7 +121,7 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
         final String name = etName.getText().toString().trim();
         String genderStr = etGender.getText().toString().trim();
 
-        PersonInfo personInfo = BmobUser.getCurrentUser(PersonInfo.class);
+        PersonInfo personInfo = getCurrentUser(PersonInfo.class);
         personInfo.setName(name);
         personInfo.setSex(genderStr);
 
@@ -130,7 +140,16 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
                     }
                     OtherUtil.showToastText("更新个人信息成功");
                 } else {
-                    OtherUtil.showToastText("更新个人信息失败:" + e.getMessage());
+                    if(e.getErrorCode() == 206){
+                        OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
+                        aCache.put("has_login","no");
+                        LocationUtil.getInstance().stopGetLocation();
+                        AppUtils.AppExit(PersonalInfoActivity.this);
+                        PersonInfo.logOut();
+                        startActivity(new Intent(PersonalInfoActivity.this,LoginActivity.class));
+                    }else{
+                        OtherUtil.showToastText("更新个人信息失败:" + e.getMessage());
+                    }
                 }
             }
         });
@@ -194,7 +213,7 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
                 if (e == null) {
                     headerimgurl = bmobFile.getFileUrl();
 
-                    PersonInfo personInfo = BmobUser.getCurrentUser(PersonInfo.class);
+                    PersonInfo personInfo = getCurrentUser(PersonInfo.class);
                     personInfo.setHeader_img_url(headerimgurl);
                     personInfo.update(new UpdateListener() {
                         @Override
@@ -208,7 +227,16 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
                                 DBHandler.updatePesonInfo(piInfo);
                                 Toast.makeText(PersonalInfoActivity.this, "更新个人头像成功", Toast.LENGTH_SHORT).show();
                             } else {
-                                OtherUtil.showToastText("更新个人头像失败:" + e.getMessage());
+                                if(e.getErrorCode() == 206){
+                                    OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
+                                    aCache.put("has_login","no");
+                                    LocationUtil.getInstance().stopGetLocation();
+                                    AppUtils.AppExit(PersonalInfoActivity.this);
+                                    PersonInfo.logOut();
+                                    startActivity(new Intent(PersonalInfoActivity.this,LoginActivity.class));
+                                }else{
+                                    OtherUtil.showToastText("更新个人头像失败:" + e.getMessage());
+                                }
                             }
                         }
                     });
@@ -249,8 +277,27 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
                 intent.putExtra(PictureActivity.INTENT_KEY_COMPRESS_PHOTO_MAXPIXEL, 600);
                 startActivityForResult(intent, AVATAR_REQUEST_CODE);*/
 
-                TakePhoto takePhoto=getTakePhoto();
-                takePhoto.onPickFromGallery();
+
+                AndPermission.with(this)
+                    .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    .callback(new PermissionListener() {
+                        @Override
+                        public void onSucceed(int requestCode, List<String> grantedPermissions) {
+                            TakePhoto takePhoto = getTakePhoto();
+                            File file=new File(Constant.TEMP_FILE_PATH, "header_img" + ".jpg");
+                            if (!file.getParentFile().exists())file.getParentFile().mkdirs();
+                            Uri imageUri = Uri.fromFile(file);
+
+                            CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
+                            takePhoto.onPickFromGalleryWithCrop(imageUri,cropOptions);
+                        }
+                        @Override
+                        public void onFailed(int requestCode, List<String> deniedPermissions) {
+                            if(AndPermission.hasAlwaysDeniedPermission(PersonalInfoActivity.this,deniedPermissions))
+                                AndPermission.defaultSettingDialog(PersonalInfoActivity.this).show();
+                        }
+                    })
+                    .start();
                 break;
             case R.id.rl_gender:
                 ActionSheet menuView = new ActionSheet(this);

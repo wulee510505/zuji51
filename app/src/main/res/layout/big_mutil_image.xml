@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#000000">
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/viewpager_img"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_centerInParent="true" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:gravity="center">
+
+        <com.wulee.administrator.zuji.widget.BezierBannerDot
+            android:id="@+id/bd"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="20dp"
+            app:selectedColor="@android:color/white"
+            app:selectedRaduis="10dp"
+            app:spacing="20dp"
+            app:unSelectedColor="@android:color/darker_gray"
+            app:unSelectedRaduis="8dp" />
+    </LinearLayout>
+</RelativeLayout>
