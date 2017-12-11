@@ -90,11 +90,7 @@
         <attr name="rc_stroke_width" format="integer|dimension"/>
     </declare-styleable>
 
-    <declare-styleable name="BezierBannerDot">
-        <attr name="selectedColor" format="color"/>
-        <attr name="unSelectedColor" format="color"/>
-        <attr name="selectedRaduis" format="dimension"/>
-        <attr name="unSelectedRaduis" format="dimension"/>
-        <attr name="spacing" format="dimension"/>
+    <declare-styleable name="DotIndicator">
+        <attr name="distance" format="dimension" />
     </declare-styleable>
 </resources>

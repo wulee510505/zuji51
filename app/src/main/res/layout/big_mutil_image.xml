@@ -12,21 +12,13 @@
         android:layout_centerInParent="true" />
 
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <com.wulee.administrator.zuji.widget.DotIndicator
+        android:id="@+id/dot_indicator"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:gravity="center">
-
-        <com.wulee.administrator.zuji.widget.BezierBannerDot
-            android:id="@+id/bd"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:paddingBottom="20dp"
-            app:selectedColor="@android:color/white"
-            app:selectedRaduis="10dp"
-            app:spacing="20dp"
-            app:unSelectedColor="@android:color/darker_gray"
-            app:unSelectedRaduis="8dp" />
-    </LinearLayout>
+        android:layout_centerHorizontal="true"
+        android:gravity="center_vertical"
+        android:layout_marginBottom="40dp"
+        app:distance="8dp"/>
 </RelativeLayout>
