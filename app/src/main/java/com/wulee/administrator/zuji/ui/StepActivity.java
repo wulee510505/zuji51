@@ -102,12 +102,7 @@ public class StepActivity extends BaseActivity {
     }
 
     private void addListener() {
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                queryStepRankList();
-            }
-        });
+        swipeLayout.setOnRefreshListener(() -> queryStepRankList());
     }
 
     private void queryStepRankList() {
@@ -260,18 +255,15 @@ public class StepActivity extends BaseActivity {
 
 
     @Override
-    protected void onPause() {
-        super.onPause();
-        pedometer.unRegister();
-    }
-
-
-    @Override
     protected void onDestroy() {
         super.onDestroy();
         if(mReceiver != null){
             unregisterReceiver(mReceiver);
             mReceiver = null;
+        }
+        if(pedometer != null){
+            pedometer.unRegister();
+            pedometer = null;
         }
     }
 }

@@ -14,6 +14,7 @@ import android.view.animation.ScaleAnimation;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.entity.Constant;
@@ -22,11 +23,15 @@ import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.FadeInTextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
+import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+import cn.bmob.v3.listener.QueryListener;
 
 import static com.wulee.administrator.zuji.App.aCache;
 
@@ -61,7 +66,21 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         mFadeInTextView.setDuration(150);
 
         initData();
+        syncServerDate();
+    }
 
+    private void syncServerDate() {
+        Bmob.getServerTime(new QueryListener<Long>() {
+            @Override
+            public void done(Long time, BmobException e) {
+                if(e == null){
+                    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+                    final String date = formatter.format(new Date(time * 1000L));
+                    LogUtil.i("bmob","当前服务器时间为:" + date);
+                    aCache.put(Constant.KEY_CURR_SERVER_TIME,date);
+                }
+            }
+        });
     }
 
     private void initData() {
@@ -77,10 +96,11 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
                 public void done(List<SplashPic> list, BmobException e) {
                     if(e == null){
                         if(list != null && list.size()>0){
-                            SplashPic picInfo = list.get(0);
-                            if(null != picInfo && !TextUtils.isEmpty(picInfo.getUrl())){
-                                ImageUtil.setDefaultImageView(ivSplash,picInfo.getUrl(),R.mipmap.bg_wellcome,SplashActivity.this);
-                                aCache.put(Constant.KEY_SPLASH_PIC_URL,picInfo.getUrl(),Constant.SPLASH_PIC_URL_SAVE_TIME);
+                            int index = (int)( Math.random()* (3)) ; //生成 0、1、2 随机数
+                            SplashPic splashPic = list.get(index);
+                            if(null != splashPic && !TextUtils.isEmpty(splashPic.getUrl())){
+                                ImageUtil.setDefaultImageView(ivSplash,splashPic.getUrl(),R.mipmap.bg_wellcome,SplashActivity.this);
+                                aCache.put(Constant.KEY_SPLASH_PIC_URL,splashPic.getUrl(),Constant.SPLASH_PIC_URL_SAVE_TIME);
                             }
                         }
                     }
@@ -115,12 +135,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
             public void onAnimationEnd(Animation animation) {
                 mFadeInTextView
                         .setTextString("一款可以记录并查看出行轨迹的工具类软件")
-                        .setTextAnimationListener(new FadeInTextView.TextAnimationListener() {
-                            @Override
-                            public void animationFinish() {
-                                startActivity();
-                            }
-                        });
+                        .setTextAnimationListener(() -> startActivity());
                 mFadeInTextView.startFadeInAnimation();
             }
         });

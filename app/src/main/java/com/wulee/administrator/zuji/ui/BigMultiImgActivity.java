@@ -13,7 +13,7 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.UIUtils;
-import com.wulee.administrator.zuji.widget.BezierBannerDot;
+import com.wulee.administrator.zuji.widget.DotIndicator;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,11 +27,12 @@ public class BigMultiImgActivity extends BaseActivity {
 
     @InjectView(R.id.viewpager_img)
     ViewPager viewpagerImg;
-    @InjectView(R.id.bd)
-    BezierBannerDot bd;
+    @InjectView(R.id.dot_indicator)
+    DotIndicator dotIndicator;
 
     public static final String IMAGES_URL = "images_url";
     public static final String IMAGE_INDEX = "image_index";
+
 
     private String[] imgUrls;
     private int index;
@@ -47,6 +48,7 @@ public class BigMultiImgActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         initData();
+        initBottomNavView();
     }
 
     private void initData() {
@@ -55,10 +57,17 @@ public class BigMultiImgActivity extends BaseActivity {
         mAdapter = new BigImgPagerAdapter(imgUrls);
         viewpagerImg.setAdapter(mAdapter);
 
-        if(imgUrls != null && imgUrls.length > 1){
-            bd.attachToViewpager(viewpagerImg);
+        if(imgUrls != null && imgUrls.length>1){
+            dotIndicator.setViewPager(viewpagerImg);
         }
         viewpagerImg.setCurrentItem(index);
+    }
+
+    /*
+     * 初始化底端导航显示内容
+	 */
+    private void initBottomNavView() {
+
     }
 
     @Override
@@ -88,7 +97,7 @@ public class BigMultiImgActivity extends BaseActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             View view = LayoutInflater.from(BigMultiImgActivity.this).inflate(R.layout.big_single_image, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.iv_bigimg);
+            ImageView imageView = view.findViewById(R.id.iv_bigimg);
 
             int sw = UIUtils.getScreenWidthAndHeight(BigMultiImgActivity.this)[0];
             RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
