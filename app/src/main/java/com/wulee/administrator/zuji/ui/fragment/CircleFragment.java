@@ -35,6 +35,7 @@ import com.wulee.administrator.zuji.ui.LoginActivity;
 import com.wulee.administrator.zuji.ui.PersonalInfoActivity;
 import com.wulee.administrator.zuji.ui.PublishCircleActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
+import com.wulee.administrator.zuji.utils.FileProvider7;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
@@ -122,20 +123,16 @@ public class CircleFragment extends MainBaseFrag {
 
     private void initView() {
         View headerView = LayoutInflater.from(mContext).inflate(R.layout.circle_list_header, null);
-        ivHeaderBg = (AppCompatImageView) headerView.findViewById(R.id.iv_header_bg);
-        ivHeaderBg.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View view) {
-                TakePhoto takePhoto = getTakePhoto();
-                File file = new File(Constant.TEMP_FILE_PATH, "circle_header_bg" + ".jpg");
-                if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-                Uri imageUri = Uri.fromFile(file);
+        ivHeaderBg =  headerView.findViewById(R.id.iv_header_bg);
+        ivHeaderBg.setOnLongClickListener(view -> {
+            TakePhoto takePhoto = getTakePhoto();
+            File file = new File(Constant.TEMP_FILE_PATH, "circle_header_bg" + ".jpg");
+            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
+            Uri imageUri =  FileProvider7.getUriForFile(mContext, file);
+            CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
+            takePhoto.onPickFromGalleryWithCrop(imageUri, cropOptions);
 
-                CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
-                takePhoto.onPickFromGalleryWithCrop(imageUri, cropOptions);
-
-                return false;
-            }
+            return false;
         });
 
         ImageView ivUserAvatar = headerView.findViewById(R.id.userAvatar);
@@ -289,8 +286,9 @@ public class CircleFragment extends MainBaseFrag {
             @Override
             public void done(List<CircleContent> list, BmobException e) {
                 stopProgressDialog();
-                if (swipeLayout != null && swipeLayout.isRefreshing())
+                if (swipeLayout != null && swipeLayout.isRefreshing()){
                     swipeLayout.setRefreshing(false);
+                }
                 if (e == null) {
                     curPage++;
                     if (isRefresh) {//下拉刷新需清理缓存
