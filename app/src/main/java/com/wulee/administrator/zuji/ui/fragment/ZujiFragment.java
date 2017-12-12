@@ -3,7 +3,6 @@ package com.wulee.administrator.zuji.ui.fragment;
 import android.Manifest;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.os.Bundle;
@@ -141,8 +140,6 @@ public class ZujiFragment extends MainBaseFrag{
         DaemonEnv.startServiceMayBind(UploadLocationService.class);
         mContext.startService(new Intent(mContext,ScreenService.class));
 
-        getLocationList(0, STATE_REFRESH);
-
         mHandler.postDelayed(mRunnable,1000);
 
         BmobUpdateAgent.forceUpdate(mContext);
@@ -277,43 +274,40 @@ public class ZujiFragment extends MainBaseFrag{
         AlertDialog.Builder builder = new AlertDialog.Builder(mContext);
         builder.setTitle("提示");
         builder.setMessage("确定要删除吗？");
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                final List<LocationInfo> dataList = mAdapter.getData();
-                String objectId = null;
-                if(dataList != null && dataList.size()>0){
-                    LocationInfo locationInfo = dataList.get(pos);
-                    objectId = locationInfo.getObjectId();
-                }
-                final LocationInfo location = new LocationInfo();
-                location.setObjectId(objectId);
-                final String finalObjectId = objectId;
-
-                showProgressDialog(getActivity(),false);
-                location.delete(new UpdateListener() {
-                    @Override
-                    public void done(BmobException e) {
-                        stopProgressDialog();
-                        if(e == null){
-                            List<LocationInfo> list =  dataList;
-                            Iterator<LocationInfo> iter = list.iterator();
-                            while(iter.hasNext()){
-                                LocationInfo locationBean = iter.next();
-                                if(locationBean.equals(finalObjectId)){
-                                    iter.remove();
-                                    break;
-                                }
-                            }
-                            isRefresh = true;
-                            getLocationList(0, STATE_REFRESH);
-                            Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
-                        }else{
-                            Toast.makeText(mContext, "删除失败："+e.getMessage()+","+e.getErrorCode(), Toast.LENGTH_SHORT).show();
-                        }
-                    }
-                });
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            final List<LocationInfo> dataList = mAdapter.getData();
+            String objectId = null;
+            if(dataList != null && dataList.size()>0){
+                LocationInfo locationInfo = dataList.get(pos);
+                objectId = locationInfo.getObjectId();
             }
+            final LocationInfo location = new LocationInfo();
+            location.setObjectId(objectId);
+            final String finalObjectId = objectId;
+
+            showProgressDialog(getActivity(),false);
+            location.delete(new UpdateListener() {
+                @Override
+                public void done(BmobException e) {
+                    stopProgressDialog();
+                    if(e == null){
+                        List<LocationInfo> list =  dataList;
+                        Iterator<LocationInfo> iter = list.iterator();
+                        while(iter.hasNext()){
+                            LocationInfo locationBean = iter.next();
+                            if(locationBean.equals(finalObjectId)){
+                                iter.remove();
+                                break;
+                            }
+                        }
+                        isRefresh = true;
+                        getLocationList(0, STATE_REFRESH);
+                        Toast.makeText(mContext, "删除成功", Toast.LENGTH_SHORT).show();
+                    }else{
+                        Toast.makeText(mContext, "删除失败："+e.getMessage()+","+e.getErrorCode(), Toast.LENGTH_SHORT).show();
+                    }
+                }
+            });
         });
         builder.setNegativeButton("取消", null);
         builder.create().show();
@@ -351,7 +345,10 @@ public class ZujiFragment extends MainBaseFrag{
         query.findObjects(new FindListener<LocationInfo>() {
             @Override
             public void done(List<LocationInfo> dataList, BmobException e) {
-                swipeLayout.setRefreshing(false);
+                stopProgressDialog();
+                if (swipeLayout != null && swipeLayout.isRefreshing()){
+                    swipeLayout.setRefreshing(false);
+                }
                 if(e == null){
                     curPage++;
                     if (isRefresh){//下拉刷新需清理缓存
@@ -376,6 +373,8 @@ public class ZujiFragment extends MainBaseFrag{
 
     @Override
     public void onFragmentFirstSelected() {
+        showProgressDialog(getActivity(),false);
+        getLocationList(0, STATE_REFRESH);
     }
 
     public class LocationChangeReceiver extends BroadcastReceiver {

@@ -63,7 +63,7 @@ public class MessageBoardActivity extends BaseActivity {
     Button btnSubmitMessage;
     @InjectView(R.id.btn_record)
     RecordVoiceButton btnRecord;
-    LinearLayout llBottom;
+    LinearLayout llOpt;
 
     private MessageAdapter mAdapter;
     private ArrayList<MessageInfo> messageList = new ArrayList<>();
@@ -81,7 +81,7 @@ public class MessageBoardActivity extends BaseActivity {
         ButterKnife.inject(this);
 
 
-        llBottom = findViewById(R.id.llayout_bottom);
+        llOpt = findViewById(R.id.llayout_opt);
         piInfo = (PersonInfo) getIntent().getSerializableExtra("piInfo");
         currPiInfo = PersonInfo.getCurrentUser(PersonInfo.class);
 
@@ -98,12 +98,9 @@ public class MessageBoardActivity extends BaseActivity {
                 finish();
             }
         });
-        swipeLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                isRefresh = true;
-                getMessageList();
-            }
+        swipeLayout.setOnRefreshListener(() -> {
+            isRefresh = true;
+            getMessageList();
         });
     }
 
@@ -112,9 +109,9 @@ public class MessageBoardActivity extends BaseActivity {
 
         String mobile = aCache.getAsString(ConfigKey.KEY_CURR_LOGIN_MOBILE);
         if (TextUtils.equals(piInfo.getUsername(), mobile)) {
-            llBottom.setVisibility(View.GONE);
+            llOpt.setVisibility(View.GONE);
         } else {
-            llBottom.setVisibility(View.VISIBLE);
+            llOpt.setVisibility(View.VISIBLE);
         }
         btnRecord.setAudioSavePath(Constant.SAVE_AUDIO);
         AndPermission.with(this)
@@ -270,5 +267,11 @@ public class MessageBoardActivity extends BaseActivity {
                 showMessageDialog();
                 break;
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        mAdapter.stopPlayAudio();
     }
 }
