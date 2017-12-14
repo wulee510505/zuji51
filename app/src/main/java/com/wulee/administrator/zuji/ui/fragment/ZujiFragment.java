@@ -1,6 +1,7 @@
 package com.wulee.administrator.zuji.ui.fragment;
 
 import android.Manifest;
+import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
@@ -55,8 +56,6 @@ import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
-
-import static com.wulee.administrator.zuji.ui.MainNewActivity.OpenLeftMenu;
 
 /**
  * Created by wulee on 2017/9/6 09:52
@@ -164,7 +163,9 @@ public class ZujiFragment extends MainBaseFrag{
             @Override
             public void onLeftClickListener() {
                 super.onLeftClickListener();
-                OpenLeftMenu();
+                if(mListener != null){
+                    mListener.OpenLeftMenu();
+                }
             }
             @Override
             public void onRightImg1ClickListener() {
@@ -413,5 +414,19 @@ public class ZujiFragment extends MainBaseFrag{
         super.onStop();
         //结束轮播
         bannerLayout.stopAutoPlay();
+    }
+
+    public OnMenuBtnClickListener mListener;
+    public  interface OnMenuBtnClickListener{
+        //打开侧栏
+        void OpenLeftMenu();
+    }
+
+    @Override
+    public void onAttach(Activity activity) {
+        super.onAttach(activity);
+        if(activity instanceof OnMenuBtnClickListener){
+            mListener = ((OnMenuBtnClickListener)activity);
+        }
     }
 }
