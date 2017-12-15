@@ -3,6 +3,7 @@ package com.wulee.administrator.zuji;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDexApplication;
+
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 import com.squareup.leakcanary.LeakCanary;
@@ -19,7 +20,6 @@ import com.xdandroid.hellodaemon.DaemonEnv;
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
-import cn.bmob.v3.BmobInstallation;
 import cn.bmob.v3.statistics.AppStat;
 import cn.finalteam.okhttpfinal.OkHttpFinal;
 import cn.finalteam.okhttpfinal.OkHttpFinalConfiguration;
@@ -94,7 +94,7 @@ public class App extends MultiDexApplication {
         Bmob.initialize(config);
         AppStat.i(BOMB_APP_ID, "",true);//统计初始化
         // 使用推送服务时的初始化操作
-        BmobInstallation.getCurrentInstallation().save();
+        //BmobInstallation.getCurrentInstallation().save();
         // 启动推送服务
         BmobPush.startWork(this);
     }
