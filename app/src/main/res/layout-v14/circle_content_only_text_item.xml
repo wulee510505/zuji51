@@ -30,10 +30,9 @@
         </com.wulee.administrator.zuji.widget.RCRelativeLayout>
 
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
             android:layout_marginLeft="15dp">
 
             <TextView
@@ -41,7 +40,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="AAAAAAA"
+                android:text="AAAAAAAAAAAAAA"
                 android:textColor="@android:color/black"
                 android:textSize="18sp" />
 
@@ -50,11 +49,11 @@
                 android:id="@+id/circle_content"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
-                android:layout_marginBottom="6dp"
+                android:layout_below="@id/userNick"
+                android:layout_margin="6dp"
                 android:textColor="@color/ctv_black_2"
                 android:textSize="@dimen/com_tv_size_mid_lit"
-                android:text="内容内容内容"
+                android:text="内容"
                 android:lineSpacingMultiplier="1.2"
                 android:lineSpacingExtra="2dp" />
 
@@ -62,7 +61,8 @@
                 android:id="@+id/rl_location_and_time"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp">
+                android:layout_marginTop="6dp"
+                android:layout_below="@id/circle_content">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -95,7 +95,7 @@
                             android:textColor="@color/baseGrayNor"
                             android:textSize="12sp" />
 
-                        <android.support.v4.widget.Space
+                        <Space
                             android:layout_width="20dp"
                             android:layout_height="wrap_content" />
 
@@ -125,6 +125,7 @@
                 android:id="@+id/album_toolbar"
                 android:layout_width="150dp"
                 android:layout_height="35dp"
+                android:layout_below="@id/circle_content"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="30dp"
                 android:layout_marginTop="4dp"
@@ -187,6 +188,7 @@
                 android:id="@+id/tv_likes"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/rl_location_and_time"
                 android:layout_marginTop="8dp"
                 android:drawableLeft="@mipmap/icon_like_light"
                 android:drawablePadding="4dp"
@@ -198,11 +200,12 @@
                 android:id="@+id/lv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_below="@id/tv_likes"
                 android:layout_marginTop="8dp"
                 android:scrollbars="none"
                 android:overScrollMode="never"/>
 
-        </LinearLayout>
+        </RelativeLayout>
 
     </LinearLayout>
 
