@@ -1,5 +1,6 @@
 package com.wulee.administrator.zuji.ui;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -14,6 +15,9 @@ import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.UIUtils;
 import com.wulee.administrator.zuji.widget.DotIndicator;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -34,11 +38,12 @@ public class BigMultiImgActivity extends BaseActivity {
     public static final String IMAGE_INDEX = "image_index";
 
 
-    private String[] imgUrls;
+    private String[] imgUrlsArray;
+    private List<String> imgUrls;
     private int index;
 
-
     private BigImgPagerAdapter mAdapter;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,19 +53,42 @@ public class BigMultiImgActivity extends BaseActivity {
         ButterKnife.inject(this);
 
         initData();
+        addListener();
         initBottomNavView();
     }
 
     private void initData() {
-        imgUrls = getIntent().getStringArrayExtra(IMAGES_URL);
-        index = getIntent().getIntExtra(IMAGE_INDEX, 0);
+        Intent intent = getIntent();
+        imgUrlsArray = intent.getStringArrayExtra(IMAGES_URL);
+        index = intent.getIntExtra(IMAGE_INDEX, 0);
+
         mAdapter = new BigImgPagerAdapter(imgUrls);
         viewpagerImg.setAdapter(mAdapter);
 
-        if(imgUrls != null && imgUrls.length>1){
-            dotIndicator.setViewPager(viewpagerImg);
+        if (imgUrlsArray != null && imgUrlsArray.length > 0) {
+            imgUrls = new ArrayList<>();
+            for (int i = 0; i < imgUrlsArray.length; i++) {
+                imgUrls.add(imgUrlsArray[i]);
+            }
+            mAdapter.setmImgUrls(imgUrls);
+            if(imgUrlsArray.length > 1){
+                dotIndicator.setViewPager(viewpagerImg);
+            }
         }
         viewpagerImg.setCurrentItem(index);
+
+
+    }
+
+    private void addListener() {
+        viewpagerImg.addOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
+            @Override
+            public void onPageSelected(int position) {
+                super.onPageSelected(position);
+                index = position;
+                dotIndicator.onPageSelected(position);
+            }
+        });
     }
 
     /*
@@ -78,15 +106,19 @@ public class BigMultiImgActivity extends BaseActivity {
 
     public class BigImgPagerAdapter extends PagerAdapter {
 
-        private String[] imgUrlArray;
+        private List<String> mImgUrls;
+        public BigImgPagerAdapter(List<String> imgUrls) {
+            this.mImgUrls = imgUrls;
+        }
 
-        public BigImgPagerAdapter(String[] imgUrlArray) {
-            this.imgUrlArray = imgUrlArray;
+        public void setmImgUrls(List<String> mImgUrls) {
+            this.mImgUrls = mImgUrls;
+            notifyDataSetChanged();
         }
 
         @Override
         public int getCount() {
-            return imgUrlArray != null ? imgUrlArray.length : 0;
+            return mImgUrls != null ? mImgUrls.size() : 0;
         }
 
         @Override
@@ -105,7 +137,7 @@ public class BigMultiImgActivity extends BaseActivity {
             rlp.height = sw * 3 / 2;
             imageView.setLayoutParams(rlp);
 
-            ImageUtil.setDefaultImageView(imageView, imgUrlArray[position], R.mipmap.bg_pic_def_rect, BigMultiImgActivity.this);
+            ImageUtil.setDefaultImageView(imageView, mImgUrls.get(position), R.mipmap.bg_pic_def_rect, BigMultiImgActivity.this);
             container.addView(view);
             return view;
         }
@@ -116,5 +148,8 @@ public class BigMultiImgActivity extends BaseActivity {
             container.removeView(rlLayout);
         }
 
+        public List<String> getmImgUrls() {
+            return mImgUrls;
+        }
     }
 }

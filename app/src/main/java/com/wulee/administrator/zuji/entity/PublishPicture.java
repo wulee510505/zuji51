@@ -1,10 +1,12 @@
 package com.wulee.administrator.zuji.entity;
 
+import java.io.Serializable;
+
 /**
  * Created by wulee on 2017/8/22 14:01
  */
 
-public class PublishPicture {
+public class PublishPicture implements Serializable{
 
     private int id;
     private String path;

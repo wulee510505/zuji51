@@ -106,19 +106,19 @@
                 android:layout_height="wrap_content"
                 android:text="积分："
                 android:textColor="@color/baseGrayNor"
-                android:textSize="14sp" />
+                android:textSize="18sp" />
 
             <TextView
                 android:id="@+id/tv_integral"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="2dp"
                 android:text="0"
                 android:singleLine="true"
                 android:ellipsize="end"
                 android:textColor="@color/colorAccent"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                android:textSize="20sp"
+                android:textStyle="italic|bold" />
         </LinearLayout>
 
 

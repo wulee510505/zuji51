@@ -143,7 +143,7 @@ public class App extends MultiDexApplication {
     }
 
     //释放广播接受者(建议在 最后一个 Activity 退出前调用)
-    public void destroyReceiver() {
+    private void destroyReceiver() {
         //移除里面的观察者
         netStateReceiver.removeObserver(netChangeObserver);
         //解注册广播接受者,
@@ -152,6 +152,14 @@ public class App extends MultiDexApplication {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+
+    @Override
+    public void onTerminate() {
+        // 程序终止的时候执行
+        super.onTerminate();
+        destroyReceiver();
     }
 
 }

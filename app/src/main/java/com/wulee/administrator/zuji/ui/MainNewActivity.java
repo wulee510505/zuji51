@@ -53,6 +53,7 @@ import com.wulee.administrator.zuji.ui.fragment.ZujiFragment;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.ConfigKey;
+import com.wulee.administrator.zuji.utils.HolidayUtil;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
@@ -144,6 +145,10 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         long interal = System.currentTimeMillis() - lastShowNoticeTime;
         if(interal > Constant.SHOW_NOTICE_INTERVAL){
             startActivity(new Intent(this,NoticeActivity.class));
+        }
+
+        if(HolidayUtil.isHoliday(new Date())){
+            startActivity(new Intent(this,FallingViewActivity.class).putExtra(FallingViewActivity.CURR_HOLIDAYS,HolidayUtil.getCurrHolidays()));
         }
     }
 
