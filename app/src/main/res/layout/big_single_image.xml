@@ -3,11 +3,12 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
+
     <com.wulee.administrator.zuji.widget.SuperImageView
         android:id="@+id/iv_bigimg"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:src="@mipmap/ic_launcher"/>
+        android:src="@mipmap/bg_pic_def_rect"/>
 
 </RelativeLayout>

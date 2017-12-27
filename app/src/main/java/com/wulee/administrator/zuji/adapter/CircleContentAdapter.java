@@ -32,6 +32,7 @@ import com.wulee.administrator.zuji.ui.PublishCircleActivity;
 import com.wulee.administrator.zuji.ui.UserInfoActivity;
 import com.wulee.administrator.zuji.utils.DateTimeUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
+import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.NoScrollListView;
 
 import java.util.ArrayList;
@@ -155,9 +156,9 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                     llLikeAndComment.setVisibility(View.GONE);
                     if(e == null){
                         mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
-                        LogUtil.i("zuji","喜欢成功");
+                        LogUtil.i("zuji","点赞成功");
                     }else{
-                        LogUtil.i("zuji","喜欢失败："+e.getMessage());
+                        OtherUtil.showToastText("点赞失败"+e.getMessage());
                     }
                 }
             });
@@ -277,7 +278,7 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                             mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
                             LogUtil.i("zuji","评论发表成功");
                         }else{
-                            LogUtil.i("zuji","评论失败："+e.getMessage());
+                            OtherUtil.showToastText("评论失败"+e.getMessage());
                         }
                     }
                 });

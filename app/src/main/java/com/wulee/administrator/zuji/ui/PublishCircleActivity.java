@@ -56,7 +56,6 @@ public class PublishCircleActivity extends TakePhotoActivity {
     @InjectView(R.id.titlelayout)
     BaseTitleLayout titlelayout;
 
-
     public static final String PUBLISH_TYPE = "publish_type";
 
     private int mType;
@@ -64,10 +63,12 @@ public class PublishCircleActivity extends TakePhotoActivity {
     public static final int TYPE_PUBLISH_TEXT_ONLY = 1;
 
     private PublishPicGridAdapter mGridAdapter;
-    private List<PublishPicture> picList = new ArrayList<>();
+    private ArrayList<PublishPicture> picList = new ArrayList<>();
     private int maxSelPicNum = 9;
 
     public static final String ACTION_PUBLISH_CIRCLE_OK  = "action_publish_circle_ok";
+
+    private String[] imgUrls;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,14 +136,16 @@ public class PublishCircleActivity extends TakePhotoActivity {
                     TakePhoto mTakePhoto = getTakePhoto();
 
                     CompressConfig config = new CompressConfig.Builder()
-                            .setMaxSize(102400) //100Kb
-                            .setMaxPixel(300)
+                            .setMaxSize(50 * 1024) //50Kb
+                            .setMaxPixel(800)
                             .create();
                     mTakePhoto.onEnableCompress(config, false);
                     mTakePhoto.onPickMultiple(maxSelPicNum - picList.size() + 1);
                 } else {
-                    Intent intent = new Intent(PublishCircleActivity.this, BigSingleImgActivity.class);
-                    intent.putExtra(BigSingleImgActivity.IMAGE_URL, pic.getPath());
+                    //预览大图
+                    Intent intent = new Intent(PublishCircleActivity.this, BigMultiImgActivity.class);
+                    intent.putExtra(BigMultiImgActivity.IMAGES_URL, imgUrls);
+                    intent.putExtra(BigMultiImgActivity.IMAGE_INDEX, pos);
                     startActivity(intent);
                 }
             }
@@ -176,6 +179,10 @@ public class PublishCircleActivity extends TakePhotoActivity {
             PublishPicture pic = picIter.next();
             if (pic.getId() == -1)
                 picIter.remove();
+        }
+        imgUrls = new String[picList.size()];
+        for (int i = 0; i < picList.size(); i++) {
+            imgUrls[i] = picList.get(i).getPath();
         }
         if (picList.size() < 9) {
             PublishPicture pic = new PublishPicture();
@@ -279,7 +286,6 @@ public class PublishCircleActivity extends TakePhotoActivity {
             });
         }
     }
-
 
     @Override
     protected void onDestroy() {

@@ -40,6 +40,8 @@ public class UserInfoActivity extends BaseActivity {
     Button btnMessageBoard;
     @InjectView(R.id.rl_circle)
     RelativeLayout rlCircle;
+    @InjectView(R.id.tv_birthday)
+    TextView tvBirthday;
 
     private PersonInfo personInfo;
 
@@ -57,6 +59,8 @@ public class UserInfoActivity extends BaseActivity {
         title.setText("个人中心");
         personInfo = (PersonInfo) getIntent().getSerializableExtra("piInfo");
         if (null != personInfo) {
+            ImageUtil.setCircleImageView(userPhoto, personInfo.getHeader_img_url(), R.mipmap.icon_user_def, this);
+
             if (!TextUtils.isEmpty(personInfo.getName()))
                 tvName.setText(personInfo.getName());
             else
@@ -67,12 +71,16 @@ public class UserInfoActivity extends BaseActivity {
             else
                 tvGender.setText("其他");
 
-            ImageUtil.setCircleImageView(userPhoto, personInfo.getHeader_img_url(), R.mipmap.icon_user_def, this);
+            if (!TextUtils.isEmpty(personInfo.getBirthday())){
+                tvBirthday.setText(personInfo.getBirthday());
+            } else {
+                tvBirthday.setText("未选择");
+            }
         }
     }
 
 
-    @OnClick({R.id.iv_back, R.id.btn_message_board,R.id.rl_circle})
+    @OnClick({R.id.iv_back, R.id.btn_message_board, R.id.rl_circle})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:

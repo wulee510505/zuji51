@@ -49,135 +49,187 @@
     </RelativeLayout>
 
 
-    <LinearLayout
-        android:id="@+id/container"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:layout_below="@id/titlelayout"
-        android:background="@null"
-        android:orientation="vertical">
+        android:overScrollMode="never"
+        android:scrollbars="none">
 
-
-        <RelativeLayout
+        <LinearLayout
+            android:id="@+id/container"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:contentDescription="@string/app_name">
+            android:layout_height="match_parent"
+            android:background="@null"
+            android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
+
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:text="头像"
-                android:textColor="@color/ctv_black_2"
-                android:textSize="@dimen/com_tv_size_middle" />
+                android:layout_marginTop="20dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:contentDescription="@string/app_name">
 
-            <com.wulee.administrator.zuji.widget.RCRelativeLayout
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                app:round_as_circle="true"
-                app:round_corner_bottom_right="0dp"
-                app:stroke_color="#cdcdcd"
-                app:rc_stroke_width="1dp">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="头像"
+                    android:textColor="@color/ctv_black_2"
+                    android:textSize="@dimen/com_tv_size_middle" />
 
-                <ImageView
-                    android:id="@+id/user_photo"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:contentDescription="@string/app_name"
-                    android:src="@mipmap/icon_user_def" />
-            </com.wulee.administrator.zuji.widget.RCRelativeLayout>
-        </RelativeLayout>
+                <com.wulee.administrator.zuji.widget.RCRelativeLayout
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    app:round_as_circle="true"
+                    app:round_corner_bottom_right="0dp"
+                    app:stroke_color="#cdcdcd"
+                    app:rc_stroke_width="1dp">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_margin="10dp"
-            android:background="@color/ctv_black_4" />
+                    <ImageView
+                        android:id="@+id/user_photo"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:contentDescription="@string/app_name"
+                        android:src="@mipmap/icon_user_def" />
+                </com.wulee.administrator.zuji.widget.RCRelativeLayout>
+            </RelativeLayout>
 
-        <RelativeLayout
-            android:id="@+id/rl_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="10dp">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/ctv_black_4" />
 
-            <TextView
-                android:id="@+id/name_tv"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/rl_name"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:text="姓名"
-                android:textColor="@color/ctv_black_2"
-                android:textSize="@dimen/com_tv_size_middle" />
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
 
-            <EditText
-                android:id="@+id/et_name"
-                android:layout_width="wrap_content"
+                <TextView
+                    android:id="@+id/name_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="姓名"
+                    android:textColor="@color/ctv_black_2"
+                    android:textSize="@dimen/com_tv_size_middle" />
+
+                <EditText
+                    android:id="@+id/et_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:background="@null"
+                    android:minWidth="120dp"
+                    android:textColor="@color/ctv_black_3"
+                    android:textSize="@dimen/com_tv_size_middle" />
+            </RelativeLayout>
+
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/ctv_black_4" />
+
+            <RelativeLayout
+                android:id="@+id/rl_gender"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:gravity="right"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:background="@null"
-                android:minWidth="120dp"
-                android:textColor="@color/ctv_black_3"
-                android:textSize="@dimen/com_tv_size_middle" />
-        </RelativeLayout>
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
+
+                <TextView
+                    android:id="@+id/gender_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="性别"
+                    android:textColor="@color/ctv_black_2"
+                    android:textSize="@dimen/com_tv_size_middle" />
+
+                <TextView
+                    android:id="@+id/et_gender"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/ctv_black_3"
+                    android:textSize="@dimen/com_tv_size_middle" />
+            </RelativeLayout>
 
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_margin="10dp"
-            android:background="@color/ctv_black_4" />
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@color/ctv_black_4" />
 
-        <RelativeLayout
-            android:id="@+id/rl_gender"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
-            android:layout_marginTop="10dp">
-
-            <TextView
-                android:id="@+id/gender_tv"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:id="@+id/rl_birthday"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerVertical="true"
-                android:focusable="true"
-                android:focusableInTouchMode="true"
-                android:text="性别"
-                android:textColor="@color/ctv_black_2"
-                android:textSize="@dimen/com_tv_size_middle" />
+                android:paddingTop="10dp"
+                android:paddingBottom="10dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp">
 
-            <TextView
-                android:id="@+id/et_gender"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="right"
-                android:layout_alignParentRight="true"
-                android:layout_centerVertical="true"
-                android:textColor="@color/ctv_black_3"
-                android:textSize="@dimen/com_tv_size_middle" />
-        </RelativeLayout>
+                <TextView
+                    android:id="@+id/birthday_tv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:text="生日"
+                    android:textColor="@color/ctv_black_2"
+                    android:textSize="@dimen/com_tv_size_middle" />
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:layout_marginTop="10dp"
-            android:background="@color/ctv_black_4" />
+                <TextView
+                    android:id="@+id/tv_birthday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="right"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:textColor="@color/ctv_black_3"
+                    android:textSize="@dimen/com_tv_size_middle" />
+            </RelativeLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_marginTop="10dp"
+                android:background="@color/ctv_black_4" />
 
 
-    </LinearLayout>
+        </LinearLayout>
+
+
+    </ScrollView>
 
 </RelativeLayout>
 
