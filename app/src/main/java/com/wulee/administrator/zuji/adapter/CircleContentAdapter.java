@@ -14,7 +14,6 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import com.bumptech.glide.Glide;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -32,20 +31,17 @@ import com.wulee.administrator.zuji.ui.PublishCircleActivity;
 import com.wulee.administrator.zuji.ui.UserInfoActivity;
 import com.wulee.administrator.zuji.utils.DateTimeUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
+import com.wulee.administrator.zuji.utils.NoFastClickUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.NoScrollListView;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
-
-
 
 
 public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleContent,BaseViewHolder> {
@@ -73,6 +69,9 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         }
 
         ivAvatar.setOnClickListener(view -> {
+            if(NoFastClickUtils.isFastClick()) {
+                return;
+            }
             if(null != piInfo){
                 Intent intent = null;
                 if(TextUtils.equals(piInfo.getUsername(),circleContent.personInfo.getUsername())){
