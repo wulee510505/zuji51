@@ -3,6 +3,8 @@ package com.wulee.administrator.zuji.utils;
 import android.content.ClipboardManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.text.TextUtils;
@@ -19,6 +21,7 @@ import com.wulee.administrator.zuji.R;
 import java.io.Closeable;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import java.util.regex.Pattern;
 
 import static com.wulee.administrator.zuji.App.aCache;
@@ -214,5 +217,24 @@ public class OtherUtil {
                     Log.i("ExternalStorage", "Scanned " + path + ":");
                     Log.i("ExternalStorage", "-> uri=" + uri);
                 });
+    }
+
+    /**
+     * 应用内多语言切换
+     * @param context
+     * @param language
+     */
+    public static void changeSystemLanguage(Context context, String language) {
+        if (context == null || TextUtils.isEmpty(language)) {
+            return;
+        }
+        Resources resources = context.getResources();
+        Configuration config = resources.getConfiguration();
+        if (Locale.SIMPLIFIED_CHINESE.getLanguage().equals(language)) {
+            config.locale = Locale.SIMPLIFIED_CHINESE;
+        } else {
+            config.locale = new Locale(language);
+        }
+        resources.updateConfiguration(config, null);
     }
 }

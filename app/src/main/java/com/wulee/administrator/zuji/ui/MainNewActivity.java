@@ -149,6 +149,8 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
         if(HolidayUtil.isHoliday(new Date())){
             startActivity(new Intent(this,FallingViewActivity.class).putExtra(FallingViewActivity.CURR_HOLIDAYS,HolidayUtil.getCurrHolidays()));
+        }else{
+            startActivity(new Intent(this,TodayInHistoryActivity.class));
         }
     }
 
