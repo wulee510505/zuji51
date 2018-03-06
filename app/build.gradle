@@ -4,9 +4,9 @@ android {
     signingConfigs {
         debug {
             keyAlias 'wlandroid'
-            keyPassword 'android'
-            storeFile file('F:/signePackage/wlandroid')
-            storePassword 'android'
+            keyPassword 'wlandroid'
+            storeFile file('D:/signePackage/wlandroid')
+            storePassword 'wlandroid'
         }
     }
     compileSdkVersion 26
@@ -15,8 +15,8 @@ android {
         applicationId "com.wulee.administrator.zuji"
         minSdkVersion 19
         targetSdkVersion 26
-        versionCode 26
-        versionName "1.4.4"
+        versionCode 27
+        versionName "1.4.5"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
 
         multiDexEnabled true
@@ -33,7 +33,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            signingConfig signingConfigs.debug
+            //signingConfig signingConfigs.debug
         }
     }
     useLibrary 'org.apache.http.legacy'
