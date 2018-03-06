@@ -198,8 +198,12 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
             lvComment.setVisibility(View.VISIBLE);
             for (int i = 0; i < commentList.size(); i++) {
                 CircleComment com = commentList.get(i);
-                name.add(com.getPersonInfo().getName());
-                toName.add(com.getCircleContent().personInfo.getName());
+                if(com.getPersonInfo()!=null ){
+                    name.add(com.getPersonInfo().getName());
+                }
+                if(com.getCircleContent().personInfo!=null){
+                    toName.add(com.getCircleContent().personInfo.getName());
+                }
                 comment.add(com.getContent());
             }
             CircleCommentAdapter commentAdapter = new CircleCommentAdapter(circleContent,name,toName,comment,mContext);
