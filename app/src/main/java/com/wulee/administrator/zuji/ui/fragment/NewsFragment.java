@@ -40,7 +40,6 @@ import cn.bmob.v3.listener.FindListener;
  */
 public class NewsFragment extends MainBaseFrag implements ViewPager.OnPageChangeListener{
 
-
     @InjectView(R.id.rl_title)
     RelativeLayout rlTitle;
     @InjectView(R.id.recycler_view)

@@ -68,6 +68,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import cn.bmob.newim.BmobIM;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -568,6 +569,8 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
             PersonInfo.logOut();
             startActivity(new Intent(MainNewActivity.this,LoginActivity.class));
             UploadLocationService.stopService();
+
+            BmobIM.getInstance().disConnect();//断开与IM服务器的连接
         });
         builder.setNegativeButton("取消", null);
         builder.create().show();
