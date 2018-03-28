@@ -8,7 +8,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
-import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,10 +17,10 @@ import com.facebook.stetho.common.LogUtil;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.UserGroupAdapter;
+import com.wulee.administrator.zuji.chatui.ui.activity.ChatMainActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.ui.NearUserActivity;
-import com.wulee.administrator.zuji.ui.PersonalInfoActivity;
-import com.wulee.administrator.zuji.ui.UserInfoActivity;
+import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.RecycleViewDivider;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
@@ -30,8 +29,11 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import cn.bmob.newim.BmobIM;
+import cn.bmob.newim.bean.BmobIMConversation;
+import cn.bmob.newim.bean.BmobIMUserInfo;
+import cn.bmob.newim.core.ConnectionStatus;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 
@@ -103,22 +105,11 @@ public class UserGroupFragment extends MainBaseFrag {
             if(null != piInfoList && piInfoList.size()>0){
                 PersonInfo personInfo = piInfoList.get(position);
                 if(null != personInfo){
-                    PersonInfo currPiInfo = BmobUser.getCurrentUser(PersonInfo.class);
-                    if(currPiInfo == null){
-                        return;
-                    }
-
-                    Intent intent;
-                    if(TextUtils.equals(currPiInfo.getUsername(),personInfo.getUsername())){
-                        intent = new Intent(mContext, PersonalInfoActivity.class);
-                    }else{
-                        intent = new Intent(mContext, UserInfoActivity.class);
-                        intent.putExtra("piInfo",personInfo);
-                    }
-                    startActivity(intent);
+                    chat(personInfo.getObjectId(),personInfo.getUsername(),personInfo.getHeader_img_url());
                 }
             }
         });
+
         swipeLayout.setOnRefreshListener(() -> {
             isRefresh = true;
             curPage = 0;
@@ -135,6 +126,24 @@ public class UserGroupFragment extends MainBaseFrag {
                startActivity(new Intent(mContext, NearUserActivity.class));
             }
         });
+    }
+
+    /**
+     * 与陌生人聊天
+     */
+    private void chat(String objectId,String name,String avatar) {
+        if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+            OtherUtil.showToastText("尚未连接IM服务器");
+            return;
+        }
+        Intent intent = new Intent(mContext,ChatMainActivity.class);
+        //创建一个常态会话入口，陌生人聊天
+        BmobIMUserInfo info  = new BmobIMUserInfo(objectId, name, avatar);
+        BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("c", conversationEntrance);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
+import com.huxq17.swipecardsview.LogUtil;
 import com.squareup.leakcanary.LeakCanary;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
@@ -17,6 +18,13 @@ import com.wulee.administrator.zuji.utils.network.NetStateReceiver;
 import com.wulee.administrator.zuji.utils.network.NetworkUtils;
 import com.xdandroid.hellodaemon.DaemonEnv;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+
+import cn.bmob.newim.BmobIM;
+import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.listener.ConnectStatusChangeListener;
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
@@ -59,6 +67,21 @@ public class App extends MultiDexApplication {
         initBmobSDK();
 
         Bmob.initialize(this,BOMB_APP_ID);
+
+        //初始化IM SDK，并注册消息接收器
+        if (getApplicationInfo().packageName.equals(getMyProcessName())){
+            BmobIM.init(this);
+            BmobIM.registerDefaultMessageHandler(new IMMessageHandler());
+        }
+
+        //监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态
+        BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
+            @Override
+            public void onChange(ConnectionStatus status) {
+                OtherUtil.showToastText(status.getMsg());
+                LogUtil.i(BmobIM.getInstance().getCurrentStatus().getMsg());
+            }
+        });
 
         Stetho.initializeWithDefaults(this);
 
@@ -162,4 +185,21 @@ public class App extends MultiDexApplication {
         destroyReceiver();
     }
 
+
+    /**
+     * 获取当前运行的进程名
+     * @return
+     */
+    public static String getMyProcessName() {
+        try {
+            File file = new File("/proc/" + android.os.Process.myPid() + "/" + "cmdline");
+            BufferedReader mBufferedReader = new BufferedReader(new FileReader(file));
+            String processName = mBufferedReader.readLine().trim();
+            mBufferedReader.close();
+            return processName;
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }
