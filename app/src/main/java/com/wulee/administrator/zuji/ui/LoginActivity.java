@@ -10,6 +10,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
@@ -134,10 +135,10 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 public void done(String uid, BmobException e) {
                     if (e == null) {
                         //连接成功
-                        toast("连接成功");
+                        LogUtil.i("连接成功");
                     } else {
                         //连接失败
-                        toast(e.getMessage());
+                        LogUtil.i("连接失败-----》"+ e.getMessage());
                     }
                 }
             });

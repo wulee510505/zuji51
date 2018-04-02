@@ -3,14 +3,20 @@ package com.wulee.administrator.zuji.adapter;
 import android.Manifest;
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.animation.GlideAnimation;
-import com.bumptech.glide.request.target.SimpleTarget;
+import com.bumptech.glide.request.Request;
+import com.bumptech.glide.request.target.SizeReadyCallback;
+import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.request.transition.Transition;
 import com.huxq17.swipecardsview.BaseCardAdapter;
 import com.wulee.administrator.zuji.App;
 import com.wulee.administrator.zuji.R;
@@ -61,13 +67,65 @@ public class FunPicAdapter extends BaseCardAdapter {
         String url = meizi.getUrl();
         //ImageUtil.setDefaultImageView(imageView,url,R.mipmap.bg_pic_def_rect,context);
         final Bitmap[] bmpSource = {null};
-        Glide.with(App.context).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+        Glide.with(App.context).load(url).into(new Target<Drawable>() {
             @Override
-            public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                bmpSource[0] = resource;
-                imageView.setImageBitmap(resource);
+            public void onLoadStarted(@Nullable Drawable drawable) {
+
+            }
+            @Override
+            public void onLoadFailed(@Nullable Drawable drawable) {
+
+            }
+
+            @Override
+            public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
+                BitmapDrawable bd = (BitmapDrawable) drawable;
+                bmpSource[0] = bd.getBitmap();
+                imageView.setImageBitmap( bd.getBitmap());
+            }
+
+            @Override
+            public void onLoadCleared(@Nullable Drawable drawable) {
+
+            }
+
+            @Override
+            public void getSize(@NonNull SizeReadyCallback sizeReadyCallback) {
+
+            }
+
+            @Override
+            public void removeCallback(@NonNull SizeReadyCallback sizeReadyCallback) {
+
+            }
+
+            @Override
+            public void setRequest(@Nullable Request request) {
+
+            }
+
+            @Nullable
+            @Override
+            public Request getRequest() {
+                return null;
+            }
+
+            @Override
+            public void onStart() {
+
+            }
+
+            @Override
+            public void onStop() {
+
+            }
+
+            @Override
+            public void onDestroy() {
+
             }
         });
+
 
         tvSave.setOnClickListener(new View.OnClickListener() {
             @Override

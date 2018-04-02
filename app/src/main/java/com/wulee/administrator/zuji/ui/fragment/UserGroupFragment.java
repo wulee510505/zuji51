@@ -105,7 +105,8 @@ public class UserGroupFragment extends MainBaseFrag {
             if(null != piInfoList && piInfoList.size()>0){
                 PersonInfo personInfo = piInfoList.get(position);
                 if(null != personInfo){
-                    chat(personInfo.getObjectId(),personInfo.getUsername(),personInfo.getHeader_img_url());
+
+                    //chat(personInfo.getObjectId(),personInfo.getUsername(),personInfo.getHeader_img_url());
                 }
             }
         });
