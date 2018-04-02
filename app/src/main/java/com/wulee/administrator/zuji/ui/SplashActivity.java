@@ -176,10 +176,10 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
                 public void done(String uid, BmobException e) {
                     if (e == null) {
                         //连接成功
-                        toast("连接成功");
+                        LogUtil.i("连接成功");
                     } else {
                         //连接失败
-                        toast(e.getMessage());
+                        LogUtil.i("连接失败-----》"+ e.getMessage());
                     }
                 }
             });

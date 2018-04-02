@@ -4,7 +4,7 @@
     android:layout_height="match_parent">
 
 
-    <com.wulee.administrator.zuji.widget.SuperImageView
+    <ImageView
         android:id="@+id/iv_bigimg"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

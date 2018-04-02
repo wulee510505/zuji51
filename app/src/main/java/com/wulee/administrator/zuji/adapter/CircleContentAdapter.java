@@ -14,7 +14,9 @@ import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.facebook.stetho.common.LogUtil;
@@ -34,9 +36,11 @@ import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.NoFastClickUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.NoScrollListView;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
@@ -217,9 +221,11 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                 NineGridImageViewAdapter<CircleContent.CircleImageBean> mAdapter = new NineGridImageViewAdapter<CircleContent.CircleImageBean>() {
                     @Override
                     protected void onDisplayImage(Context context, ImageView imageView, CircleContent.CircleImageBean img) {
+                        RequestOptions options = new RequestOptions()
+                                .placeholder(R.mipmap.bg_pic_def_rect);
                         Glide.with(context)
                                 .load(img.getUrl())
-                                .placeholder(R.mipmap.bg_pic_def_rect)
+                                .apply(options)
                                 .into(imageView);
                     }
                     @Override

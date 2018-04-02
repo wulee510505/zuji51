@@ -17,13 +17,11 @@ import android.graphics.drawable.Drawable;
 import android.media.ExifInterface;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.animation.ViewPropertyAnimation;
-import com.nineoldandroids.animation.ObjectAnimator;
+import com.bumptech.glide.request.RequestOptions;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
@@ -650,15 +648,10 @@ public class ImageUtil {
 	public static void setDefaultImageView(ImageView iv, String imgUrl, int defResId, Context context){
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
-			ViewPropertyAnimation.Animator anim = new ViewPropertyAnimation.Animator() {
-				@Override
-				public void animate(View view) {
-					ObjectAnimator fadeAnim = ObjectAnimator.ofFloat( view, "alpha", 0.5f, 1f );
-					fadeAnim.setDuration( 600 );
-					fadeAnim.start();
-				}
-			};
-			glideRequest.load(imgUrl).animate(anim).placeholder(defResId).centerCrop().into(iv);
+			RequestOptions options = new RequestOptions()
+					.centerCrop()
+					.placeholder(defResId);
+			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{
 			iv.setImageResource(defResId);
 		}
@@ -673,15 +666,11 @@ public class ImageUtil {
 	public static void setRoundImageView(ImageView iv, String imgUrl, int defResId, Context context){
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
-			ViewPropertyAnimation.Animator anim = new ViewPropertyAnimation.Animator() {
-				@Override
-				public void animate(View view) {
-					ObjectAnimator fadeAnim = ObjectAnimator.ofFloat( view, "alpha", 0.5f, 1f );
-					fadeAnim.setDuration( 600 );
-					fadeAnim.start();
-				}
-			};
-			glideRequest.load(imgUrl).animate(anim).placeholder(defResId).transform(new GlideRoundTransform(context, 10)).into(iv);
+			RequestOptions options = new RequestOptions()
+					.centerCrop()
+					.transforms(new GlideRoundTransform(context, 10))
+					.placeholder(defResId);
+			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{
 			iv.setImageResource(defResId);
 		}
@@ -693,12 +682,11 @@ public class ImageUtil {
 	public static void setCircleImageView(ImageView iv, String imgUrl, int defResId, Context context){
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
-			ViewPropertyAnimation.Animator anim = view -> {
-                ObjectAnimator fadeAnim = ObjectAnimator.ofFloat( view, "alpha", 0.5f, 1f );
-                fadeAnim.setDuration( 600 );
-                fadeAnim.start();
-            };
-			glideRequest.load(imgUrl).animate(anim).placeholder(defResId).transform(new GlideCircleTransform(context,0)).into(iv);
+			RequestOptions options = new RequestOptions()
+					.centerCrop()
+					.transforms(new GlideCircleTransform(context, 0))
+					.placeholder(defResId);
+			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{
 			iv.setImageResource(defResId);
 		}

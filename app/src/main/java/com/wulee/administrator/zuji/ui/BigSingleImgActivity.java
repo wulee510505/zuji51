@@ -1,12 +1,12 @@
 package com.wulee.administrator.zuji.ui;
 
 import android.os.Bundle;
+import android.widget.ImageView;
 
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.UIUtils;
-import com.wulee.administrator.zuji.widget.SuperImageView;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -18,7 +18,7 @@ import butterknife.InjectView;
 public class BigSingleImgActivity extends BaseActivity {
 
     @InjectView(R.id.iv_bigimg)
-    SuperImageView ivBigimg;
+    ImageView ivBigimg;
 
     public static final String IMAGE_URL = "image_url";
 

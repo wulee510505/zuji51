@@ -6,8 +6,7 @@ import android.support.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
-import com.huxq17.swipecardsview.LogUtil;
-import com.squareup.leakcanary.LeakCanary;
+import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.service.UploadLocationService;
@@ -52,10 +51,10 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        if (LeakCanary.isInAnalyzerProcess(this)) {
+        /*if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
         }
-        LeakCanary.install(this);
+        LeakCanary.install(this);*/
 
         context = getApplicationContext();
         aCache = ACache.get(this);
@@ -78,7 +77,9 @@ public class App extends MultiDexApplication {
         BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
             @Override
             public void onChange(ConnectionStatus status) {
-                OtherUtil.showToastText(status.getMsg());
+                if(status == null)
+                    return;
+                //OtherUtil.showToastText(status.getMsg());
                 LogUtil.i(BmobIM.getInstance().getCurrentStatus().getMsg());
             }
         });
