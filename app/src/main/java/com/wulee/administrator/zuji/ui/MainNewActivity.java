@@ -155,6 +155,9 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         }
     }
 
+
+
+
     @Override
     protected void onResume() {
         super.onResume();

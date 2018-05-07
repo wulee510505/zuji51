@@ -10,8 +10,9 @@ import android.util.Log;
 public class CountDownHelper {
     // 倒计时
     private CountDownTimer countDownTimer;
-    // 倒计时结束的回调接口
-    private OnFinishListener listener;
+    // 计时回调接口
+    private OnCountDownListener mCountDownListener;
+
     /**
      * @param max            需要进行倒计时的最大值,单位是秒
      * @param interval       倒计时的间隔，单位是秒
@@ -24,11 +25,14 @@ public class CountDownHelper {
             @Override
             public void onTick(long time) {
                 Log.d("CountDownHelper", "time = " + (time) + " text = " + ((time + 15) / 1000));
+                if (mCountDownListener != null) {
+                    mCountDownListener.tick((int) ((time + 15) / 1000));
+                }
             }
             @Override
             public void onFinish() {
-                if (listener != null) {
-                    listener.finish();
+                if (mCountDownListener != null) {
+                    mCountDownListener.finish();
                 }
             }
         };
@@ -39,17 +43,17 @@ public class CountDownHelper {
     public void start() {
         countDownTimer.start();
     }
-    /**
-     * 设置倒计时结束的监听器
-     * @param listener
-     */
-    public void setOnFinishListener(OnFinishListener listener) {
-        this.listener = listener;
+
+
+    public void setCountDownListener(OnCountDownListener countDownListener) {
+        this.mCountDownListener = countDownListener;
     }
-    /**
-     * 倒计时结束的回调接口
-     */
-    public interface OnFinishListener {
-         void finish();
+
+    public interface OnCountDownListener {
+
+        void tick(int second);
+
+        void finish();
     }
+
 }

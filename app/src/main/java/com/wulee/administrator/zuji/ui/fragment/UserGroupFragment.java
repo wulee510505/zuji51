@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -36,6 +37,8 @@ import cn.bmob.newim.core.ConnectionStatus;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
+
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 
 /**
  * Created by wulee on 2017/12/6 09:52
@@ -125,6 +128,20 @@ public class UserGroupFragment extends MainBaseFrag {
             @Override
             public void onRightImg1ClickListener() {
                startActivity(new Intent(mContext, NearUserActivity.class));
+            }
+        });
+
+        recyclerview.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+                // 查看源码可知State有三种状态：SCROLL_STATE_IDLE（静止）、SCROLL_STATE_DRAGGING（上升）、SCROLL_STATE_SETTLING（下落）
+                if (newState == SCROLL_STATE_IDLE) { // 滚动静止时才加载数据，极大提升流畅度
+                    mAdapter.setScrolling(false);
+                    mAdapter.notifyDataSetChanged(); // notify调用后onBindViewHolder会响应调用
+                } else
+                    mAdapter.setScrolling(true);
+                super.onScrollStateChanged(recyclerView, newState);
             }
         });
     }

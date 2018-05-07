@@ -64,9 +64,16 @@ public class FallingViewActivity extends AppCompatActivity {
         mFallingView.addFallObject(fallObject,100);
 
         CountDownHelper helper = new CountDownHelper(10, 1);
-        helper.setOnFinishListener(() -> {
-            FallingViewActivity.this.finish();
-            overridePendingTransition(R.anim.push_bottom_in,R.anim.push_bottom_out);
+        helper.setCountDownListener(new CountDownHelper.OnCountDownListener() {
+            @Override
+            public void tick(int second) {
+
+            }
+            @Override
+            public void finish() {
+                FallingViewActivity.this.finish();
+                overridePendingTransition(R.anim.push_bottom_in,R.anim.push_bottom_out);
+            }
         });
         helper.start();
 

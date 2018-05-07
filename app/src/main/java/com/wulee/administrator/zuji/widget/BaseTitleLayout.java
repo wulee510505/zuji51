@@ -37,7 +37,7 @@ public class BaseTitleLayout extends View {
 
     private int iconSize = UIUtils.dip2px(25);
     private int leftImg = R.mipmap.icon_back;
-    private int textSize = UIUtils.dip2px(17);
+    private int textSize =UIUtils.px2sp(36);
     private String leftText = "";
     private String centerText = "";
     private int rightImg1 = -1, rightImg2 = -1;
@@ -105,7 +105,7 @@ public class BaseTitleLayout extends View {
 
         mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         mPaint.setColor(textColor);
-        mPaint.setTextSize(UIUtils.dip2px(17));
+        mPaint.setTextSize(UIUtils.px2sp(36));
         mPaint.setTextAlign(Paint.Align.CENTER);
         // 绘制图片范围
         rect = new Rect();
@@ -214,7 +214,7 @@ public class BaseTitleLayout extends View {
             throw new IllegalStateException("Width must have an exact value or MATCH_PARENT");
         }
         layoutWidth = widthSize;
-        layoutHeight = dip2px(45);
+        layoutHeight = dip2px(48);
         paddingLeft = getPaddingLeft() == 0 ? dip2px(10) : getPaddingLeft();
         paddingRight = getPaddingRight() == 0 ? dip2px(10) : getPaddingRight();
 

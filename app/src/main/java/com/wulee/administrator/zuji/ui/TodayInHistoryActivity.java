@@ -1,8 +1,11 @@
 package com.wulee.administrator.zuji.ui;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.support.v7.widget.LinearLayoutManager;
 import android.text.TextUtils;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.common.LogUtil;
@@ -23,6 +26,7 @@ import java.util.List;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import butterknife.OnClick;
 import cn.finalteam.okhttpfinal.BaseHttpRequestCallback;
 import cn.finalteam.okhttpfinal.HttpRequest;
 import okhttp3.Headers;
@@ -39,12 +43,15 @@ public class TodayInHistoryActivity extends BaseActivity {
     BaseTitleLayout titlelayout;
     @InjectView(R.id.recyclerview)
     EasyRecyclerView recyclerview;
+    @InjectView(R.id.tv_count_down)
+    TextView mTvCountDown;
 
     private TodayInHistoryAdapter mAdapter;
 
     private ArrayList<HistoryInfo> historyInfoList = new ArrayList<>();
 
 
+    @RequiresApi(api = Build.VERSION_CODES.ECLAIR)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,7 +60,7 @@ public class TodayInHistoryActivity extends BaseActivity {
         ButterKnife.inject(this);
 
 
-        mAdapter = new TodayInHistoryAdapter(R.layout.today_in_history_list_item,historyInfoList);
+        mAdapter = new TodayInHistoryAdapter(R.layout.today_in_history_list_item, historyInfoList);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.setAdapter(mAdapter);
 
@@ -64,16 +71,18 @@ public class TodayInHistoryActivity extends BaseActivity {
             public void onStart() {
                 showProgressDialog(false);
             }
+
             @Override
             public void onResponse(String response, Headers headers) {
                 super.onResponse(response, headers);
-                if(TextUtils.isEmpty(response)){
+                if (TextUtils.isEmpty(response)) {
                     return;
                 }
                 historyInfoList.clear();
                 historyInfoList.addAll(jsonParse(response));
                 mAdapter.setNewData(historyInfoList);
             }
+
             //请求失败（服务返回非法JSON、服务器异常、网络异常）
             @Override
             public void onFailure(int errorCode, String msg) {
@@ -83,14 +92,22 @@ public class TodayInHistoryActivity extends BaseActivity {
             //请求网络结束
             @Override
             public void onFinish() {
-               stopProgressDialog();
+                stopProgressDialog();
             }
         });
 
         CountDownHelper helper = new CountDownHelper(20, 1);
-        helper.setOnFinishListener(() -> {
-            TodayInHistoryActivity.this.finish();
-            overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+        helper.setCountDownListener(new CountDownHelper.OnCountDownListener() {
+            @Override
+            public void tick(int second) {
+                mTvCountDown.setText(second + "s");
+            }
+
+            @Override
+            public void finish() {
+                TodayInHistoryActivity.this.finish();
+                overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
+            }
         });
         helper.start();
     }
@@ -121,5 +138,11 @@ public class TodayInHistoryActivity extends BaseActivity {
             LogUtil.e("TodayInHistoryActivity", "json解析出现了问题");
         }
         return new ArrayList<>();
+    }
+
+    @OnClick(R.id.tv_count_down)
+    public void onViewClicked() {
+        TodayInHistoryActivity.this.finish();
+        overridePendingTransition(R.anim.push_bottom_in, R.anim.push_bottom_out);
     }
 }

@@ -3,8 +3,9 @@ package com.wulee.administrator.zuji.base;
 
 import android.app.Activity;
 
-import com.jph.takephoto.app.TakePhotoFragment;
 import com.wulee.administrator.zuji.widget.BaseProgressDialog;
+
+import org.devio.takephoto.app.TakePhotoFragment;
 
 
 /**

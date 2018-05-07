@@ -26,7 +26,6 @@ public class GlideCircleTransform extends BitmapTransformation {
     private Context mContext;
 
     public GlideCircleTransform(Context context, int bColorId) {
-        super(context);
         this.bColoresId = bColorId;
         this.mContext = context;
     }

@@ -17,10 +17,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.app.TakePhotoActivity;
-import com.jph.takephoto.model.CropOptions;
-import com.jph.takephoto.model.TResult;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
@@ -33,6 +29,11 @@ import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.ActionSheet;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionListener;
+
+import org.devio.takephoto.app.TakePhoto;
+import org.devio.takephoto.app.TakePhotoActivity;
+import org.devio.takephoto.model.CropOptions;
+import org.devio.takephoto.model.TResult;
 
 import java.io.File;
 import java.util.List;
