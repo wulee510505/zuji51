@@ -72,14 +72,12 @@ dependencies {
     testCompile 'junit:junit:4.12'
     implementation supportDependencies.cardView
     implementation supportDependencies.design
-
     implementation thirdDependencies.glide
     annotationProcessor thirdDependencies.glideCompiler
     implementation thirdDependencies.multidex
     implementation thirdDependencies.baseRecyclerViewAdapterHelper
     implementation thirdDependencies.andPermission
     implementation thirdDependencies.stetho
-    implementation thirdDependencies.takephoto
     implementation thirdDependencies.easyrecyclerview
     implementation thirdDependencies.easyBlur
     implementation thirdDependencies.swipeCardsView
@@ -98,19 +96,28 @@ dependencies {
     implementation thirdDependencies.text2Speach
     implementation thirdDependencies.recording
     implementation thirdDependencies.selectableTextView
-
-    implementation thirdDependencies.bmobPush  //Bmob的推送包
-    implementation thirdDependencies.bmobSms  //Bmob单独为短信服务提供的包
+    implementation thirdDependencies.bmobPush
+    //Bmob的推送包
+    implementation thirdDependencies.bmobSms
+    //Bmob单独为短信服务提供的包
     //特定版本的bmob-im依赖特定版本的bmob-sdk
     implementation thirdDependencies.bmobIm
     implementation thirdDependencies.bmobSdk
     implementation thirdDependencies.httpLegacy
     debugImplementation thirdDependencies.debugleakcanary
     releaseImplementation thirdDependencies.releaseleakcanary
-
-
     compile files('libs/BaiduLBS_Android.jar')
-    implementation files('libs/okhttp-3.10.0.jar')
+    compile files('libs/okhttp-3.10.0.jar')
+    compile project(path: ':takephoto_library')
+}
 
-
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '27.0.0'
+            }
+        }
+    }
 }

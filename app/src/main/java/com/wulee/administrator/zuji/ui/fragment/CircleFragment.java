@@ -23,9 +23,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.common.LogUtil;
-import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.model.CropOptions;
-import com.jph.takephoto.model.TResult;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.CircleContentAdapter;
@@ -43,6 +40,10 @@ import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.RecycleViewDivider;
 
+import org.devio.takephoto.app.TakePhoto;
+import org.devio.takephoto.model.CropOptions;
+import org.devio.takephoto.model.TResult;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -59,6 +60,7 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
+import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static com.wulee.administrator.zuji.App.aCache;
 
 /**
@@ -185,8 +187,14 @@ public class CircleFragment extends MainBaseFrag {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                 super.onScrollStateChanged(recyclerView, newState);
+                // 查看源码可知State有三种状态：SCROLL_STATE_IDLE（静止）、SCROLL_STATE_DRAGGING（上升）、SCROLL_STATE_SETTLING（下落）
+                if (newState == SCROLL_STATE_IDLE) { // 滚动静止时才加载数据，极大提升流畅度
+                    mAdapter.setScrolling(false);
+                    mAdapter.notifyDataSetChanged(); // notify调用后onBindViewHolder会响应调用
+                } else
+                    mAdapter.setScrolling(true);
+                super.onScrollStateChanged(recyclerView, newState);
             }
-
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);

@@ -6,7 +6,6 @@ import android.support.multidex.MultiDexApplication;
 
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
-import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.service.UploadLocationService;
@@ -22,8 +21,6 @@ import java.io.File;
 import java.io.FileReader;
 
 import cn.bmob.newim.BmobIM;
-import cn.bmob.newim.core.ConnectionStatus;
-import cn.bmob.newim.listener.ConnectStatusChangeListener;
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
@@ -74,7 +71,7 @@ public class App extends MultiDexApplication {
         }
 
         //监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态
-        BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
+       /* BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
             @Override
             public void onChange(ConnectionStatus status) {
                 if(status == null)
@@ -82,7 +79,7 @@ public class App extends MultiDexApplication {
                 //OtherUtil.showToastText(status.getMsg());
                 LogUtil.i(BmobIM.getInstance().getCurrentStatus().getMsg());
             }
-        });
+        });*/
 
         Stetho.initializeWithDefaults(this);
 
@@ -154,13 +151,13 @@ public class App extends MultiDexApplication {
     }
 
     protected void onNetConnect(NetworkUtils.NetworkType type) {
-        if (type == mNetType) return; //net not change
+        if (type == mNetType) return; //network not change
         switch (type) {
             case NETWORK_WIFI:
-                OtherUtil.showToastText("已切换到 WIFI 网络");
+                OtherUtil.showToastText("已切换到WIFI网络");
                 break;
             case NETWORK_MOBILE:
-                OtherUtil.showToastText("已切换到 2G/3G/4G 网络");
+                OtherUtil.showToastText("已切换到数据网络");
                 break;
         }
         mNetType = type;

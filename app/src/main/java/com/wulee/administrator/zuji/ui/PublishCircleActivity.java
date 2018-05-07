@@ -10,11 +10,6 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
-import com.jph.takephoto.app.TakePhoto;
-import com.jph.takephoto.app.TakePhotoActivity;
-import com.jph.takephoto.compress.CompressConfig;
-import com.jph.takephoto.model.TImage;
-import com.jph.takephoto.model.TResult;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.PublishPicGridAdapter;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
@@ -26,6 +21,12 @@ import com.wulee.administrator.zuji.utils.UIUtils;
 import com.wulee.administrator.zuji.widget.AnFQNumEditText;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
+
+import org.devio.takephoto.app.TakePhoto;
+import org.devio.takephoto.app.TakePhotoActivity;
+import org.devio.takephoto.compress.CompressConfig;
+import org.devio.takephoto.model.TImage;
+import org.devio.takephoto.model.TResult;
 
 import java.util.ArrayList;
 import java.util.Iterator;

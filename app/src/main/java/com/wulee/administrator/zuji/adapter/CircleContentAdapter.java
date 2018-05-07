@@ -16,6 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.RequestManager;
 import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
@@ -54,6 +55,8 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     private PersonInfo piInfo;
     private HashMap<Integer,LinearLayout> viewMap = new HashMap<>();
 
+    protected boolean isScrolling = false;
+
     public CircleContentAdapter(ArrayList<CircleContent> dataList,Context context) {
         super(dataList);
         this.mcontext = context;
@@ -62,203 +65,211 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         piInfo = BmobUser.getCurrentUser(PersonInfo.class);
     }
 
+    public void setScrolling(boolean scrolling) {
+        isScrolling = scrolling;
+    }
+
     @Override
     protected void convert(BaseViewHolder baseViewHolder, final CircleContent circleContent) {
-
-        ImageView ivAvatar = baseViewHolder.getView(R.id.userAvatar);
-        if(circleContent.personInfo != null && !TextUtils.isEmpty(circleContent.personInfo.getHeader_img_url())) {
-            ImageUtil.setDefaultImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_rect, mcontext);
-        } else{
-            ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_rect,mcontext);
-        }
-
-        ivAvatar.setOnClickListener(view -> {
-            if(NoFastClickUtils.isFastClick()) {
-                return;
-            }
-            if(null != piInfo){
-                Intent intent = null;
-                if(TextUtils.equals(piInfo.getUsername(),circleContent.personInfo.getUsername())){
-                    intent = new Intent(mcontext, PersonalInfoActivity.class);
-                }else{
-                    intent = new Intent(mcontext, UserInfoActivity.class);
-                    intent.putExtra("piInfo",circleContent.personInfo);
-                }
-                mcontext.startActivity(intent);
-            }
-        });
-
-        baseViewHolder.setText(R.id.userNick,circleContent.getUserNick());
-        baseViewHolder.setText(R.id.circle_content , circleContent.getContent());
-
-        TextView tvLocation = baseViewHolder.getView(R.id.location);
-        if(!TextUtils.isEmpty(circleContent.getLocation())){
-            tvLocation.setVisibility(View.VISIBLE);
-            tvLocation.setText(circleContent.getLocation());
-        }else{
-            tvLocation.setVisibility(View.GONE);
-        }
-        baseViewHolder.setText(R.id.time , DateTimeUtils.showDifferenceTime(DateTimeUtils.parseDateTime(circleContent.getCreatedAt()), System.currentTimeMillis())+"前");
-
-        TextView tvDel = baseViewHolder.getView(R.id.tv_delete);
-
-        if(null != piInfo){
-            if(TextUtils.equals(piInfo.getUsername(),circleContent.personInfo.getUsername())){
-                tvDel.setVisibility(View.VISIBLE);
-            }else{
-                tvDel.setVisibility(View.GONE);
-            }
-        }
-        final int pos = baseViewHolder.getAdapterPosition();
-        tvDel.setOnClickListener(view -> {
-            if(mListener != null){
-                //因为有headerview
-                mListener.onDelBtnClick(pos-1);
-            }
-        });
-
-        //喜欢、评论按钮是否显示
-        final boolean[] isToolbarLikeAndCommentVisible = {false};
-
-        final LinearLayout llLikeAndComment = baseViewHolder.getView(R.id.album_toolbar);
-        viewMap.put(pos,llLikeAndComment);
-
-        final RelativeLayout rlLike = baseViewHolder.getView(R.id.toolbarLike);
-        ImageView ivOpt = baseViewHolder.getView(R.id.album_opt);
-        ivOpt.setOnClickListener(view -> {
-            if(isToolbarLikeAndCommentVisible[0]){
-                llLikeAndComment.setVisibility(View.GONE);
-                isToolbarLikeAndCommentVisible[0] = false;
+            ImageView ivAvatar = baseViewHolder.getView(R.id.userAvatar);
+            if(circleContent.personInfo != null && !TextUtils.isEmpty(circleContent.personInfo.getHeader_img_url()) && !isScrolling) {
+                ImageUtil.setDefaultImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_rect, mcontext);
             } else{
-                llLikeAndComment.setVisibility(View.VISIBLE);
-                isToolbarLikeAndCommentVisible[0] = true;
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_rect,mcontext);
             }
-        });
 
-        rlLike.setOnClickListener(view -> {
-            if(circleContent.getLikeList() != null && circleContent.getLikeList().size()>0){
-                for (PersonInfo likePiInfo : circleContent.getLikeList()){
-                    if(TextUtils.equals(piInfo.getUsername(),likePiInfo.getUsername())){
-                        llLikeAndComment.setVisibility(View.GONE);
-                        Toast.makeText(mcontext, "您已经赞过了", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
+            ivAvatar.setOnClickListener(view -> {
+                if(NoFastClickUtils.isFastClick()) {
+                    return;
                 }
-            }
-
-            //将当前用户添加到CircleContent表中的likes字段值中，表明当前用户喜欢该帖子
-            final BmobRelation relation = new BmobRelation();
-            //将当前用户添加到多对多关联中
-            relation.add(piInfo);
-            //多对多关联指向CircleContent的`likes`字段
-            circleContent.setLikes(relation);
-
-            circleContent.update(circleContent.getObjectId(),new UpdateListener() {
-                @Override
-                public void done(BmobException e) {
-                    llLikeAndComment.setVisibility(View.GONE);
-                    if(e == null){
-                        mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
-                        LogUtil.i("zuji","点赞成功");
+                if(null != piInfo){
+                    Intent intent = null;
+                    if(TextUtils.equals(piInfo.getUsername(),circleContent.personInfo.getUsername())){
+                        intent = new Intent(mcontext, PersonalInfoActivity.class);
                     }else{
-                        OtherUtil.showToastText("点赞失败"+e.getMessage());
+                        intent = new Intent(mcontext, UserInfoActivity.class);
+                        intent.putExtra("piInfo",circleContent.personInfo);
                     }
+                    mcontext.startActivity(intent);
                 }
             });
-        });
-        TextView tvLikes = baseViewHolder.getView(R.id.tv_likes);
-        StringBuilder sbLikes = new StringBuilder();
-        List<PersonInfo> likePiList = circleContent.getLikeList();
-        if(likePiList != null && likePiList.size()>0){
-            tvLikes.setVisibility(View.VISIBLE);
-            for (int i = 0; i < likePiList.size(); i++) {
-                PersonInfo pi = likePiList.get(i);
-                if(null != pi){
-                    sbLikes.append(pi.getName()).append("，");
+
+            baseViewHolder.setText(R.id.userNick,circleContent.getUserNick());
+            baseViewHolder.setText(R.id.circle_content , circleContent.getContent());
+
+            TextView tvLocation = baseViewHolder.getView(R.id.location);
+            if(!TextUtils.isEmpty(circleContent.getLocation())){
+                tvLocation.setVisibility(View.VISIBLE);
+                tvLocation.setText(circleContent.getLocation());
+            }else{
+                tvLocation.setVisibility(View.GONE);
+            }
+            baseViewHolder.setText(R.id.time , DateTimeUtils.showDifferenceTime(DateTimeUtils.parseDateTime(circleContent.getCreatedAt()), System.currentTimeMillis())+"前");
+
+            TextView tvDel = baseViewHolder.getView(R.id.tv_delete);
+
+            if(null != piInfo){
+                if(TextUtils.equals(piInfo.getUsername(),circleContent.personInfo.getUsername())){
+                    tvDel.setVisibility(View.VISIBLE);
+                }else{
+                    tvDel.setVisibility(View.GONE);
                 }
             }
-            String str = sbLikes.toString();
-            if(str.length()>0){
-                tvLikes.setText(str.substring(0,str.length()-1));
-            }
-        }else{
-            tvLikes.setVisibility(View.GONE);
-        }
-
-        final RelativeLayout rlComment = baseViewHolder.getView(R.id.toolbarComment);
-        rlComment.setOnClickListener(view -> showComentDialog(circleContent,llLikeAndComment));
-
-
-        NoScrollListView lvComment = baseViewHolder.getView(R.id.lv_comment);
-        ArrayList<String> name;
-        ArrayList<String> toName;
-        ArrayList<String> comment;
-
-        List<CircleComment> commentList = circleContent.getCommentList();
-        if(commentList != null && commentList.size()>0){
-            name = new ArrayList<>();
-            toName = new ArrayList<>();
-            comment  = new ArrayList<>();
-            lvComment.setVisibility(View.VISIBLE);
-            for (int i = 0; i < commentList.size(); i++) {
-                CircleComment com = commentList.get(i);
-                if(com.getPersonInfo()!=null ){
-                    name.add(com.getPersonInfo().getName());
+            final int pos = baseViewHolder.getAdapterPosition();
+            tvDel.setOnClickListener(view -> {
+                if(mListener != null){
+                    //因为有headerview
+                    mListener.onDelBtnClick(pos-1);
                 }
-                if(com.getCircleContent().personInfo!=null){
-                    toName.add(com.getCircleContent().personInfo.getName());
+            });
+
+            //喜欢、评论按钮是否显示
+            final boolean[] isToolbarLikeAndCommentVisible = {false};
+
+            final LinearLayout llLikeAndComment = baseViewHolder.getView(R.id.album_toolbar);
+            viewMap.put(pos,llLikeAndComment);
+
+            final RelativeLayout rlLike = baseViewHolder.getView(R.id.toolbarLike);
+            ImageView ivOpt = baseViewHolder.getView(R.id.album_opt);
+            ivOpt.setOnClickListener(view -> {
+                if(isToolbarLikeAndCommentVisible[0]){
+                    llLikeAndComment.setVisibility(View.GONE);
+                    isToolbarLikeAndCommentVisible[0] = false;
+                } else{
+                    llLikeAndComment.setVisibility(View.VISIBLE);
+                    isToolbarLikeAndCommentVisible[0] = true;
                 }
-                comment.add(com.getContent());
-            }
-            CircleCommentAdapter commentAdapter = new CircleCommentAdapter(circleContent,name,toName,comment,mContext);
-            lvComment.setAdapter(commentAdapter);
-        }else{
-            lvComment.setVisibility(View.GONE);
-        }
+            });
 
-        switch (baseViewHolder.getItemViewType()) {
-            case CircleContent.TYPE_TEXT_AND_IMG:
-                NineGridImageViewAdapter<CircleContent.CircleImageBean> mAdapter = new NineGridImageViewAdapter<CircleContent.CircleImageBean>() {
-                    @Override
-                    protected void onDisplayImage(Context context, ImageView imageView, CircleContent.CircleImageBean img) {
-                        RequestOptions options = new RequestOptions()
-                                .placeholder(R.mipmap.bg_pic_def_rect);
-                        Glide.with(context)
-                                .load(img.getUrl())
-                                .apply(options)
-                                .into(imageView);
+            rlLike.setOnClickListener(view -> {
+                if(circleContent.getLikeList() != null && circleContent.getLikeList().size()>0){
+                    for (PersonInfo likePiInfo : circleContent.getLikeList()){
+                        if(TextUtils.equals(piInfo.getUsername(),likePiInfo.getUsername())){
+                            llLikeAndComment.setVisibility(View.GONE);
+                            Toast.makeText(mcontext, "您已经赞过了", Toast.LENGTH_SHORT).show();
+                            return;
+                        }
                     }
-                    @Override
-                    protected ImageView generateImageView(Context context) {
-                        GridImageView imageView = new GridImageView(context);
-                        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                        return imageView;
-                    }
-                    @Override
-                    protected void onItemImageClick(Context context, ImageView imageView, int index, List<CircleContent.CircleImageBean> photoList) {
+                }
 
-                    }
-                };
-                NineGridImageView nineGridImageView = baseViewHolder.getView(R.id.nine_grid_view);
-                nineGridImageView.setAdapter(mAdapter);
-                nineGridImageView.setImagesData(circleContent.getImageList());
-                nineGridImageView.setItemImageClickListener((context, imageView, index, imgList) -> {
+                //将当前用户添加到CircleContent表中的likes字段值中，表明当前用户喜欢该帖子
+                final BmobRelation relation = new BmobRelation();
+                //将当前用户添加到多对多关联中
+                relation.add(piInfo);
+                //多对多关联指向CircleContent的`likes`字段
+                circleContent.setLikes(relation);
 
-                    if(imgList != null && imgList.size()>0){
-                        Intent intent = new Intent(context, BigMultiImgActivity.class);
-                        intent.putExtra(BigMultiImgActivity.IMAGES_URL, circleContent.getImgUrls());
-                        intent.putExtra(BigMultiImgActivity.IMAGE_INDEX, index);
-                        context.startActivity(intent);
+                circleContent.update(circleContent.getObjectId(),new UpdateListener() {
+                    @Override
+                    public void done(BmobException e) {
+                        llLikeAndComment.setVisibility(View.GONE);
+                        if(e == null){
+                            mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
+                            LogUtil.i("zuji","点赞成功");
+                        }else{
+                            OtherUtil.showToastText("点赞失败"+e.getMessage());
+                        }
                     }
                 });
-                break;
-            case CircleContent.TYPE_ONLY_TEXT:
-                //do nothing
+            });
+            TextView tvLikes = baseViewHolder.getView(R.id.tv_likes);
+            StringBuilder sbLikes = new StringBuilder();
+            List<PersonInfo> likePiList = circleContent.getLikeList();
+            if(likePiList != null && likePiList.size()>0){
+                tvLikes.setVisibility(View.VISIBLE);
+                for (int i = 0; i < likePiList.size(); i++) {
+                    PersonInfo pi = likePiList.get(i);
+                    if(null != pi){
+                        sbLikes.append(pi.getName()).append("，");
+                    }
+                }
+                String str = sbLikes.toString();
+                if(str.length()>0){
+                    tvLikes.setText(str.substring(0,str.length()-1));
+                }
+            }else{
+                tvLikes.setVisibility(View.GONE);
+            }
 
-                break;
-            default :
-                break;
-        }
+            final RelativeLayout rlComment = baseViewHolder.getView(R.id.toolbarComment);
+            rlComment.setOnClickListener(view -> showComentDialog(circleContent,llLikeAndComment));
+
+
+            NoScrollListView lvComment = baseViewHolder.getView(R.id.lv_comment);
+            ArrayList<String> name;
+            ArrayList<String> toName;
+            ArrayList<String> comment;
+
+            List<CircleComment> commentList = circleContent.getCommentList();
+            if(commentList != null && commentList.size()>0 && !isScrolling){
+                name = new ArrayList<>();
+                toName = new ArrayList<>();
+                comment  = new ArrayList<>();
+                lvComment.setVisibility(View.VISIBLE);
+                for (int i = 0; i < commentList.size(); i++) {
+                    CircleComment com = commentList.get(i);
+                    if(com.getPersonInfo()!=null ){
+                        name.add(com.getPersonInfo().getName());
+                    }
+                    if(com.getCircleContent().personInfo!=null){
+                        toName.add(com.getCircleContent().personInfo.getName());
+                    }
+                    comment.add(com.getContent());
+                }
+                CircleCommentAdapter commentAdapter = new CircleCommentAdapter(circleContent,name,toName,comment,mContext);
+                lvComment.setAdapter(commentAdapter);
+            }else{
+                lvComment.setVisibility(View.GONE);
+            }
+
+            switch (baseViewHolder.getItemViewType()) {
+                case CircleContent.TYPE_TEXT_AND_IMG:
+                    NineGridImageViewAdapter<CircleContent.CircleImageBean> mAdapter = new NineGridImageViewAdapter<CircleContent.CircleImageBean>() {
+                        @Override
+                        protected void onDisplayImage(Context context, ImageView imageView, CircleContent.CircleImageBean img) {
+                            RequestOptions options = new RequestOptions()
+                                    .placeholder(R.mipmap.bg_pic_def_rect);
+                            RequestManager rm =  Glide.with(context);
+                            if(!isScrolling){
+                                  rm.load(img.getUrl())
+                                        .apply(options)
+                                        .into(imageView);
+                            }else{
+                                  rm.load(R.mipmap.bg_pic_def_rect)
+                                        .into(imageView);
+                            }
+                        }
+                        @Override
+                        protected ImageView generateImageView(Context context) {
+                            GridImageView imageView = new GridImageView(context);
+                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                            return imageView;
+                        }
+                        @Override
+                        protected void onItemImageClick(Context context, ImageView imageView, int index, List<CircleContent.CircleImageBean> photoList) {
+
+                        }
+                    };
+                    NineGridImageView nineGridImageView = baseViewHolder.getView(R.id.nine_grid_view);
+                    nineGridImageView.setAdapter(mAdapter);
+                    nineGridImageView.setImagesData(circleContent.getImageList());
+                    nineGridImageView.setItemImageClickListener((context, imageView, index, imgList) -> {
+
+                        if(imgList != null && imgList.size()>0){
+                            Intent intent = new Intent(context, BigMultiImgActivity.class);
+                            intent.putExtra(BigMultiImgActivity.IMAGES_URL, circleContent.getImgUrls());
+                            intent.putExtra(BigMultiImgActivity.IMAGE_INDEX, index);
+                            context.startActivity(intent);
+                        }
+                    });
+                    break;
+                case CircleContent.TYPE_ONLY_TEXT:
+                    //do nothing
+
+                    break;
+                default :
+                    break;
+            }
     }
 
     /**

@@ -32,6 +32,7 @@
         android:layout_marginTop="15dp"
         android:layout_marginRight="15dp"
         android:background="@drawable/bg_text_circle"
+        android:textColor="@color/white"
         android:text="跳过"/>
 
 </RelativeLayout>

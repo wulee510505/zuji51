@@ -100,7 +100,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
                 public void done(List<SplashPic> list, BmobException e) {
                     if(e == null){
                         if(list != null && list.size()>0){
-                            int index = (int)( Math.random()* (3)) ; //生成 0、1、2 随机数
+                            int index = 3/*(int)( Math.random()* (4))*/ ; //生成 0、1、2 、3 随机数
                             SplashPic splashPic = list.get(index);
                             if(null != splashPic && !TextUtils.isEmpty(splashPic.getUrl())){
                                 ImageUtil.setDefaultImageView(ivSplash,splashPic.getUrl(),R.mipmap.bg_wellcome,SplashActivity.this);
@@ -149,7 +149,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         final Intent intent;
         if(OtherUtil.hasLogin()){
              intent = new Intent(SplashActivity.this, MainNewActivity.class);
-             connectIMServer();
+             //connectIMServer();
         } else{
              intent = new Intent(this, LoginActivity.class);
         }
