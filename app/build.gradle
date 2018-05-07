@@ -96,6 +96,7 @@ dependencies {
     implementation thirdDependencies.text2Speach
     implementation thirdDependencies.recording
     implementation thirdDependencies.selectableTextView
+
     implementation thirdDependencies.bmobPush
     //Bmob的推送包
     implementation thirdDependencies.bmobSms
