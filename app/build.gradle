@@ -4,10 +4,10 @@ apply from : "config.gradle"
 android {
     signingConfigs {
         debug {
-            keyAlias 'wlandroid'
-            keyPassword 'wlandroid'
+            keyAlias KEYALIAS
+            keyPassword KEY_PASSWORD
             storeFile file('F:/signePackage/wlandroid')
-            storePassword 'wlandroid'
+            storePassword STORE_PASSWORD
         }
     }
     compileSdkVersion app.compileSdkVersion
@@ -34,7 +34,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
         debug {
-            //signingConfig signingConfigs.debug
+            signingConfig signingConfigs.debug
         }
     }
     useLibrary 'org.apache.http.legacy'
@@ -65,11 +65,11 @@ android {
 }
 
 dependencies {
-    compile fileTree(include: ['*.jar'], dir: 'libs')
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    testCompile 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.12'
     implementation supportDependencies.cardView
     implementation supportDependencies.design
     implementation thirdDependencies.glide
@@ -96,6 +96,10 @@ dependencies {
     implementation thirdDependencies.text2Speach
     implementation thirdDependencies.recording
     implementation thirdDependencies.selectableTextView
+    implementation thirdDependencies.MPAndroidChart
+    implementation thirdDependencies.MPAndroidChartRealm
+    implementation thirdDependencies.matisse
+
 
     implementation thirdDependencies.bmobPush
     //Bmob的推送包
@@ -107,9 +111,9 @@ dependencies {
     implementation thirdDependencies.httpLegacy
     debugImplementation thirdDependencies.debugleakcanary
     releaseImplementation thirdDependencies.releaseleakcanary
-    compile files('libs/BaiduLBS_Android.jar')
-    compile files('libs/okhttp-3.10.0.jar')
-    compile project(path: ':takephoto_library')
+    implementation files('libs/BaiduLBS_Android.jar')
+    implementation files('libs/okhttp-3.10.0.jar')
+    implementation fileTree(dir: 'libs', include: '*.aar')
 }
 
 configurations.all {

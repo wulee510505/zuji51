@@ -29,14 +29,19 @@
             android:title="设置"/>
 
         <item
-            android:id="@+id/item_checkupdate"
-            android:icon="@mipmap/icon_menu_check_update"
-            android:title="检查更新"/>
-
-        <item
             android:id="@+id/item_about"
             android:icon="@mipmap/icon_about_me"
             android:title="关于"/>
+
+        <item
+            android:id="@+id/item_goto_market"
+            android:icon="@mipmap/icon_go_to_market"
+            android:title="给足迹评分"/>
+
+        <item
+            android:id="@+id/item_checkupdate"
+            android:icon="@mipmap/icon_menu_check_update"
+            android:title="检查更新"/>
 
     </group>
 

@@ -2,6 +2,7 @@ package com.wulee.administrator.zuji.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -18,22 +19,20 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.wulee.administrator.zuji.R;
+import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
-import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.utils.AppUtils;
-import com.wulee.administrator.zuji.utils.FileProvider7;
+import com.wulee.administrator.zuji.utils.FileUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
+import com.wulee.administrator.zuji.utils.NewGlideEngine;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.ActionSheet;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionListener;
-
-import org.devio.takephoto.app.TakePhoto;
-import org.devio.takephoto.app.TakePhotoActivity;
-import org.devio.takephoto.model.CropOptions;
-import org.devio.takephoto.model.TResult;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
 
 import java.io.File;
 import java.util.List;
@@ -54,7 +53,7 @@ import static com.wulee.administrator.zuji.App.aCache;
  * Created by wulee on 2016/12/15 17:25
  */
 
-public class PersonalInfoActivity extends TakePhotoActivity implements ActionSheet.MenuItemClickListener {
+public class PersonalInfoActivity extends BaseActivity implements ActionSheet.MenuItemClickListener {
 
     private static final int AVATAR_REQUEST_CODE = 100;
     private static final int BIRTHDAY_REQUEST_CODE = 101;
@@ -182,16 +181,20 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
         switch (requestCode) {
             case AVATAR_REQUEST_CODE:// 头像的返回
                 if (resultCode == RESULT_OK && data != null) {
-                  /*  String savePath = data.getStringExtra(PictureActivity.INTENT_KEY_RETURN_SAVE_PATH);
-                    if (!TextUtils.isEmpty(savePath)) {
-                        Bitmap suitBitmap = BitmapFactory.decodeFile(savePath);
-                        if (null != suitBitmap)
-                            userPhoto.setImageBitmap(ImageUtil.toRoundBitmap(suitBitmap));
-                        if (!checkInternetConnection()) {
-                            return;
+                    List<Uri> selectedUri = Matisse.obtainResult(data);
+                    if(selectedUri!=null&& selectedUri.size()>0){
+                        Uri uri = selectedUri.get(0);
+                        String path = FileUtils.getFilePathFromContentUri(uri,getContentResolver());
+                        if (!TextUtils.isEmpty(path)) {
+                            Bitmap suitBitmap = BitmapFactory.decodeFile(path);
+                            if (null != suitBitmap)
+                                userPhoto.setImageBitmap(ImageUtil.toRoundBitmap(suitBitmap));
+                            if (!checkInternetConnection()) {
+                                return;
+                            }
+                            uploadImgFile(path);
                         }
-                        uploadImgFile(savePath);
-                    }*/
+                    }
                 }
                 break;
             case BIRTHDAY_REQUEST_CODE:// 生日的返回
@@ -206,29 +209,6 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
         }
     }
 
-
-    @Override
-    public void takeCancel() {
-        super.takeCancel();
-    }
-
-    @Override
-    public void takeFail(TResult result, String msg) {
-        super.takeFail(result, msg);
-    }
-
-    @Override
-    public void takeSuccess(TResult result) {
-        super.takeSuccess(result);
-        String savePath = result.getImages().get(0).getOriginalPath();
-        if (!TextUtils.isEmpty(savePath)) {
-            Bitmap suitBitmap = BitmapFactory.decodeFile(savePath);
-            if (null != suitBitmap)
-                userPhoto.setImageBitmap(ImageUtil.toRoundBitmap(suitBitmap));
-
-            uploadImgFile(savePath);
-        }
-    }
 
 
     /**
@@ -314,13 +294,16 @@ public class PersonalInfoActivity extends TakePhotoActivity implements ActionShe
                         .callback(new PermissionListener() {
                             @Override
                             public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                                TakePhoto takePhoto = getTakePhoto();
-                                File file = new File(Constant.TEMP_FILE_PATH, "header_img" + ".jpg");
-                                if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-                                Uri imageUri = FileProvider7.getUriForFile(PersonalInfoActivity.this, file);
-
-                                CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
-                                takePhoto.onPickFromGalleryWithCrop(imageUri, cropOptions);
+                                Matisse.from(PersonalInfoActivity.this)
+                                        .choose(MimeType.allOf())
+                                        .countable(true)
+                                        //.capture(true)
+                                        //.captureStrategy(new CaptureStrategy(false,"com.wulee.administrator.zuji.fileprovider"))
+                                        .maxSelectable(1)
+                                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                        . thumbnailScale(0.85f)
+                                        .imageEngine(new NewGlideEngine())
+                                        .forResult(AVATAR_REQUEST_CODE);
                             }
 
                             @Override

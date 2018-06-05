@@ -48,8 +48,16 @@
         android:paddingLeft="20dp"
         android:paddingRight="20dp"
         android:gravity="center"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:visibility="gone">
     </LinearLayout>
 
+
+    <com.github.mikephil.charting.charts.BarChart
+        android:id="@+id/chart"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        android:layout_below="@id/titlelayout"
+        android:layout_marginTop="20dp" />
 
 </RelativeLayout>

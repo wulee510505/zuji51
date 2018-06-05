@@ -9,7 +9,10 @@ import android.os.Looper;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.facebook.stetho.common.LogUtil;
+import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.Constant;
+import com.wulee.administrator.zuji.entity.LogFile;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -24,6 +27,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
+
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.SaveListener;
+
+import static cn.bmob.v3.BmobUser.getCurrentUser;
 
 /**
  * UncaughtException处理类,当程序发生Uncaught异常的时候,有该类来接管程序,并记录发送错误报告.
@@ -232,12 +240,48 @@ public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
                 FileOutputStream fos = new FileOutputStream(Constant.CRASH_PATH + fileName);
                 fos.write(sb.toString().getBytes());
                 fos.close();
+
+                uploadCrashInfo(sb.toString());
             }
             return fileName;
         } catch (Exception e) {
             Log.e(TAG, "an error occured while writing file...", e);
         }
         return null;
+    }
+
+
+    /**
+     * 上传到服务器
+     */
+    private void uploadCrashInfo(String logInfo) {
+        PackageManager pm = mContext.getPackageManager();
+        try {
+            PackageInfo pi = pm.getPackageInfo(mContext.getPackageName(), PackageManager.GET_ACTIVITIES);
+
+            LogFile log = new LogFile();
+            log.setModel(Build.MODEL);
+            log.setManufacturer(Build.MANUFACTURER);
+            log.setSdk_version(Build.VERSION.SDK_INT);
+            log.setApp_version(pi.versionName);
+            log.setLogInfo(logInfo);
+
+            PersonInfo personInfo = getCurrentUser(PersonInfo.class);
+            if(null != personInfo)
+                log.setUserId(personInfo.getObjectId());
+            log.save(new SaveListener<String>() {
+                @Override
+                public void done(String s, BmobException e) {
+                    if (e == null) {
+                        LogUtil.d("log文件上传成功");
+                    } else {
+                        LogUtil.d("log文件上传失败");
+                    }
+                }
+            });
+        } catch (PackageManager.NameNotFoundException e1) {
+            e1.printStackTrace();
+        }
     }
 
 }

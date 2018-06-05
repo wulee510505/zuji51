@@ -50,7 +50,6 @@
 
         <activity android:name="com.wulee.administrator.zuji.ui.MapActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent"/>
 
         <activity android:name="com.wulee.administrator.zuji.ui.ZuJiMapActivity"
@@ -98,7 +97,6 @@
 
         <activity android:name="com.wulee.administrator.zuji.ui.SwitchMapTypeActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent"/>
 
         <activity android:name="com.wulee.administrator.zuji.ui.PersonalInfoActivity"
@@ -124,7 +122,6 @@
 
         <activity android:name="com.wulee.administrator.zuji.ui.BigSingleImgActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent"/>
 
         <activity android:name="com.wulee.administrator.zuji.ui.BigMultiImgActivity"
@@ -137,7 +134,6 @@
 
         <activity android:name="com.wulee.administrator.zuji.ui.NoticeActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent2"/>
 
         <activity android:name="com.wulee.administrator.zuji.ui.PrivateCircleActivity"
@@ -177,10 +173,14 @@
 
         <activity android:name="com.wulee.administrator.zuji.ui.SelectDateActivity"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="portrait"
             android:theme="@style/DialogActivity.Transparent2"/>
 
         <activity android:name="com.wulee.administrator.zuji.ui.FallingViewActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
+
+        <activity android:name="com.wulee.administrator.zuji.ui.NativeVideoAdActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 

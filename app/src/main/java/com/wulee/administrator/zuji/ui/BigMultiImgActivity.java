@@ -13,7 +13,6 @@ import android.widget.RelativeLayout;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
-import com.wulee.administrator.zuji.utils.UIUtils;
 import com.wulee.administrator.zuji.widget.DotIndicator;
 
 import java.util.ArrayList;
@@ -180,14 +179,8 @@ public class BigMultiImgActivity extends BaseActivity {
         public View instantiateItem(ViewGroup container, int position) {
             View view = LayoutInflater.from(BigMultiImgActivity.this).inflate(R.layout.big_single_image, null);
             ImageView imageView = view.findViewById(R.id.iv_bigimg);
-
-            int sw = UIUtils.getScreenWidthAndHeight(BigMultiImgActivity.this)[0];
-            RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-            rlp.width = sw;
-            rlp.height = sw * 3 / 2;
-            imageView.setLayoutParams(rlp);
-
             ImageUtil.setDefaultImageView(imageView, mImgUrls.get(position), R.mipmap.bg_pic_def_rect, BigMultiImgActivity.this);
+            imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             container.addView(view);
             return view;
         }

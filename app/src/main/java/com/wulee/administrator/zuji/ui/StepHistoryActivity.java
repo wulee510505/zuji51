@@ -1,24 +1,30 @@
 package com.wulee.administrator.zuji.ui;
 
+import android.graphics.Color;
 import android.os.Bundle;
-import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.github.mikephil.charting.charts.BarChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.components.YAxis;
+import com.github.mikephil.charting.data.BarData;
+import com.github.mikephil.charting.data.BarDataSet;
+import com.github.mikephil.charting.data.BarEntry;
+import com.github.mikephil.charting.interfaces.datasets.IBarDataSet;
+import com.github.mikephil.charting.utils.ColorTemplate;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.StepInfo;
 import com.wulee.administrator.zuji.utils.DateTimeUtils;
-import com.wulee.administrator.zuji.widget.CustomBarChart;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -45,6 +51,8 @@ public class StepHistoryActivity extends BaseActivity {
     TextView title;
     @InjectView(R.id.bar_chart)
     LinearLayout barChart;
+    @InjectView(R.id.chart)
+    BarChart mChart;
 
 
     @Override
@@ -69,9 +77,9 @@ public class StepHistoryActivity extends BaseActivity {
             public void done(List<StepInfo> dataList, BmobException e) {
                 if (e == null) {
                     if (null != dataList && dataList.size() > 0) {
-                        List<Map.Entry<String,List<StepInfo>>>  retMapList = processDataList(dataList);
-                        if(retMapList != null && retMapList.size()>0){
-                            initChartData(retMapList);
+                        List<Map.Entry<String, List<StepInfo>>> retMapList = processDataList(dataList);
+                        if (retMapList != null && retMapList.size() > 0) {
+                            generateData();
                         }
                     }
                 } else {
@@ -79,45 +87,45 @@ public class StepHistoryActivity extends BaseActivity {
                 }
             }
         });
+
+        BarData data = generateData();
+
+        // apply styling
+        //data.setValueTypeface(mTfLight);
+        data.setValueTextColor(Color.BLACK);
+        mChart.getDescription().setEnabled(false);
+        mChart.setDrawGridBackground(false);
+
+        XAxis xAxis = mChart.getXAxis();
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM);
+        //xAxis.setTypeface(mTfLight);
+        xAxis.setDrawGridLines(false);
+
+        YAxis leftAxis = mChart.getAxisLeft();
+        //leftAxis.setTypeface(mTfLight);
+        leftAxis.setLabelCount(20, false);
+        leftAxis.setAxisMaximum(20000);
+        leftAxis.setAxisMinimum(0);
+        leftAxis.setSpaceTop(15f);
+
+        YAxis rightAxis = mChart.getAxisRight();
+        //rightAxis.setTypeface(mTfLight);
+        rightAxis.setLabelCount(20, false);
+        rightAxis.setAxisMaximum(20000);
+        rightAxis.setAxisMinimum(0);
+        rightAxis.setSpaceTop(15f);
+
+        // set data
+        mChart.setData(data);
+        mChart.setFitBars(true);
+
+        // do not forget to refresh the chart
+        mChart.animateY(1000);
     }
 
-    private void initChartData( List<Map.Entry<String,List<StepInfo>>>  mapList) {
-        String[] xLabel = new String[7];
-        String[] datearray = new String[7];
-        for (int i = 0 ; i < 7; i++) {
-            datearray[i] =  DateTimeUtils.formatTime(DateTimeUtils.getDateBefore(new Date(),i));
-        }
-        for (int j = 0; j < datearray.length; j++) {
-            xLabel[j] =  datearray[datearray.length-1-j];
-        }
-        String[] yLabel = {"0步", "1000步", "2000步", "3000步", "4000步", "5000步", "6000步", "7000步", "8000步", "9000步","10000步","11000步","12000步","13000步","14000步","15000步"};
 
-        float[] stepdata = new float[7];
-
-        for (int k = 0; k < mapList.size(); k++) {
-            Map.Entry<String,List<StepInfo>> map = mapList.get(k);
-            String date = map.getKey();
-            StepInfo step = map.getValue().get(0);
-
-            for (String xdate : xLabel){
-                if(TextUtils.equals(date,xdate)){
-                    stepdata[k] = step.getCount();
-                }
-            }
-        }
-
-        List<float[]> data = new ArrayList<>();
-        data.add(stepdata);
-
-        List<Integer> color = new ArrayList<>();
-        color.add(R.color.colorAccent);
-        color.add(R.color.colorAccent);
-        color.add(R.color.colorAccent);
-        barChart.addView(new CustomBarChart(this, xLabel, yLabel, data, color));
-    }
-
-    private   List<Map.Entry<String,List<StepInfo>>> processDataList(List<StepInfo> dataList) {
-        Date date1 = DateTimeUtils.getDateBefore(new Date(),7);
+    private List<Map.Entry<String, List<StepInfo>>> processDataList(List<StepInfo> dataList) {
+        Date date1 = DateTimeUtils.getDateBefore(new Date(), 7);
         Date date2 = new Date();
         Iterator<StepInfo> iter = dataList.iterator();
         while (iter.hasNext()) {
@@ -126,41 +134,36 @@ public class StepHistoryActivity extends BaseActivity {
             Date date = null;
             SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             try {
-                date =  format.parse(step.getUpdatedAt());
+                date = format.parse(step.getUpdatedAt());
             } catch (ParseException e) {
                 e.printStackTrace();
             }
-            if(date.before(date1) || date.after(date2)){//去除7天前的数据，以及当天之后的数据
+            if (date.before(date1) || date.after(date2)) {//去除7天前的数据，以及当天之后的数据
                 iter.remove();
             }
         }
 
         //对数据按日期分组
         Map<String, List<StepInfo>> map = new HashMap<>();
-        for (StepInfo stepInfo: dataList){
+        for (StepInfo stepInfo : dataList) {
             String key = stepInfo.groupKey();
             // 按照key取出子集合
             List<StepInfo> subStepList = map.get(key);
 
             // 若子集合不存在，则重新创建一个新集合，并把当前stepInfo加入，然后put到map中
-            if (subStepList == null){
+            if (subStepList == null) {
                 subStepList = new ArrayList<>();
                 subStepList.add(stepInfo);
                 map.put(key, subStepList);
-            }else {
+            } else {
                 // 若子集合存在，则直接把当前stepInfo加入即可
                 subStepList.add(stepInfo);
             }
         }
 
-        List<Map.Entry<String,List<StepInfo>>> list = new ArrayList<>(map.entrySet());
-        Collections.sort(list,new Comparator<Map.Entry<String,List<StepInfo>>>() {
-            //升序排序
-            public int compare(Map.Entry<String, List<StepInfo>> o1,
-                               Map.Entry<String, List<StepInfo>> o2) {
-                return o1.getKey().compareTo(o2.getKey());
-            }
-        });
+        List<Map.Entry<String, List<StepInfo>>> list = new ArrayList<>(map.entrySet());
+        //升序排序
+        Collections.sort(list, (o1, o2) -> o1.getKey().compareTo(o2.getKey()));
         return list;
     }
 
@@ -168,5 +171,26 @@ public class StepHistoryActivity extends BaseActivity {
     @OnClick(R.id.iv_back)
     public void onViewClicked() {
         finish();
+    }
+
+
+    private BarData generateData() {
+
+        ArrayList<BarEntry> entries = new ArrayList<>();
+
+        for (int i = 0; i < 7; i++) {
+            entries.add(new BarEntry(i, (float)(Math.random()*20000)));
+        }
+
+        BarDataSet d = new BarDataSet(entries, "周运动历史");
+        d.setColors(ColorTemplate.VORDIPLOM_COLORS);
+        d.setBarShadowColor(Color.rgb(203, 203, 203));
+
+        ArrayList<IBarDataSet> sets = new ArrayList<>();
+        sets.add(d);
+
+        BarData cd = new BarData(sets);
+        cd.setBarWidth(0.9f);
+        return cd;
     }
 }
