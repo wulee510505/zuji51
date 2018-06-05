@@ -43,8 +43,6 @@ import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
 import com.xdandroid.hellodaemon.DaemonEnv;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.PermissionListener;
-import com.yanzhenjie.permission.Rationale;
-import com.yanzhenjie.permission.RationaleListener;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
 
@@ -129,12 +127,7 @@ public class ZujiFragment extends MainBaseFrag{
                 }
             }
         })
-        .rationale(new RationaleListener() {
-            @Override
-            public void showRequestPermissionRationale(int requestCode, Rationale rationale) {
-                AndPermission.rationaleDialog(mContext, rationale).show();
-            }
-        })
+        .rationale((requestCode, rationale) -> AndPermission.rationaleDialog(mContext, rationale).show())
         .start();
 
         UploadLocationService.sShouldStopService = false;
@@ -234,14 +227,15 @@ public class ZujiFragment extends MainBaseFrag{
 
         View headerView = LayoutInflater.from(mContext).inflate(R.layout.main_listview_header,null);
 
-        bannerLayout = (Banner)headerView.findViewById(R.id.banner);
+        bannerLayout = headerView.findViewById(R.id.banner);
+        bannerLayout.setDelayTime(3000);
         bannerLayout.setVisibility(View.GONE);
 
-        swipeLayout = (SwipeRefreshLayout)view.findViewById(R.id.swipeLayout);
-        mRecyclerView = (EasyRecyclerView)view.findViewById(R.id.recyclerview);
+        swipeLayout = view.findViewById(R.id.swipeLayout);
+        mRecyclerView = view.findViewById(R.id.recyclerview);
 
         mAdapter = new LocationAdapter(R.layout.location_list_item,null);
-        tvTime = (TextView)view.findViewById(R.id.tv_server_time);
+        tvTime = view.findViewById(R.id.tv_server_time);
 
         mAdapter.addHeaderView(headerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));

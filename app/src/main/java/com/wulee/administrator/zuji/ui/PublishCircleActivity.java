@@ -1,6 +1,9 @@
 package com.wulee.administrator.zuji.ui;
 
+import android.content.ContentResolver;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -12,24 +15,22 @@ import android.widget.Toast;
 
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.PublishPicGridAdapter;
+import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.CircleContent;
 import com.wulee.administrator.zuji.entity.PublishPicture;
 import com.wulee.administrator.zuji.utils.AppUtils;
+import com.wulee.administrator.zuji.utils.FileUtils;
+import com.wulee.administrator.zuji.utils.NewGlideEngine;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.UIUtils;
 import com.wulee.administrator.zuji.widget.AnFQNumEditText;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
-
-import org.devio.takephoto.app.TakePhoto;
-import org.devio.takephoto.app.TakePhotoActivity;
-import org.devio.takephoto.compress.CompressConfig;
-import org.devio.takephoto.model.TImage;
-import org.devio.takephoto.model.TResult;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -46,7 +47,7 @@ import static com.wulee.administrator.zuji.App.aCache;
  * Created by wulee on 2017/8/22 11:40
  */
 
-public class PublishCircleActivity extends TakePhotoActivity {
+public class PublishCircleActivity extends BaseActivity {
 
     @InjectView(R.id.edittext)
     AnFQNumEditText edittext;
@@ -134,14 +135,13 @@ public class PublishCircleActivity extends TakePhotoActivity {
             PublishPicture pic = picList.get(pos);
             if (null != pic) {
                 if (pic.getId() == -1) {
-                    TakePhoto mTakePhoto = getTakePhoto();
-
-                    CompressConfig config = new CompressConfig.Builder()
-                            .setMaxSize(50 * 1024) //50Kb
-                            .setMaxPixel(800)
-                            .create();
-                    mTakePhoto.onEnableCompress(config, false);
-                    mTakePhoto.onPickMultiple(maxSelPicNum - picList.size() + 1);
+                    Matisse.from(PublishCircleActivity.this)
+                            .choose(MimeType.allOf())
+                            .maxSelectable(maxSelPicNum - picList.size() + 1)
+                            .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                            . thumbnailScale(0.85f)
+                            .imageEngine(new NewGlideEngine())
+                            .forResult(0);
                 } else {
                     //预览大图
                     Intent intent = new Intent(PublishCircleActivity.this, BigMultiImgActivity.class);
@@ -152,47 +152,6 @@ public class PublishCircleActivity extends TakePhotoActivity {
                 }
             }
         });
-    }
-
-
-    @Override
-    public void takeCancel() {
-        super.takeCancel();
-    }
-
-    @Override
-    public void takeFail(TResult result, String msg) {
-        super.takeFail(result, msg);
-    }
-
-    @Override
-    public void takeSuccess(TResult result) {
-        super.takeSuccess(result);
-        ArrayList<TImage> secImgs = result.getImages();
-        for (int i = 0; i < secImgs.size(); i++) {
-            TImage img = secImgs.get(i);
-            PublishPicture pic = new PublishPicture();
-            pic.setId(i);
-            pic.setPath(img.getOriginalPath());
-            picList.add(pic);
-        }
-        Iterator<PublishPicture> picIter = picList.iterator();
-        while (picIter.hasNext()) {
-            PublishPicture pic = picIter.next();
-            if (pic.getId() == -1)
-                picIter.remove();
-        }
-        imgUrls = new String[picList.size()];
-        for (int i = 0; i < picList.size(); i++) {
-            imgUrls[i] = picList.get(i).getPath();
-        }
-        if (picList.size() < 9) {
-            PublishPicture pic = new PublishPicture();
-            pic.setId(-1);
-            pic.setPath("");
-            picList.add(picList.size(), pic);
-        }
-        mGridAdapter.setSelPic(picList);
     }
 
     /**
@@ -305,7 +264,17 @@ public class PublishCircleActivity extends TakePhotoActivity {
         if(resultCode == RESULT_OK){
            switch (requestCode){
                case 0:
-                   String[] imgUrlsArray = data.getStringArrayExtra("remain_urls");
+                   String[] imgUrlsArray = null;
+                   List<Uri> selectedUri = Matisse.obtainResult(data);
+                   ContentResolver resolver = getContentResolver();
+                   if(selectedUri!=null&& selectedUri.size()>0){
+                       imgUrlsArray = new String[selectedUri.size()];
+                       for (int i = 0; i < selectedUri.size(); i++) {
+                           Uri uri = selectedUri.get(i);
+                           String path = FileUtils.getFilePathFromContentUri(uri,resolver);
+                           imgUrlsArray[i] = path;
+                       }
+                   }
                    if(imgUrlsArray != null && imgUrlsArray.length>0){
                        imgUrls = imgUrlsArray;
                        picList.clear();

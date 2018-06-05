@@ -4,6 +4,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.ActivityInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -29,20 +30,18 @@ import com.wulee.administrator.zuji.adapter.CircleContentAdapter;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.CircleComment;
 import com.wulee.administrator.zuji.entity.CircleContent;
-import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.ui.LoginActivity;
 import com.wulee.administrator.zuji.ui.PersonalInfoActivity;
 import com.wulee.administrator.zuji.ui.PublishCircleActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
-import com.wulee.administrator.zuji.utils.FileProvider7;
+import com.wulee.administrator.zuji.utils.FileUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
+import com.wulee.administrator.zuji.utils.NewGlideEngine;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.RecycleViewDivider;
-
-import org.devio.takephoto.app.TakePhoto;
-import org.devio.takephoto.model.CropOptions;
-import org.devio.takephoto.model.TResult;
+import com.zhihu.matisse.Matisse;
+import com.zhihu.matisse.MimeType;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -60,6 +59,7 @@ import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
+import static android.app.Activity.RESULT_OK;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
 import static com.wulee.administrator.zuji.App.aCache;
 
@@ -127,13 +127,13 @@ public class CircleFragment extends MainBaseFrag {
         View headerView = LayoutInflater.from(mContext).inflate(R.layout.circle_list_header, null);
         ivHeaderBg =  headerView.findViewById(R.id.iv_header_bg);
         ivHeaderBg.setOnLongClickListener(view -> {
-            TakePhoto takePhoto = getTakePhoto();
-            File file = new File(Constant.TEMP_FILE_PATH, "circle_header_bg" + ".jpg");
-            if (!file.getParentFile().exists()) file.getParentFile().mkdirs();
-            Uri imageUri =  FileProvider7.getUriForFile(mContext, file);
-            CropOptions cropOptions = new CropOptions.Builder().setAspectX(1).setAspectY(1).setWithOwnCrop(true).create();
-            takePhoto.onPickFromGalleryWithCrop(imageUri, cropOptions);
-
+            Matisse.from(CircleFragment.this)
+                    .choose(MimeType.allOf())
+                    .maxSelectable(1)
+                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                    . thumbnailScale(0.85f)
+                    .imageEngine(new NewGlideEngine())
+                    .forResult(100);
             return false;
         });
 
@@ -213,21 +213,20 @@ public class CircleFragment extends MainBaseFrag {
         mContext.registerReceiver(mReceiver,filter);
     }
 
-    @Override
-    public void takeCancel() {
-        super.takeCancel();
-    }
 
     @Override
-    public void takeFail(TResult result, String msg) {
-        super.takeFail(result, msg);
-    }
-
-    @Override
-    public void takeSuccess(TResult result) {
-        super.takeSuccess(result);
-        String savePath = result.getImages().get(0).getOriginalPath();
-        uploadImgFile(savePath);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 100 && resultCode == RESULT_OK) {
+            List<Uri> selectedUri = Matisse.obtainResult(data);
+            if(selectedUri!=null&& selectedUri.size()>0){
+                Uri uri = selectedUri.get(0);
+                String path = FileUtils.getFilePathFromContentUri(uri,getActivity().getContentResolver());
+                if (!TextUtils.isEmpty(path)) {
+                    uploadImgFile(path);
+                }
+            }
+        }
     }
 
     /**

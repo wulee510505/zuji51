@@ -159,7 +159,7 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                 //多对多关联指向CircleContent的`likes`字段
                 circleContent.setLikes(relation);
 
-                circleContent.update(circleContent.getObjectId(),new UpdateListener() {
+               circleContent.update(new UpdateListener() {
                     @Override
                     public void done(BmobException e) {
                         llLikeAndComment.setVisibility(View.GONE);

@@ -20,6 +20,8 @@ public interface Constant {
 
     String BOMB_APP_ID = "ac67374a92fdca635c75eb6388e217a4";
 
+    String YOUMI_APP_ID = "403ee7dca08bf6fc";
+    String YOUMI_SECRET = "0959c0f3e3f38b63";
 
     String KEY_SPLASH_PIC_URL = "key_splash_pic_url";
     int SPLASH_PIC_URL_SAVE_TIME =  60 * 60 * 1; //1小时

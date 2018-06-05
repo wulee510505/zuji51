@@ -13,9 +13,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.Request;
-import com.bumptech.glide.request.target.SizeReadyCallback;
-import com.bumptech.glide.request.target.Target;
+import com.bumptech.glide.load.resource.gif.GifDrawable;
+import com.bumptech.glide.request.target.SimpleTarget;
 import com.bumptech.glide.request.transition.Transition;
 import com.huxq17.swipecardsview.BaseCardAdapter;
 import com.wulee.administrator.zuji.App;
@@ -60,106 +59,56 @@ public class FunPicAdapter extends BaseCardAdapter {
         if (datas == null || datas.size() == 0) {
             return;
         }
-        final ImageView imageView = (ImageView) cardview.findViewById(R.id.iv_fun_pic);
-        TextView tvSave = (TextView) cardview.findViewById(R.id.tv_save);
+        final ImageView imageView = cardview.findViewById(R.id.iv_fun_pic);
+        TextView tvSave =  cardview.findViewById(R.id.tv_save);
 
         final FunPicInfo meizi = datas.get(position);
         String url = meizi.getUrl();
-        //ImageUtil.setDefaultImageView(imageView,url,R.mipmap.bg_pic_def_rect,context);
         final Bitmap[] bmpSource = {null};
-        Glide.with(App.context).load(url).into(new Target<Drawable>() {
+        SimpleTarget target = new SimpleTarget<Drawable>(400,400) {
             @Override
-            public void onLoadStarted(@Nullable Drawable drawable) {
-
+            public void onResourceReady(@NonNull Drawable resource, @Nullable Transition<? super Drawable> transition) {
+                Bitmap bmp = null;
+                if(resource instanceof GifDrawable){
+                    bmp = ((GifDrawable) resource).getFirstFrame();
+                }else{
+                    BitmapDrawable bd = (BitmapDrawable) resource;
+                    bmp = bd.getBitmap();
+                }
+                bmpSource[0] = bmp;
+                imageView.setImageBitmap(bmp);
             }
-            @Override
-            public void onLoadFailed(@Nullable Drawable drawable) {
+        };
+        Glide.with(App.context).load(url).into(target);
 
-            }
-
-            @Override
-            public void onResourceReady(@NonNull Drawable drawable, @Nullable Transition<? super Drawable> transition) {
-                BitmapDrawable bd = (BitmapDrawable) drawable;
-                bmpSource[0] = bd.getBitmap();
-                imageView.setImageBitmap( bd.getBitmap());
-            }
-
-            @Override
-            public void onLoadCleared(@Nullable Drawable drawable) {
-
-            }
-
-            @Override
-            public void getSize(@NonNull SizeReadyCallback sizeReadyCallback) {
-
-            }
-
-            @Override
-            public void removeCallback(@NonNull SizeReadyCallback sizeReadyCallback) {
-
-            }
-
-            @Override
-            public void setRequest(@Nullable Request request) {
-
-            }
-
-            @Nullable
-            @Override
-            public Request getRequest() {
-                return null;
-            }
-
-            @Override
-            public void onStart() {
-
-            }
-
-            @Override
-            public void onStop() {
-
-            }
-
-            @Override
-            public void onDestroy() {
-
-            }
-        });
-
-
-        tvSave.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                AndPermission.with(context)
-                        .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .callback(new PermissionListener() {
-                            @Override
-                            public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                                if(bmpSource[0] != null){
-                                    File dir = new File(Constant.SAVE_PIC);
-                                    if (!dir.exists()) {
-                                        dir.mkdirs();
-                                    }
-                                    try {
-                                        String filePath = Constant.SAVE_PIC + meizi.get_id()+".jpg";
-                                        if(!FileUtils.isFileExists(filePath)){
-                                            ImageUtil.saveBitmap(bmpSource[0],filePath);
-                                        }
-                                        Toast.makeText(context, "图片已保存至"+ Constant.SAVE_PIC , Toast.LENGTH_SHORT).show();
-                                        OtherUtil.updateGallery(context,filePath);
-                                    } catch (IOException e) {
-                                        e.printStackTrace();
-                                    }
+        tvSave.setOnClickListener(view -> AndPermission.with(context)
+                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                .callback(new PermissionListener() {
+                    @Override
+                    public void onSucceed(int requestCode, List<String> grantedPermissions) {
+                        if(bmpSource[0] != null){
+                            File dir = new File(Constant.SAVE_PIC);
+                            if (!dir.exists()) {
+                                dir.mkdirs();
+                            }
+                            try {
+                                String filePath = Constant.SAVE_PIC + meizi.get_id()+".jpg";
+                                if(!FileUtils.isFileExists(filePath)){
+                                    ImageUtil.saveBitmap(bmpSource[0],filePath);
                                 }
+                                Toast.makeText(context, "图片已保存至"+ Constant.SAVE_PIC , Toast.LENGTH_SHORT).show();
+                                OtherUtil.updateGallery(context,filePath);
+                            } catch (IOException e) {
+                                e.printStackTrace();
                             }
-                            @Override
-                            public void onFailed(int requestCode, List<String> deniedPermissions) {
+                        }
+                    }
+                    @Override
+                    public void onFailed(int requestCode, List<String> deniedPermissions) {
 
-                            }
-                        })
-                        .start();
-            }
-        });
+                    }
+                })
+                .start());
     }
 
     /**

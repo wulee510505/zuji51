@@ -115,6 +115,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:text="姓名"
+                    android:drawableLeft="@mipmap/icon_name"
+                    android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
                     android:textSize="@dimen/com_tv_size_middle" />
 
@@ -149,10 +151,13 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
+                    android:layout_alignParentStart="true"
+                    android:layout_alignParentTop="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:text="性别"
+                    android:drawableLeft="@mipmap/icon_gender"
+                    android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
                     android:textSize="@dimen/com_tv_size_middle" />
 
@@ -191,6 +196,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:text="生日"
+                    android:drawableLeft="@mipmap/icon_birthday"
+                    android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
                     android:textSize="@dimen/com_tv_size_middle" />
 
@@ -229,6 +236,8 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:text="圈子"
+                    android:drawableLeft="@mipmap/icon_circle"
+                    android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
                     android:textSize="@dimen/com_tv_size_middle" />
 

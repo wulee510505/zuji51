@@ -8,10 +8,10 @@
 
     <com.wulee.administrator.zuji.widget.RCRelativeLayout
         android:id="@+id/rl_head_layout"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
         android:layout_centerVertical="true"
-        app:rc_stroke_width="1dp"
+        app:rc_stroke_width="1px"
         app:round_as_circle="true"
         app:round_corner="30dp"
         app:round_corner_bottom_right="0dp"

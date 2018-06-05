@@ -56,7 +56,7 @@ public class UserGroupAdapter extends BaseQuickAdapter<PersonInfo,BaseViewHolder
             if(currPiInfo == null){
                 return;
             }
-            Intent intent;
+            Intent intent = null;
             if(TextUtils.equals(piInfo.getUsername(),currPiInfo.getUsername())){
                 intent = new Intent(mContext, PersonalInfoActivity.class);
             }else{

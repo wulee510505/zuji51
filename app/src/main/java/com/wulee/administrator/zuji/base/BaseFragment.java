@@ -2,17 +2,16 @@ package com.wulee.administrator.zuji.base;
 
 
 import android.app.Activity;
+import android.support.v4.app.Fragment;
 
 import com.wulee.administrator.zuji.widget.BaseProgressDialog;
-
-import org.devio.takephoto.app.TakePhotoFragment;
 
 
 /**
  * Created by wulee on 2016/12/15
  */
 
-public abstract class BaseFragment extends TakePhotoFragment {
+public abstract class BaseFragment extends Fragment {
 
     private BaseProgressDialog mProgressDialog = null;
     /**

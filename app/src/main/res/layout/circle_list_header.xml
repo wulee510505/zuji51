@@ -13,6 +13,20 @@
         android:background="@mipmap/bg_circle_header" />
 
 
+    <com.wulee.administrator.zuji.widget.CustomScrollBar
+        android:id="@+id/hor"
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        app:clickEnable="true"
+        app:isHorizontal="true"
+        app:speed="2"
+        app:text="@string/text_ad"
+        app:textColor="@color/colorAccent"
+        app:textSize="16sp"
+        app:times="5"
+        android:visibility="gone"/>
+
+
     <com.wulee.administrator.zuji.widget.RCRelativeLayout
         android:id="@+id/avatarBg"
         android:layout_width="80dp"

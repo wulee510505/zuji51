@@ -33,6 +33,9 @@ ext{
             stetho              :  "com.facebook.stetho:stetho:1.4.2",
             debugleakcanary     : "com.squareup.leakcanary:leakcanary-android:1.5.4",
             releaseleakcanary   : "com.squareup.leakcanary:leakcanary-android-no-op:1.5.4",
+            MPAndroidChart      : "com.github.PhilJay:MPAndroidChart:v3.0.3",
+            MPAndroidChartRealm : "com.github.PhilJay:MPAndroidChart-Realm:v2.0.2@aar",
+            matisse             : "com.zhihu.android:matisse:0.4.3",
 
             bmobPush            : "cn.bmob.android:bmob-push:0.8",
             bmobSms             : "cn.bmob.android:bmob-sms:1.0.1",
@@ -45,8 +48,8 @@ ext{
             compileSdkVersion : 27,
             minSdkVersion     : 21,
             targetSdkVersion  : 27,
-            versionCode       : 27,
-            versionName       : "1.4.5"
+            versionCode       : 29,
+            versionName       : "1.4.7"
     ]
 
 }

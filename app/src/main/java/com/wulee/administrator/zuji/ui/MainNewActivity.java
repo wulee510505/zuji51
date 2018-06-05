@@ -2,6 +2,8 @@ package com.wulee.administrator.zuji.ui;
 
 import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -56,6 +58,7 @@ import com.wulee.administrator.zuji.utils.ConfigKey;
 import com.wulee.administrator.zuji.utils.HolidayUtil;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
+import com.wulee.administrator.zuji.utils.MarketUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.PhoneUtil;
 import com.wulee.administrator.zuji.widget.CoolImageView;
@@ -556,6 +559,14 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
             startActivity(new Intent(this,SettingActivity.class));
         }else  if (id ==  R.id.item_about) {
             startActivity(new Intent(this,AboutMeActivity.class));
+        }else  if (id ==  R.id.item_goto_market) {
+            PackageManager pm = getPackageManager();
+            try {
+                PackageInfo pi = pm.getPackageInfo(getPackageName(), PackageManager.GET_ACTIVITIES);
+                MarketUtils.goToMarket(this,pi.packageName,null);
+            } catch (PackageManager.NameNotFoundException e) {
+                e.printStackTrace();
+            }
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
