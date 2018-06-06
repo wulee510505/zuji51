@@ -71,7 +71,7 @@ public class NoticeActivity extends BaseActivity {
     }
 
     @Override
-    protected int getStateBarColor() {
+    protected int getImmersionBarColor() {
         return R.color.color_transparent;
     }
 

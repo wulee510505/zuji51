@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.ProgressBar;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
@@ -25,6 +26,8 @@ public class ComWebActivity extends AppCompatActivity implements WebFragment.OnW
     private int mBgTitleColorRes;
     private String url;
     private String title;
+
+    protected ImmersionBar mImmersionBar;
 
     /**
      * 启动 Web 容器页面
@@ -46,7 +49,16 @@ public class ComWebActivity extends AppCompatActivity implements WebFragment.OnW
 
         initView();
         initData();
+        initImmersionBar(mBgTitleColorRes);
     }
+
+    protected void initImmersionBar(int statusBarColor) {
+        //在BaseActivity里初始化
+        mImmersionBar = ImmersionBar.with(this);
+        mImmersionBar.statusBarColor(statusBarColor);
+        mImmersionBar.init();
+    }
+
 
     private void initView() {
         titlelayout = findViewById(R.id.titlelayout);
@@ -113,4 +125,12 @@ public class ComWebActivity extends AppCompatActivity implements WebFragment.OnW
         }
     }
 
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mImmersionBar != null){
+            //必须调用该方法，防止内存泄漏，不调用该方法，如果界面bar发生改变，在不关闭app的情况下，退出此界面再进入将记忆最后一次bar改变的状态
+            mImmersionBar.destroy();
+        }
+    }
 }

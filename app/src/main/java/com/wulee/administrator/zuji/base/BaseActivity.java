@@ -10,9 +10,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.WindowManager;
 import android.widget.Toast;
 
+import com.gyf.barlibrary.ImmersionBar;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.utils.AppUtils;
-import com.wulee.administrator.zuji.utils.SystemBarTintManager;
 import com.wulee.administrator.zuji.widget.BaseProgressDialog;
 
 /**
@@ -20,6 +20,7 @@ import com.wulee.administrator.zuji.widget.BaseProgressDialog;
  */
 public class BaseActivity extends AppCompatActivity {
     private BaseProgressDialog mProgressDialog = null;
+    protected ImmersionBar mImmersionBar;
 
     @Override
     public void setContentView(@LayoutRes int layoutResID) {
@@ -29,13 +30,20 @@ public class BaseActivity extends AppCompatActivity {
             //透明状态栏
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
         }
-        setStateBarColor();
+        //初始化沉浸式
+        if (isImmersionBarEnabled()){
+            initImmersionBar();
+        }
     }
 
     @Override
     protected void onDestroy() {
         // TODO Auto-generated method stub
         super.onDestroy();
+        if (mImmersionBar != null){
+            //必须调用该方法，防止内存泄漏，不调用该方法，如果界面bar发生改变，在不关闭app的情况下，退出此界面再进入将记忆最后一次bar改变的状态
+            mImmersionBar.destroy();
+        }
         // 结束Activity&从堆栈中移除
         AppUtils.getAppManager().finishActivity(this);
     }
@@ -101,23 +109,29 @@ public class BaseActivity extends AppCompatActivity {
         }
     }
 
+    protected void initImmersionBar() {
+        //在BaseActivity里初始化
+        mImmersionBar = ImmersionBar.with(this);
+        mImmersionBar.statusBarColor(getImmersionBarColor());
+        mImmersionBar.init();
+    }
+
     /**
-     * 改变状态栏颜色
+     * 是否可以使用沉浸式
+     * Is immersion bar enabled boolean.
+     * @return the boolean
      */
-    private void setStateBarColor() {
-        int res = R.color.colorAccent;
-        if(-1 != getStateBarColor()) {
-            res = getStateBarColor();
-        }
-        SystemBarTintManager tintManager = new SystemBarTintManager(this);
-        tintManager.setStatusBarTintEnabled(true);
-        tintManager.setStatusBarTintResource(res);
+    protected boolean isImmersionBarEnabled() {
+        return true;
     }
 
-    protected int getStateBarColor() {
-        return -1;
+    /**
+     * 设置状态栏颜色
+     * @return
+     */
+    protected int getImmersionBarColor() {
+        return R.color.colorAccent;
     }
-
 
     /**
      * 检查网络连接

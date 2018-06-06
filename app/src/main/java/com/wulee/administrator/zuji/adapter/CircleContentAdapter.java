@@ -73,9 +73,9 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     protected void convert(BaseViewHolder baseViewHolder, final CircleContent circleContent) {
             ImageView ivAvatar = baseViewHolder.getView(R.id.userAvatar);
             if(circleContent.personInfo != null && !TextUtils.isEmpty(circleContent.personInfo.getHeader_img_url()) && !isScrolling) {
-                ImageUtil.setDefaultImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_rect, mcontext);
+                ImageUtil.setDefaultImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_rect_colorized, mcontext);
             } else{
-                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_rect,mcontext);
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_rect_colorized,mcontext);
             }
 
             ivAvatar.setOnClickListener(view -> {

@@ -106,13 +106,13 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
                 LogUtil.e("请求插播广告失败，errorCode: %s", errorCode);
                 switch (errorCode) {
                     case ErrorCode.NON_NETWORK:
-                        OtherUtil.showToastText("网络异常");
+                        LogUtil.e("网络异常");
                         break;
                     case ErrorCode.NON_AD:
-                        OtherUtil.showToastText("暂无视频广告");
+                        LogUtil.e("暂无视频广告");
                         break;
                     default:
-                        OtherUtil.showToastText("请稍后再试");
+                        LogUtil.e("请稍后再试");
                         break;
                 }
             }

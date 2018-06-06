@@ -43,7 +43,7 @@ public class BigSingleImgActivity extends BaseActivity {
     }
 
     @Override
-    protected int getStateBarColor() {
+    protected int getImmersionBarColor() {
         return R.color.color_transparent;
     }
 

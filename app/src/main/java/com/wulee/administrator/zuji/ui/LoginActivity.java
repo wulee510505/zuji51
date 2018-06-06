@@ -109,6 +109,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                 if(e == null){
                     aCache.put("has_login","yes");
                     aCache.put(ConfigKey.KEY_CURR_LOGIN_MOBILE,mobile);
+                    aCache.put(ConfigKey.KEY_LOGIN_TIME, System.currentTimeMillis()+"");
 
                     PersonInfo pi = PersonInfo.getCurrentUser(PersonInfo.class);
                     if(null != pi){
@@ -119,6 +120,8 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
                     startActivity(new Intent(LoginActivity.this,MainNewActivity.class));
                     LoginActivity.this.finish();
+
+
                 }else{
                     toast("登录失败:" + e.getMessage());
                 }

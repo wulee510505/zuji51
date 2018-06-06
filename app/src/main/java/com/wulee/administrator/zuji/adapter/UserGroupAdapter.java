@@ -45,11 +45,14 @@ public class UserGroupAdapter extends BaseQuickAdapter<PersonInfo,BaseViewHolder
             tvName.setText(PhoneUtil.encryptTelNum(piInfo.getUsername()));
         }
 
+        TextView tvLoginTime = baseViewHolder.getView(R.id.tv_first_login);
+        tvLoginTime.setText(piInfo.getCreatedAt()+"第一次来到了足迹");
+
         ImageView ivAvatar = baseViewHolder.getView(R.id.iv_header);
         if(piInfo != null && !TextUtils.isEmpty(piInfo.getHeader_img_url()) && !isScrolling) {
-            ImageUtil.setDefaultImageView(ivAvatar, piInfo.getHeader_img_url(), R.mipmap.icon_user_def_rect, context);
+            ImageUtil.setDefaultImageView(ivAvatar, piInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, context);
         } else{
-            ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_rect,context);
+            ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
         }
         ivAvatar.setOnClickListener(view -> {
             PersonInfo currPiInfo = BmobUser.getCurrentUser(PersonInfo.class);
