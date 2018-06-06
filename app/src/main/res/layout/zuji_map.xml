@@ -15,7 +15,7 @@
         app:titleCenterText="我的足迹"
         app:titleLeftImg="@mipmap/icon_back"
         app:titleLeftImgVisible="true"
-        app:titleLeftText="返回"
+        app:titleLeftText=""
         app:titleTextColor="@color/color_white"
         app:titleTextSize="18sp" />
 

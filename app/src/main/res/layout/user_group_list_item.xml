@@ -8,8 +8,8 @@
 
     <com.wulee.administrator.zuji.widget.RCRelativeLayout
         android:id="@+id/rl_head_layout"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_centerVertical="true"
         app:rc_stroke_width="1px"
         app:round_as_circle="true"
@@ -22,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_centerVertical="true"
-            android:src="@mipmap/icon_user_def"/>
+            android:src="@mipmap/icon_user_def_colorized"/>
 
     </com.wulee.administrator.zuji.widget.RCRelativeLayout>
 
@@ -33,10 +33,21 @@
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/rl_head_layout"
         android:layout_marginLeft="12dp"
-        android:layout_centerVertical="true"
         android:singleLine="true"
         android:text=""
         android:textColor="@color/ctv_black_2"
         android:textSize="16sp" />
+
+    <TextView
+        android:id="@+id/tv_first_login"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@id/rl_head_layout"
+        android:layout_alignLeft="@id/tv_user_name"
+        android:layout_below="@id/tv_user_name"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/ctv_black_3"
+        android:textSize="13sp" />
 
 </RelativeLayout>

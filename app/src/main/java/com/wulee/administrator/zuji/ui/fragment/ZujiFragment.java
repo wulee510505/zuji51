@@ -17,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -37,6 +38,7 @@ import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
 import com.wulee.administrator.zuji.utils.GlideImageLoader;
 import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.Pedometer;
+import com.wulee.administrator.zuji.utils.UIUtils;
 import com.wulee.administrator.zuji.widget.AnimArcButtons;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
@@ -227,9 +229,16 @@ public class ZujiFragment extends MainBaseFrag{
 
         View headerView = LayoutInflater.from(mContext).inflate(R.layout.main_listview_header,null);
 
+        float rate = (float) 2.46/1;
+
         bannerLayout = headerView.findViewById(R.id.banner);
         bannerLayout.setDelayTime(3000);
         bannerLayout.setVisibility(View.GONE);
+
+        RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) bannerLayout.getLayoutParams();
+        rlp.height = (int) (UIUtils.getScreenWidthAndHeight(mContext)[0]/rate);
+        bannerLayout.setLayoutParams(rlp);
+
 
         swipeLayout = view.findViewById(R.id.swipeLayout);
         mRecyclerView = view.findViewById(R.id.recyclerview);

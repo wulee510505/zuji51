@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -14,6 +15,7 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.widget.DotIndicator;
+import com.wulee.administrator.zuji.widget.ZoomImageView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -58,6 +60,8 @@ public class BigMultiImgActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.big_mutil_image);
         ButterKnife.inject(this);
@@ -107,12 +111,8 @@ public class BigMultiImgActivity extends BaseActivity {
 
 
     @Override
-    protected int getStateBarColor() {
-        if(showtitle){
-            return R.color.colorAccent;
-        }else{
-            return R.color.transparent;
-        }
+    protected int getImmersionBarColor() {
+        return R.color.transparent;
     }
 
     @OnClick({R.id.iv_back, R.id.iv_delete})
@@ -178,9 +178,8 @@ public class BigMultiImgActivity extends BaseActivity {
         @Override
         public View instantiateItem(ViewGroup container, int position) {
             View view = LayoutInflater.from(BigMultiImgActivity.this).inflate(R.layout.big_single_image, null);
-            ImageView imageView = view.findViewById(R.id.iv_bigimg);
+            ZoomImageView imageView = view.findViewById(R.id.iv_bigimg);
             ImageUtil.setDefaultImageView(imageView, mImgUrls.get(position), R.mipmap.bg_pic_def_rect, BigMultiImgActivity.this);
-            imageView.setLayoutParams(new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT));
             container.addView(view);
             return view;
         }

@@ -36,6 +36,8 @@ ext{
             MPAndroidChart      : "com.github.PhilJay:MPAndroidChart:v3.0.3",
             MPAndroidChartRealm : "com.github.PhilJay:MPAndroidChart-Realm:v2.0.2@aar",
             matisse             : "com.zhihu.android:matisse:0.4.3",
+            immersionBar        :  "com.gyf.barlibrary:barlibrary:2.3.0", //沉浸式状态栏、导航栏
+            newbieGuide         :  "com.github.huburt-Hu:NewbieGuide:v2.1.0",
 
             bmobPush            : "cn.bmob.android:bmob-push:0.8",
             bmobSms             : "cn.bmob.android:bmob-sms:1.0.1",

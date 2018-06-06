@@ -8,6 +8,8 @@ import android.text.TextUtils;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.app.hubert.guide.NewbieGuide;
+import com.app.hubert.guide.model.GuidePage;
 import com.facebook.stetho.common.LogUtil;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.wulee.administrator.zuji.R;
@@ -110,6 +112,13 @@ public class TodayInHistoryActivity extends BaseActivity {
             }
         });
         helper.start();
+
+        NewbieGuide.with(this)
+                .setLabel("guide1")
+                .addGuidePage(GuidePage.newInstance()
+                        .addHighLight(mTvCountDown)
+                        .setLayoutRes(R.layout.newguide_today_in_history))
+                .show();
     }
 
     private List<HistoryInfo> jsonParse(String json) {

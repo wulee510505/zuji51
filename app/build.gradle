@@ -99,7 +99,8 @@ dependencies {
     implementation thirdDependencies.MPAndroidChart
     implementation thirdDependencies.MPAndroidChartRealm
     implementation thirdDependencies.matisse
-
+    implementation thirdDependencies.immersionBar
+    implementation thirdDependencies.newbieGuide
 
     implementation thirdDependencies.bmobPush
     //Bmob的推送包

@@ -54,7 +54,7 @@ public class WeatherActivity extends BaseActivity {
     }
 
     @Override
-    protected int getStateBarColor() {
+    protected int getImmersionBarColor() {
         return R.color.color_weather_view;
     }
 
