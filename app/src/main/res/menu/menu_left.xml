@@ -4,6 +4,7 @@
 
     <group android:checkableBehavior="none">
         <item
+            app:actionLayout="@layout/pushmsg_badge"
             android:id="@+id/item_pushmsg"
             android:icon="@mipmap/icon_menu_pushmsg"
             android:title="消息"/>

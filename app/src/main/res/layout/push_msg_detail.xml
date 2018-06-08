@@ -46,7 +46,10 @@
             android:id="@+id/rl_play_msg_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="10dp">
+            android:paddingTop="10dp"
+            android:paddingBottom="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp">
 
             <ImageView
                 android:id="@+id/iv_play_msg_content"
@@ -61,7 +64,7 @@
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
                 android:layout_toRightOf="@id/iv_play_msg_content"
-                android:layout_marginLeft="5dp"
+                android:layout_marginLeft="10dp"
                 android:layout_gravity="center_vertical"
                 android:textSize="14sp"
                 android:textColor="@color/baseGrayNor"

@@ -42,6 +42,7 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.database.bean.PushMessage;
 import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.MessageInfo;
 import com.wulee.administrator.zuji.entity.SignInfo;
@@ -82,6 +83,9 @@ import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
 import cn.bmob.v3.update.UpdateStatus;
+import de.greenrobot.event.EventBus;
+import de.greenrobot.event.Subscribe;
+import de.greenrobot.event.ThreadMode;
 
 import static cn.bmob.v3.BmobUser.getCurrentUser;
 import static com.wulee.administrator.zuji.App.aCache;
@@ -101,6 +105,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
     private TextView mTvMobile;
     private TextView mTvSign;
     private TextView mTvIntegral;
+    private TextView tvNewPushMsg;
     private TextView tvNewMsg;
 
     private MainFPagerAdaper mainFPagerAdaper;
@@ -116,6 +121,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
     private long mLastClickReturnTime = 0l; // 记录上一次点击返回按钮的时间
     private Bitmap finalBitmap;
+    private final int INTENT_TO_PUSHMSG_LIST = 100;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -135,6 +141,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         initSelectTab(pos);
         sendFragmentFirstSelectedMsg(pos);
 
+        EventBus.getDefault().register(this);
 
         long lastShowNoticeTime = 0L;
         try {
@@ -288,6 +295,9 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         mTvIntegral= (TextView) menuHeaderView.findViewById(R.id.tv_integral);
         LinearLayout llmsg = (LinearLayout) navigationView.getMenu().findItem(R.id.item_msg_board).getActionView();
         tvNewMsg = llmsg.findViewById(R.id.tv_new_msg);
+
+        LinearLayout llpushmsg = (LinearLayout) navigationView.getMenu().findItem(R.id.item_pushmsg).getActionView();
+        tvNewPushMsg = llpushmsg.findViewById(R.id.tv_new_msg);
 
         final PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         if(piInfo == null)
@@ -529,7 +539,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         if (id ==  R.id.item_loginout) {
             showLogoutDialog();
         }else  if (id ==  R.id.item_pushmsg) {
-            startActivity(new Intent(this,PushMsgListActivity.class));
+            startActivityForResult(new Intent(this,PushMsgListActivity.class),INTENT_TO_PUSHMSG_LIST);
         }else  if (id ==  R.id.item_msg_board) {
             PersonInfo personInfo = getCurrentUser(PersonInfo.class);
             if(personInfo != null){
@@ -673,6 +683,22 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         return super.dispatchKeyEvent(event);
     }
 
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == INTENT_TO_PUSHMSG_LIST){
+                tvNewPushMsg.setVisibility(View.GONE);
+            }
+        }
+    }
+
+    @Subscribe(threadMode = ThreadMode.MainThread) //在ui线程执行
+    public void onPushMsgEvent(PushMessage pushMessage) {
+        tvNewPushMsg.setVisibility(View.VISIBLE);
+    }
+
     @Override
     protected void onDestroy() {
         super.onDestroy();
@@ -683,6 +709,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
             finalBitmap=null;
             System.gc();  //提醒系统及时回收
         }
+        EventBus.getDefault().unregister(this);
     }
 
 

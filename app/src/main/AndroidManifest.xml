@@ -187,7 +187,7 @@
         <!-- 解决 Android N 7.0 上 报错：android.os.FileUriExposedException-->
        <provider
             android:name="android.support.v4.content.FileProvider"
-            android:authorities="com.wulee.administrator.zuji.fileprovider"
+            android:authorities="com.wulee.administrator.zuji"
             android:grantUriPermissions="true"
             android:exported="false"
             tools:replace="name,authorities,exported,grantUriPermissions">
@@ -197,15 +197,6 @@
                 tools:replace="name,resource"/>
         </provider>
 
-        <provider
-            android:name=".utils.MyProvider"
-            android:authorities="cn.bmob.update.fileprovider"
-            android:grantUriPermissions="true"
-            android:exported="false">
-            <meta-data
-                android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/file_paths" />
-        </provider>
 
         <!--bmob推送start-->
         <service

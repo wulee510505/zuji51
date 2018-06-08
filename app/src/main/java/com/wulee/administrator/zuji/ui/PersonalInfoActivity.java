@@ -298,7 +298,7 @@ public class PersonalInfoActivity extends BaseActivity implements ActionSheet.Me
                                         .choose(MimeType.allOf())
                                         .countable(true)
                                         //.capture(true)
-                                        //.captureStrategy(new CaptureStrategy(false,"com.wulee.administrator.zuji.fileprovider"))
+                                        //.captureStrategy(new CaptureStrategy(false,"com.wulee.administrator.zuji"))
                                         .maxSelectable(1)
                                         .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
                                         . thumbnailScale(0.85f)

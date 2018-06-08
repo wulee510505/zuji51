@@ -102,10 +102,8 @@ dependencies {
     implementation thirdDependencies.immersionBar
     implementation thirdDependencies.newbieGuide
 
-    implementation thirdDependencies.bmobPush
-    //Bmob的推送包
-    implementation thirdDependencies.bmobSms
-    //Bmob单独为短信服务提供的包
+    implementation thirdDependencies.bmobPush    //Bmob的推送包
+    //implementation thirdDependencies.bmobSms   //Bmob单独为短信服务提供的包
     //特定版本的bmob-im依赖特定版本的bmob-sdk
     implementation thirdDependencies.bmobIm
     implementation thirdDependencies.bmobSdk
@@ -114,7 +112,7 @@ dependencies {
     releaseImplementation thirdDependencies.releaseleakcanary
     implementation files('libs/BaiduLBS_Android.jar')
     implementation files('libs/okhttp-3.10.0.jar')
-    implementation fileTree(dir: 'libs', include: '*.aar')
+    implementation fileTree(include: '*.aar', dir: 'libs')
 }
 
 configurations.all {

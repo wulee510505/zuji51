@@ -49,7 +49,7 @@ public class PushMsgListActivity extends BaseActivity {
         ivBack.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                finish();
+                myfinsh();
             }
         });
 
@@ -93,5 +93,17 @@ public class PushMsgListActivity extends BaseActivity {
             mPb.setVisibility(View.GONE);
             tvNodata.setVisibility(View.VISIBLE);
         }
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        myfinsh();
+    }
+
+    private void myfinsh() {
+        Intent intent = getIntent();
+        setResult(RESULT_OK,intent);
+        finish();
     }
 }
