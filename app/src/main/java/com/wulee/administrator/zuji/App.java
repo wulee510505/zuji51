@@ -4,6 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDexApplication;
 
+import com.app.hubert.guide.util.LogUtil;
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
@@ -24,6 +25,10 @@ import cn.bmob.newim.BmobIM;
 import cn.bmob.push.BmobPush;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobConfig;
+import cn.bmob.v3.BmobInstallation;
+import cn.bmob.v3.BmobInstallationManager;
+import cn.bmob.v3.InstallationListener;
+import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.statistics.AppStat;
 import cn.finalteam.okhttpfinal.OkHttpFinal;
 import cn.finalteam.okhttpfinal.OkHttpFinalConfiguration;
@@ -115,7 +120,16 @@ public class App extends MultiDexApplication {
         Bmob.initialize(config);
         AppStat.i(BOMB_APP_ID, "",true);//统计初始化
         // 使用推送服务时的初始化操作
-        //BmobInstallation.getCurrentInstallation().save();
+        BmobInstallationManager.getInstance().initialize(new InstallationListener<BmobInstallation>() {
+            @Override
+            public void done(BmobInstallation bmobInstallation, BmobException e) {
+                if (e == null) {
+                    LogUtil.i(bmobInstallation.getObjectId() + "-" + bmobInstallation.getInstallationId());
+                } else {
+                    LogUtil.e(e.getMessage());
+                }
+            }
+        });
         // 启动推送服务
         BmobPush.startWork(this);
     }
