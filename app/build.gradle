@@ -1,17 +1,23 @@
 apply plugin: 'com.android.application'
 apply from : "config.gradle"
+apply from: 'tinker-support.gradle'
 
 android {
     signingConfigs {
         debug {
             keyAlias KEYALIAS
             keyPassword KEY_PASSWORD
-            storeFile file('F:/signePackage/wlandroid')
+            storeFile file('E:/signePackage/wlandroid')
             storePassword STORE_PASSWORD
         }
     }
     compileSdkVersion app.compileSdkVersion
     buildToolsVersion '27.0.3'
+
+    dexOptions {
+        javaMaxHeapSize "4g"
+    }
+
     defaultConfig {
         applicationId "com.wulee.administrator.zuji"
         minSdkVersion app.minSdkVersion
@@ -102,6 +108,9 @@ dependencies {
     implementation thirdDependencies.immersionBar
     implementation thirdDependencies.newbieGuide
 
+    implementation thirdDependencies.crashreport
+    implementation thirdDependencies.tinker   //指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
+
     implementation thirdDependencies.bmobPush    //Bmob的推送包
     //implementation thirdDependencies.bmobSms   //Bmob单独为短信服务提供的包
     //特定版本的bmob-im依赖特定版本的bmob-sdk
@@ -120,7 +129,7 @@ configurations.all {
         def requested = details.requested
         if (requested.group == 'com.android.support') {
             if (!requested.name.startsWith("multidex")) {
-                details.useVersion '27.0.0'
+                details.useVersion '25.3.1'
             }
         }
     }

@@ -38,7 +38,7 @@ public class FallingViewActivity extends AppCompatActivity {
         currHolidays = getIntent().getStringExtra(CURR_HOLIDAYS);
         Text2Speech.speech(this,"祝您"+ currHolidays +"快乐！",true);
 
-        mFallingView = findViewById(R.id.fallingview);
+        mFallingView = (FallingView) findViewById(R.id.fallingview);
 
         FallObject.Builder builder = null;
         if(TextUtils.equals(currHolidays, HolidayUtil.HOLIDAYS_NEWYEARSDAY)){//元旦

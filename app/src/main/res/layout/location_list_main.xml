@@ -18,7 +18,7 @@
         android:layout_height="?attr/actionBarSize"
         android:layout_below="@id/ivstatebar"
         android:background="@color/colorAccent"
-        app:titleCenterText="我的足迹"
+        app:titleCenterText="足迹"
         app:titleLeftImg="@mipmap/icon_menu"
         app:titleLeftImgVisible="true"
         app:titleLeftText=""

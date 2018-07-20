@@ -56,9 +56,9 @@ public class SelectDateActivity extends BaseActivity implements View.OnClickList
     }
 
     private void initView() {
-        mDatePicker = findViewById(R.id.date_picker);
-        tvConfirm= findViewById(R.id.tv_confirm);
-        tvCancel= findViewById(R.id.tv_cancel);
+        mDatePicker = (DatePicker) findViewById(R.id.date_picker);
+        tvConfirm= (TextView) findViewById(R.id.tv_confirm);
+        tvCancel= (TextView) findViewById(R.id.tv_cancel);
 
         setDatePickerDividerColor(mDatePicker,"#cdcdcd");
     }

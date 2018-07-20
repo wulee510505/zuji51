@@ -48,7 +48,7 @@ public class RegistActivity extends BaseActivity implements View.OnClickListener
     }
 
     private void initView() {
-        mEtName = findViewById(R.id.et_name);
+        mEtName = (EditText) findViewById(R.id.et_name);
         mEtMobile = (EditText) findViewById(R.id.et_mobile);
         mEtPwd = (EditText) findViewById(R.id.et_pwd);
         mEtPincode = (EditText) findViewById(R.id.et_pincode);

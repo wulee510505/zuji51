@@ -106,7 +106,7 @@ public class ZuJiMapActivity extends AppCompatActivity implements BaiduMap.OnMar
     }
 
     private void initView() {
-        titleLayout = findViewById(R.id.titlelayout);
+        titleLayout = (BaseTitleLayout) findViewById(R.id.titlelayout);
         mapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mapView.getMap();
 

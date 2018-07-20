@@ -124,7 +124,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
      */
     private void setupSplashAd() {
         // 创建开屏容器
-        final RelativeLayout splashLayout = findViewById(R.id.rl_splash);
+        final RelativeLayout splashLayout = (RelativeLayout) findViewById(R.id.rl_splash);
         // 对开屏进行设置
         SplashViewSettings splashViewSettings = new SplashViewSettings();
         // 设置是否展示失败自动跳转，默认自动跳转
