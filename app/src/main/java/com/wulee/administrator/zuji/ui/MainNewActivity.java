@@ -254,12 +254,12 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
 
     private void initView() {
-        mDrawerLayout =  findViewById(R.id.id_drawerLayout);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
         mDrawerLayout.setScrimColor(0x80000000);
 
-        mViewPager =  findViewById(R.id.mviewpager);
-        mRg = findViewById(R.id.mnc_rg);
-        navigationView =  findViewById(R.id.nav_view);
+        mViewPager = (ViewPager) findViewById(R.id.mviewpager);
+        mRg = (RadioGroup) findViewById(R.id.mnc_rg);
+        navigationView = (NavigationView) findViewById(R.id.nav_view);
 
         //自定义menu菜单icon和title颜色
         int[][] states = new int[][]{

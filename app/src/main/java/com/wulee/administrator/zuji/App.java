@@ -2,11 +2,14 @@ package com.wulee.administrator.zuji;
 
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
+import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
 
 import com.app.hubert.guide.util.LogUtil;
 import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
+import com.tencent.bugly.Bugly;
+import com.tencent.bugly.beta.Beta;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.service.UploadLocationService;
@@ -100,8 +103,19 @@ public class App extends MultiDexApplication {
         DaemonEnv.startServiceMayBind(UploadLocationService.class);
 
         initNetChangeReceiver();
+
+        // 调试时，将第三个参数改为true
+        Bugly.init(this, "ad97a458d2", true);
     }
 
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(base);
+
+        // 安装tinker
+        Beta.installTinker();
+    }
 
     private static void initDB(){
         DaoMaster.DevOpenHelper helper = new DaoMaster.DevOpenHelper(context, "zuji-db", null);

@@ -61,8 +61,8 @@ public class ComWebActivity extends AppCompatActivity implements WebFragment.OnW
 
 
     private void initView() {
-        titlelayout = findViewById(R.id.titlelayout);
-        mProgressBar =  findViewById(R.id.pb_web);
+        titlelayout = (BaseTitleLayout) findViewById(R.id.titlelayout);
+        mProgressBar = (ProgressBar) findViewById(R.id.pb_web);
 
         titlelayout.setOnTitleClickListener(new TitleLayoutClickListener() {
             @Override

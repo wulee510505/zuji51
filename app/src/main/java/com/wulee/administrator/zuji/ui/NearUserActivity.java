@@ -89,8 +89,8 @@ public class NearUserActivity extends BaseActivity implements RadarSearchListene
     }
 
     private void initView() {
-        titleLayout= findViewById(R.id.titlelayout);
-        mMapView = findViewById(R.id.bmapView);
+        titleLayout= (BaseTitleLayout) findViewById(R.id.titlelayout);
+        mMapView = (MapView) findViewById(R.id.bmapView);
         mBaiduMap = mMapView.getMap();
         // 开启定位图层
         mBaiduMap.setMyLocationEnabled(true);

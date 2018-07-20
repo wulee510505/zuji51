@@ -80,7 +80,7 @@ public class MessageBoardActivity extends BaseActivity {
         ButterKnife.inject(this);
 
 
-        llOpt = findViewById(R.id.llayout_opt);
+        llOpt = (LinearLayout) findViewById(R.id.llayout_opt);
         piInfo = (PersonInfo) getIntent().getSerializableExtra("piInfo");
         currPiInfo = PersonInfo.getCurrentUser(PersonInfo.class);
 
