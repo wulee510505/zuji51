@@ -7,7 +7,7 @@ android {
         debug {
             keyAlias KEYALIAS
             keyPassword KEY_PASSWORD
-            storeFile file('E:/signePackage/wlandroid')
+            storeFile file('F:/signePackage/wlandroid')
             storePassword STORE_PASSWORD
         }
     }
