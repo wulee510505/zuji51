@@ -84,6 +84,7 @@ public class NewsChildFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
         mAdapter = new NewsAdapter(R.layout.news_list_item, mDataList, mContext);
         recyclerview.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerview.setAdapter(mAdapter);

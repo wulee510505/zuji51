@@ -25,7 +25,6 @@ import com.wulee.administrator.zuji.utils.FileUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
 
 import java.io.File;
 import java.io.IOException;
@@ -82,30 +81,24 @@ public class FunPicAdapter extends BaseCardAdapter {
         Glide.with(App.context).load(url).into(target);
 
         tvSave.setOnClickListener(view -> AndPermission.with(context)
+                .runtime()
                 .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .callback(new PermissionListener() {
-                    @Override
-                    public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                        if(bmpSource[0] != null){
-                            File dir = new File(Constant.SAVE_PIC);
-                            if (!dir.exists()) {
-                                dir.mkdirs();
-                            }
-                            try {
-                                String filePath = Constant.SAVE_PIC + meizi.get_id()+".jpg";
-                                if(!FileUtils.isFileExists(filePath)){
-                                    ImageUtil.saveBitmap(bmpSource[0],filePath);
-                                }
-                                Toast.makeText(context, "图片已保存至"+ Constant.SAVE_PIC , Toast.LENGTH_SHORT).show();
-                                OtherUtil.updateGallery(context,filePath);
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
+                .onGranted(permissions -> {
+                    if(bmpSource[0] != null){
+                        File dir = new File(Constant.SAVE_PIC);
+                        if (!dir.exists()) {
+                            dir.mkdirs();
                         }
-                    }
-                    @Override
-                    public void onFailed(int requestCode, List<String> deniedPermissions) {
-
+                        try {
+                            String filePath = Constant.SAVE_PIC + meizi.get_id()+".jpg";
+                            if(!FileUtils.isFileExists(filePath)){
+                                ImageUtil.saveBitmap(bmpSource[0],filePath);
+                            }
+                            Toast.makeText(context, "图片已保存至"+ Constant.SAVE_PIC , Toast.LENGTH_SHORT).show();
+                            OtherUtil.updateGallery(context,filePath);
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
                     }
                 })
                 .start());

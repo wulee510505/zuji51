@@ -52,7 +52,13 @@ public class UserGroupAdapter extends BaseQuickAdapter<PersonInfo,BaseViewHolder
         if(piInfo != null && !TextUtils.isEmpty(piInfo.getHeader_img_url()) && !isScrolling) {
             ImageUtil.setDefaultImageView(ivAvatar, piInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, context);
         } else{
-            ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
+            if(TextUtils.equals("男",piInfo.getSex())){
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_man_def_colorized,context);
+            }else if(TextUtils.equals("女",piInfo.getSex())){
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_woman_def_colorized,context);
+            }else {
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
+            }
         }
         ivAvatar.setOnClickListener(view -> {
             PersonInfo currPiInfo = BmobUser.getCurrentUser(PersonInfo.class);

@@ -37,6 +37,7 @@ import com.wulee.administrator.zuji.ui.ZuJiMapActivity;
 import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
 import com.wulee.administrator.zuji.utils.GlideImageLoader;
 import com.wulee.administrator.zuji.utils.LocationUtil;
+import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.Pedometer;
 import com.wulee.administrator.zuji.utils.UIUtils;
 import com.wulee.administrator.zuji.widget.AnimArcButtons;
@@ -44,7 +45,6 @@ import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
 import com.xdandroid.hellodaemon.DaemonEnv;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
 import com.youth.banner.Banner;
 import com.youth.banner.Transformer;
 
@@ -116,20 +116,14 @@ public class ZujiFragment extends MainBaseFrag{
                 Manifest.permission.ACCESS_NETWORK_STATE ,Manifest.permission.CHANGE_WIFI_STATE
         };
         AndPermission.with(this)
+        .runtime()
         .permission(permissions)
-        .callback(new PermissionListener() {
-            @Override
-            public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                 LocationUtil.getInstance().startGetLocation();
-            }
-            @Override
-            public void onFailed(int requestCode, List<String> deniedPermissions) {
-                if(AndPermission.hasAlwaysDeniedPermission(mContext,deniedPermissions)){
-                    AndPermission.defaultSettingDialog(mContext).show();
-                }
+        .onGranted(permissions1 -> LocationUtil.getInstance().startGetLocation())
+        .onDenied(permissions12 -> {
+            if(AndPermission.hasAlwaysDeniedPermission(mContext,permissions12)){
+                OtherUtil.showToastText("请开启定位权限");
             }
         })
-        .rationale((requestCode, rationale) -> AndPermission.rationaleDialog(mContext, rationale).show())
         .start();
 
         UploadLocationService.sShouldStopService = false;
@@ -223,7 +217,6 @@ public class ZujiFragment extends MainBaseFrag{
             topHeaderIv.setVisibility(View.GONE);
         }
         titleLayout = (BaseTitleLayout) view.findViewById(R.id.titlelayout);
-
         menuBtns = (AnimArcButtons) view.findViewById(R.id.arc_menu_button);
 
 
@@ -241,6 +234,7 @@ public class ZujiFragment extends MainBaseFrag{
 
 
         swipeLayout = view.findViewById(R.id.swipeLayout);
+        swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
         mRecyclerView = view.findViewById(R.id.recyclerview);
 
         mAdapter = new LocationAdapter(R.layout.location_list_item,null);

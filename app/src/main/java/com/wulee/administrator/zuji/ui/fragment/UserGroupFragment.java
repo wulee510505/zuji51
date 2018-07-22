@@ -87,6 +87,7 @@ public class UserGroupFragment extends MainBaseFrag {
         } else {
             topHeaderIv.setVisibility(View.GONE);
         }
+        swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
     }
 
     @Override

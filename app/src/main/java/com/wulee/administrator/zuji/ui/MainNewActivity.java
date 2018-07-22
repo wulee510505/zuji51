@@ -64,7 +64,6 @@ import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.PhoneUtil;
 import com.wulee.administrator.zuji.widget.CoolImageView;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
 import com.zhouwei.blurlibrary.EasyBlur;
 
 import java.text.SimpleDateFormat;
@@ -236,20 +235,16 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
     }
 
     private void checkUpdate(){
-        AndPermission.with(this)
-                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                .callback(new PermissionListener() {
-                    @Override
-                    public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                        BmobUpdateAgent.forceUpdate(MainNewActivity.this);
-                    }
-                    @Override
-                    public void onFailed(int requestCode, List<String> deniedPermissions) {
-                        if(AndPermission.hasAlwaysDeniedPermission(MainNewActivity.this,deniedPermissions))
-                            AndPermission.defaultSettingDialog(MainNewActivity.this).show();
-                    }
+        AndPermission
+                .with(this)
+                .runtime()
+                .permission(Manifest.permission.RECORD_AUDIO)
+                .onGranted(permissions -> {
+                    BmobUpdateAgent.forceUpdate(MainNewActivity.this);
                 })
-                .start();
+                .onDenied(permissions -> {
+
+                }).start();
     }
 
 

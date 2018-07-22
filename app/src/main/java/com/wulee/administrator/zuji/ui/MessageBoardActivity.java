@@ -1,6 +1,5 @@
 package com.wulee.administrator.zuji.ui;
 
-import android.Manifest;
 import android.app.Dialog;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -26,8 +25,6 @@ import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
 import com.wulee.recordingibrary.entity.Voice;
 import com.wulee.recordingibrary.view.RecordVoiceButton;
-import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -111,67 +108,53 @@ public class MessageBoardActivity extends BaseActivity {
             llOpt.setVisibility(View.VISIBLE);
         }
         btnRecord.setAudioSavePath(Constant.SAVE_AUDIO);
-        AndPermission.with(this)
-                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.RECORD_AUDIO)
-                .callback(new PermissionListener() {
-                    @Override
-                    public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                        btnRecord.setEnrecordVoiceListener((length, strLength, filePath) -> {
+        btnRecord.setEnrecordVoiceListener((length, strLength, filePath) -> {
 
-                            final MessageInfo messageInfo = new MessageInfo(MessageInfo.TYPE_AUDIO);
-                            messageInfo.voice = new Voice(length, strLength, filePath);
-                            if (currPiInfo != null)
-                                messageInfo.piInfo = currPiInfo;
-                            if (piInfo != null)
-                                messageInfo.owner = piInfo;
+            final MessageInfo messageInfo = new MessageInfo(MessageInfo.TYPE_AUDIO);
+            messageInfo.voice = new Voice(length, strLength, filePath);
+            if (currPiInfo != null)
+                messageInfo.piInfo = currPiInfo;
+            if (piInfo != null)
+                messageInfo.owner = piInfo;
 
-                            //将当前用户添加到MessageInfo表中的sender字段值中，表明当前用户留了言
-                            BmobRelation relation = new BmobRelation();
-                            //将当前用户添加到多对多关联中
-                            relation.add(currPiInfo);
-                            //多对多关联指向MessageInfo的`sender`字段
-                            messageInfo.setSender(relation);
+            //将当前用户添加到MessageInfo表中的sender字段值中，表明当前用户留了言
+            BmobRelation relation = new BmobRelation();
+            //将当前用户添加到多对多关联中
+            relation.add(currPiInfo);
+            //多对多关联指向MessageInfo的`sender`字段
+            messageInfo.setSender(relation);
 
-                            showProgressDialog(false);
+            showProgressDialog(false);
 
-                            final BmobFile bmobFile = new BmobFile(new File(filePath));
-                            bmobFile.uploadblock(new UploadFileListener() {
-                                @Override
-                                public void done(BmobException e) {
-                                    if (e == null) {
-                                        LogUtil.d("上传文件成功:" + bmobFile.getFileUrl());
-                                        messageInfo.audioUrl = bmobFile.getFileUrl();
-                                        messageInfo.save(new SaveListener<String>() {
-                                            @Override
-                                            public void done(String s, BmobException e) {
-                                                stopProgressDialog();
-                                                if (e == null) {
-                                                    if (!TextUtils.isEmpty(s)) {
-                                                        getMessageList();
-                                                    }
-                                                }
-                                            }
-                                        });
-                                    } else {
-                                        LogUtil.d("上传文件失败：" + e.getMessage());
+            final BmobFile bmobFile = new BmobFile(new File(filePath));
+            bmobFile.uploadblock(new UploadFileListener() {
+                @Override
+                public void done(BmobException e) {
+                    if (e == null) {
+                        LogUtil.d("上传文件成功:" + bmobFile.getFileUrl());
+                        messageInfo.audioUrl = bmobFile.getFileUrl();
+                        messageInfo.save(new SaveListener<String>() {
+                            @Override
+                            public void done(String s, BmobException e) {
+                                stopProgressDialog();
+                                if (e == null) {
+                                    if (!TextUtils.isEmpty(s)) {
+                                        getMessageList();
                                     }
                                 }
-
-                                @Override
-                                public void onProgress(Integer value) {
-                                    // 返回的上传进度（百分比）
-                                }
-                            });
+                            }
                         });
+                    } else {
+                        LogUtil.d("上传文件失败：" + e.getMessage());
                     }
+                }
 
-                    @Override
-                    public void onFailed(int requestCode, List<String> deniedPermissions) {
-                        if (AndPermission.hasAlwaysDeniedPermission(MessageBoardActivity.this, deniedPermissions))
-                            AndPermission.defaultSettingDialog(MessageBoardActivity.this).show();
-                    }
-                })
-                .start();
+                @Override
+                public void onProgress(Integer value) {
+                    // 返回的上传进度（百分比）
+                }
+            });
+        });
 
         mAdapter = new MessageAdapter(null, this);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));

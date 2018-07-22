@@ -30,7 +30,6 @@ import com.wulee.administrator.zuji.utils.NewGlideEngine;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.ActionSheet;
 import com.yanzhenjie.permission.AndPermission;
-import com.yanzhenjie.permission.PermissionListener;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 
@@ -290,27 +289,19 @@ public class PersonalInfoActivity extends BaseActivity implements ActionSheet.Me
 
 
                 AndPermission.with(this)
+                        .runtime()
                         .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                        .callback(new PermissionListener() {
-                            @Override
-                            public void onSucceed(int requestCode, List<String> grantedPermissions) {
-                                Matisse.from(PersonalInfoActivity.this)
-                                        .choose(MimeType.allOf())
-                                        .countable(true)
-                                        //.capture(true)
-                                        //.captureStrategy(new CaptureStrategy(false,"com.wulee.administrator.zuji"))
-                                        .maxSelectable(1)
-                                        .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                                        . thumbnailScale(0.85f)
-                                        .imageEngine(new NewGlideEngine())
-                                        .forResult(AVATAR_REQUEST_CODE);
-                            }
-
-                            @Override
-                            public void onFailed(int requestCode, List<String> deniedPermissions) {
-                                if (AndPermission.hasAlwaysDeniedPermission(PersonalInfoActivity.this, deniedPermissions))
-                                    AndPermission.defaultSettingDialog(PersonalInfoActivity.this).show();
-                            }
+                        .onGranted(permissions -> {
+                            Matisse.from(PersonalInfoActivity.this)
+                                    .choose(MimeType.allOf())
+                                    .countable(true)
+                                    //.capture(true)
+                                    //.captureStrategy(new CaptureStrategy(false,"com.wulee.administrator.zuji"))
+                                    .maxSelectable(1)
+                                    .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
+                                    . thumbnailScale(0.85f)
+                                    .imageEngine(new NewGlideEngine())
+                                    .forResult(AVATAR_REQUEST_CODE);
                         })
                         .start();
                 break;

@@ -123,6 +123,7 @@ public class CircleFragment extends MainBaseFrag {
         } else {
             topHeaderIv.setVisibility(View.GONE);
         }
+        swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
 
         View headerView = LayoutInflater.from(mContext).inflate(R.layout.circle_list_header, null);
         ivHeaderBg =  headerView.findViewById(R.id.iv_header_bg);
