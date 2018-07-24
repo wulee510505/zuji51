@@ -1,6 +1,7 @@
 package com.wulee.administrator.zuji;
 
 import android.content.Context;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.multidex.MultiDex;
 import android.support.multidex.MultiDexApplication;
@@ -13,6 +14,8 @@ import com.tencent.bugly.beta.Beta;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.service.UploadLocationService;
+import com.wulee.administrator.zuji.ui.MainNewActivity;
+import com.wulee.administrator.zuji.ui.UpgradeActivity;
 import com.wulee.administrator.zuji.utils.CrashHandlerUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.network.NetChangeObserver;
@@ -104,6 +107,21 @@ public class App extends MultiDexApplication {
 
         initNetChangeReceiver();
 
+
+        /**
+         * 只允许在MainActivity上显示更新弹窗，其他activity上不显示弹窗;不设置会默认所有activity都可以显示弹窗;
+         */
+        Beta.canShowUpgradeActs.add(MainNewActivity.class);
+        Beta.upgradeListener = (ret, strategy, isManual, isSilence) -> {
+            if (strategy != null) {
+                Intent i = new Intent();
+                i.setClass(getApplicationContext(), UpgradeActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(i);
+            } else {
+                OtherUtil.showToastText("没有更新");
+            }
+        };
         // 调试时，将第三个参数改为true
         Bugly.init(this, "ad97a458d2", true);
     }

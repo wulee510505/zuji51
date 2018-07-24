@@ -33,10 +33,11 @@ import android.widget.LinearLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.facebook.stetho.common.LogUtil;
 import com.liangmayong.text2speech.Text2Speech;
+import com.tencent.bugly.beta.Beta;
+import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
 import com.wulee.administrator.zuji.App;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
@@ -81,7 +82,6 @@ import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.update.BmobUpdateAgent;
-import cn.bmob.v3.update.UpdateStatus;
 import de.greenrobot.event.EventBus;
 import de.greenrobot.event.Subscribe;
 import de.greenrobot.event.ThreadMode;
@@ -541,23 +541,34 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                 startActivity(new Intent(this,MessageBoardActivity.class).putExtra("piInfo",personInfo));
             }
         }else  if (id ==  R.id.item_checkupdate) {
-            BmobUpdateAgent.setUpdateListener((updateStatus, updateInfo) -> {
-                // TODO Auto-generated method stub
-                if (updateStatus == UpdateStatus.Yes) {//版本有更新
-
-                }else if(updateStatus == UpdateStatus.No){
-                    Toast.makeText(MainNewActivity.this,"版本无更新", Toast.LENGTH_SHORT).show();
-                }else if(updateStatus==UpdateStatus.EmptyField){//此提示只是提醒开发者关注那些必填项，测试成功后，无需对用户提示
-                    Toast.makeText(MainNewActivity.this, "请检查你AppVersion表的必填项，1、target_size（文件大小）是否填写；2、path或者android_url两者必填其中一项。", Toast.LENGTH_SHORT).show();
-                }else if(updateStatus==UpdateStatus.IGNORED){
-                    Toast.makeText(MainNewActivity.this, "该版本已被忽略更新", Toast.LENGTH_SHORT).show();
-                }else if(updateStatus==UpdateStatus.ErrorSizeFormat){
-                    Toast.makeText(MainNewActivity.this, "请检查target_size填写的格式，请使用file.length()方法获取apk大小。", Toast.LENGTH_SHORT).show();
-                }else if(updateStatus==UpdateStatus.TimeOut){
-                    Toast.makeText(MainNewActivity.this, "查询出错或查询超时", Toast.LENGTH_SHORT).show();
+            /* 设置更新状态回调接口 */
+            Beta.upgradeStateListener = new UpgradeStateListener() {
+                /**
+                 * @param isManual true:手动检查 false:自动检查
+                 */
+                @Override
+                public void onUpgradeSuccess(boolean isManual) {
+                    OtherUtil.showToastText("更新成功");
                 }
-            });
-            checkUpdate();
+                @Override
+                public void onUpgradeFailed(boolean isManual) {
+                    OtherUtil.showToastText("更新失败");
+                }
+
+                @Override
+                public void onUpgrading(boolean isManual) {
+                    OtherUtil.showToastText("正在更新...");
+                }
+                @Override
+                public void onUpgradeNoVersion(boolean isManual) {
+                    OtherUtil.showToastText("版本无更新");
+                }
+                @Override
+                public void onDownloadCompleted(boolean b) {
+                    OtherUtil.showToastText("下载完成");
+                }
+            };
+            Beta.checkUpgrade();
         }else  if (id ==  R.id.item_feedback) {
             startActivity(new Intent(this,FeedBackActivity.class));
         }else  if (id ==  R.id.item_setting) {
