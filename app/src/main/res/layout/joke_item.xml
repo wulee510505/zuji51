@@ -22,9 +22,9 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:orientation="horizontal"
             android:paddingLeft="40dp"
-            android:paddingRight="40dp"
-            android:orientation="horizontal">
+            android:paddingRight="40dp">
 
             <TextView
                 android:id="@+id/tv_copy"
@@ -37,6 +37,13 @@
                 android:text="复制"
                 android:textSize="@dimen/com_tv_size_mid_lit" />
 
+
+            <ImageView
+                android:id="@+id/iv_play_joke"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:src="@mipmap/icon_voice"/>
 
             <TextView
                 android:id="@+id/tv_share"
@@ -53,12 +60,12 @@
         </RelativeLayout>
 
 
-
         <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/ll_opt"
             android:overScrollMode="never">
+
 
             <TextView
                 android:id="@+id/tv_joke"
@@ -72,6 +79,7 @@
                 android:text=""
                 android:textColor="@color/ctv_black_2"
                 android:textSize="18sp" />
+
         </ScrollView>
 
 

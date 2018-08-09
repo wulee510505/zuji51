@@ -68,8 +68,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="20dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp"
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp"
                 android:contentDescription="@string/app_name">
 
                 <TextView
@@ -80,7 +80,7 @@
                     android:focusableInTouchMode="true"
                     android:text="头像"
                     android:textColor="@color/ctv_black_2"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_mid_lit" />
 
                 <com.wulee.administrator.zuji.widget.RCRelativeLayout
                     android:layout_width="50dp"
@@ -114,8 +114,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
                 <TextView
                     android:id="@+id/name_tv"
@@ -128,7 +128,7 @@
                     android:drawableLeft="@mipmap/icon_name"
                     android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_mid_lit" />
 
                 <EditText
                     android:id="@+id/et_name"
@@ -140,7 +140,7 @@
                     android:background="@null"
                     android:minWidth="120dp"
                     android:textColor="@color/ctv_black_3"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_normal" />
             </RelativeLayout>
 
 
@@ -157,8 +157,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
                 <TextView
                     android:id="@+id/gender_tv"
@@ -171,7 +171,7 @@
                     android:drawableLeft="@mipmap/icon_gender"
                     android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_mid_lit" />
 
                 <TextView
                     android:id="@+id/et_gender"
@@ -181,7 +181,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:textColor="@color/ctv_black_3"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_normal" />
             </RelativeLayout>
 
 
@@ -198,8 +198,8 @@
                 android:layout_height="wrap_content"
                 android:paddingTop="10dp"
                 android:paddingBottom="10dp"
-                android:paddingLeft="10dp"
-                android:paddingRight="10dp">
+                android:paddingLeft="15dp"
+                android:paddingRight="15dp">
 
                 <TextView
                     android:id="@+id/birthday_tv"
@@ -212,7 +212,7 @@
                     android:drawableLeft="@mipmap/icon_birthday"
                     android:drawablePadding="5dp"
                     android:textColor="@color/ctv_black_2"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_mid_lit" />
 
                 <TextView
                     android:id="@+id/tv_birthday"
@@ -222,7 +222,7 @@
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
                     android:textColor="@color/ctv_black_3"
-                    android:textSize="@dimen/com_tv_size_middle" />
+                    android:textSize="@dimen/com_tv_size_normal" />
             </RelativeLayout>
 
             <View

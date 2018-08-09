@@ -43,6 +43,10 @@ public class FunPicAdapter extends BaseCardAdapter {
         this.context = context;
     }
 
+    public void setData(List<FunPicInfo> datas) {
+        this.datas = datas;
+    }
+
     @Override
     public int getCount() {
         return datas.size();

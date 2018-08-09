@@ -108,10 +108,10 @@ public class App extends MultiDexApplication {
         initNetChangeReceiver();
 
 
-        /**
-         * 只允许在MainActivity上显示更新弹窗，其他activity上不显示弹窗;不设置会默认所有activity都可以显示弹窗;
-         */
-        Beta.canShowUpgradeActs.add(MainNewActivity.class);
+        Beta.initDelay = 60 * 1000;//升级检查周期(默认检查周期为0s)
+        Beta.autoInit = true;
+        Beta.autoCheckUpgrade = false;
+        Beta.canShowUpgradeActs.add(MainNewActivity.class);//只允许在MainActivity上显示更新弹窗
         Beta.upgradeListener = (ret, strategy, isManual, isSilence) -> {
             if (strategy != null) {
                 Intent i = new Intent();

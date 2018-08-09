@@ -258,7 +258,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
         //自定义menu菜单icon和title颜色
         int[][] states = new int[][]{
-                new int[]{ -android.R.attr.state_checked},
+                new int[]{ -android.R.attr.state_pressed},
                 new int[]{android.R.attr.state_checked}
         };
         final int[] colors = new int[]{              ContextCompat.getColor(this,R.color.ctv_black_2),

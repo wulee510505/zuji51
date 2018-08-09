@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,6 +26,7 @@ import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.FunPicInfo;
 import com.wulee.administrator.zuji.entity.JokeInfo;
 import com.wulee.administrator.zuji.entity.JokeUrl;
+import com.wulee.administrator.zuji.utils.NoFastClickUtils;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +62,8 @@ public class JokeFragment extends MainBaseFrag {
     SwipeCardsView swipCardsView;
     @InjectView(R.id.progress_bar)
     ProgressBar progressBar;
+    @InjectView(R.id.iv_nodata)
+    ImageView ivNodata;
     private View mRootView;
     private RelativeLayout emptyView;
 
@@ -71,9 +75,9 @@ public class JokeFragment extends MainBaseFrag {
     private List<JokeInfo> mJokecDatas = new ArrayList<>();
     private List<FunPicInfo> mJokePicDatas = new ArrayList<>();
 
-    private  final int TYPE_JOKE_TEXT = 2;
-    private  final int TYPE_JOKE_PIC= 3;
-    private  int jokeType = TYPE_JOKE_TEXT;
+    private final int TYPE_JOKE_TEXT = 2;
+    private final int TYPE_JOKE_PIC = 3;
+    private int jokeType = TYPE_JOKE_TEXT;
 
     @Nullable
     @Override
@@ -92,14 +96,14 @@ public class JokeFragment extends MainBaseFrag {
     }
 
     private void initView(View rootView) {
-        ImageView topHeaderIv =  rootView.findViewById(R.id.ivstatebar);
+        ImageView topHeaderIv = rootView.findViewById(R.id.ivstatebar);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             topHeaderIv.setVisibility(View.VISIBLE);
         } else {
             topHeaderIv.setVisibility(View.GONE);
         }
 
-        emptyView =  rootView.findViewById(R.id.emptyview);
+        emptyView = rootView.findViewById(R.id.emptyview);
         swipCardsView.retainLastCard(true);
     }
 
@@ -113,25 +117,33 @@ public class JokeFragment extends MainBaseFrag {
                 //请求网络前
                 @Override
                 public void onStart() {
-                    if(progressBar != null)
-                       progressBar.setVisibility(View.VISIBLE);
+                    if (progressBar != null)
+                        progressBar.setVisibility(View.VISIBLE);
                 }
 
                 @Override
                 public void onResponse(String response, Headers headers) {
                     super.onResponse(response, headers);
-                    if(TextUtils.isEmpty(response)){
+                    if (TextUtils.isEmpty(response)) {
                         return;
                     }
-                    if(jokeType == TYPE_JOKE_TEXT){
+                    if (jokeType == TYPE_JOKE_TEXT) {
                         mJokecDatas.clear();
                         mJokecDatas.addAll(jsonParse(response));
-                        mAdapter = new JokeAdapter(mJokecDatas, mContext);
+                        if (mAdapter == null) {
+                            mAdapter = new JokeAdapter(mJokecDatas, mContext);
+                        } else {
+                            mAdapter.setData(mJokecDatas);
+                        }
                         swipCardsView.setAdapter(mAdapter);
-                    }else{
+                    } else {
                         mJokePicDatas.clear();
                         mJokePicDatas.addAll(processJokePicInfo(jsonParse(response)));
-                        mPicAdapter = new FunPicAdapter(mJokePicDatas, mContext);
+                        if (mPicAdapter == null) {
+                            mPicAdapter = new FunPicAdapter(mJokePicDatas, mContext);
+                        } else {
+                            mPicAdapter.setData(mJokePicDatas);
+                        }
                         swipCardsView.setAdapter(mPicAdapter);
                     }
                 }
@@ -152,18 +164,18 @@ public class JokeFragment extends MainBaseFrag {
     };
 
 
-    private void  getJokeText() {
+    private void getJokeText() {
         final Message msg = mHandler.obtainMessage();
 
         final String[] jokeTextUrl = {""};
 
         String saveUrl = aCache.getAsString(Constant.KEY_JOKE_TEXT_URL);
-        if(!TextUtils.isEmpty(saveUrl)){
-            jokeTextUrl[0] =  saveUrl;
+        if (!TextUtils.isEmpty(saveUrl)) {
+            jokeTextUrl[0] = saveUrl;
 
             msg.obj = jokeTextUrl[0];
             mHandler.sendMessage(msg);
-        }else{
+        } else {
             BmobQuery<JokeUrl> query = new BmobQuery<>();
             query.findObjects(new FindListener<JokeUrl>() {
                 @Override
@@ -171,9 +183,9 @@ public class JokeFragment extends MainBaseFrag {
                     if (e == null) {
                         if (list != null && list.size() > 0) {
                             String url = list.get(0).getUrl();
-                            if (!TextUtils.isEmpty(url)){
+                            if (!TextUtils.isEmpty(url)) {
                                 jokeTextUrl[0] = url;
-                                aCache.put(Constant.KEY_JOKE_TEXT_URL,url,Constant.JOKE_TEXT_OR_PIC_URL_SAVE_TIME);
+                                aCache.put(Constant.KEY_JOKE_TEXT_URL, url, Constant.JOKE_TEXT_OR_PIC_URL_SAVE_TIME);
 
                                 msg.obj = jokeTextUrl[0];
                                 mHandler.sendMessage(msg);
@@ -185,17 +197,17 @@ public class JokeFragment extends MainBaseFrag {
         }
     }
 
-    private void  getJokePic() {
+    private void getJokePic() {
         final Message msg = mHandler.obtainMessage();
 
         final String[] jokePicUrl = {""};
         String saveUrl = aCache.getAsString(Constant.KEY_JOKE_PIC_URL);
-        if(!TextUtils.isEmpty(saveUrl)){
-            jokePicUrl[0] =  saveUrl;
+        if (!TextUtils.isEmpty(saveUrl)) {
+            jokePicUrl[0] = saveUrl;
 
             msg.obj = jokePicUrl[0];
             mHandler.sendMessage(msg);
-        }else{
+        } else {
             BmobQuery<JokeUrl> query = new BmobQuery<>();
             query.findObjects(new FindListener<JokeUrl>() {
                 @Override
@@ -203,9 +215,9 @@ public class JokeFragment extends MainBaseFrag {
                     if (e == null) {
                         if (list != null && list.size() > 0) {
                             String url = list.get(1).getUrl();
-                            if (!TextUtils.isEmpty(url)){
+                            if (!TextUtils.isEmpty(url)) {
                                 jokePicUrl[0] = url;
-                                aCache.put(Constant.KEY_JOKE_PIC_URL,url,Constant.JOKE_TEXT_OR_PIC_URL_SAVE_TIME);
+                                aCache.put(Constant.KEY_JOKE_PIC_URL, url, Constant.JOKE_TEXT_OR_PIC_URL_SAVE_TIME);
 
                                 msg.obj = jokePicUrl[0];
                                 mHandler.sendMessage(msg);
@@ -225,7 +237,7 @@ public class JokeFragment extends MainBaseFrag {
      * @return
      */
     private List<JokeInfo> jsonParse(String json) {
-        if(jokeType == TYPE_JOKE_PIC){
+        if (jokeType == TYPE_JOKE_PIC) {
             try {
                 List<JokeInfo> jokelist = new ArrayList<>();
                 JSONObject jsonObject = new JSONObject(json);
@@ -255,7 +267,7 @@ public class JokeFragment extends MainBaseFrag {
                 e.printStackTrace();
                 LogUtil.e("JsonParseActivity", "json解析出现了问题");
             }
-        }else  if(jokeType == TYPE_JOKE_TEXT){
+        } else if (jokeType == TYPE_JOKE_TEXT) {
             try {
                 List<JokeInfo> jokelist = new ArrayList<>();
                 JSONObject jsonObject = new JSONObject(json);
@@ -288,11 +300,11 @@ public class JokeFragment extends MainBaseFrag {
         return new ArrayList<>();
     }
 
-    private List<FunPicInfo>  processJokePicInfo(List<JokeInfo> list){
+    private List<FunPicInfo> processJokePicInfo(List<JokeInfo> list) {
         List<FunPicInfo> jokePicDatas = new ArrayList<>();
-        if(list != null && list.size()>0){
+        if (list != null && list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
-                JokeInfo joke  = list.get(i);
+                JokeInfo joke = list.get(i);
 
                 FunPicInfo picInfo = new FunPicInfo();
                 picInfo.setUrl(joke.getUrl());
@@ -301,7 +313,7 @@ public class JokeFragment extends MainBaseFrag {
                 jokePicDatas.add(picInfo);
             }
         }
-        return  jokePicDatas;
+        return jokePicDatas;
     }
 
 
@@ -309,24 +321,48 @@ public class JokeFragment extends MainBaseFrag {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.reset(this);
+        if(mAdapter !=null)
+            mAdapter.stopText2Speech();
     }
 
     @OnClick({R.id.title_left, R.id.title_right})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.title_left:
+                if(NoFastClickUtils.isFastClick()) {
+                    return;
+                }
                 jokeType = TYPE_JOKE_TEXT;
                 getJokeText();
+
+                titleLeft.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_white));
+                titleLeft.setBackgroundResource(R.drawable.bg_btn_left_selected);
+
+                titleRight.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_black_2));
+                titleRight.setBackgroundResource(R.drawable.bg_btn_right_normal);
                 break;
             case R.id.title_right:
+                if(NoFastClickUtils.isFastClick()) {
+                    return;
+                }
                 jokeType = TYPE_JOKE_PIC;
                 getJokePic();
+
+                titleLeft.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_black_2));
+                titleLeft.setBackgroundResource(R.drawable.bg_btn_left_normal);
+
+                titleRight.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_white));
+                titleRight.setBackgroundResource(R.drawable.bg_btn_right_selected);
                 break;
         }
     }
 
     @Override
     public void onFragmentFirstSelected() {
-          getJokeText();
+        getJokeText();
     }
+
+
+
+
 }

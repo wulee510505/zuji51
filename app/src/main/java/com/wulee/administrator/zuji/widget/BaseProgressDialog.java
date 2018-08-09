@@ -9,7 +9,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.Window;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 
 import com.wulee.administrator.zuji.R;
 
@@ -46,6 +49,11 @@ public class BaseProgressDialog {
             params.gravity = Gravity.CENTER;
             View view = inflater.inflate(R.layout.base_progress_dialog, null);
             if (view != null) {
+                ImageView spaceshipImage = view.findViewById(R.id.imageProgressDialog);
+                // 加载动画
+                Animation hyperspaceJumpAnimation = AnimationUtils.loadAnimation(mContext, R.anim.progress_anim);
+                // 使用ImageView显示动画
+                spaceshipImage.startAnimation(hyperspaceJumpAnimation);
                 root.addView(view, params);
                 this.mChild = root;
                 return true;

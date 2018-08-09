@@ -9,7 +9,6 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
@@ -62,17 +61,14 @@ public class PushMsgListActivity extends BaseActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter);
 
-        mAdapter.setOnItemClickListener(new BaseQuickAdapter.OnItemClickListener() {
-            @Override
-            public void onItemClick(BaseQuickAdapter adapter, View view, int position) {
-                List<PushMessage> dataList = mAdapter.getData();
-                if(null != dataList && dataList.size()>0){
-                    PushMessage msg = dataList.get(position);
-                    if(null != msg){
-                        Intent intent = new Intent(PushMsgListActivity.this,MsgDetailActivity.class);
-                        intent.putExtra("msg",msg);
-                        startActivity(intent);
-                    }
+        mAdapter.setOnItemClickListener((adapter, view, position) -> {
+            List<PushMessage> dataList = mAdapter.getData();
+            if(null != dataList && dataList.size()>0){
+                PushMessage msg = dataList.get(position);
+                if(null != msg){
+                    Intent intent = new Intent(PushMsgListActivity.this,MsgDetailActivity.class);
+                    intent.putExtra("msg",msg);
+                    startActivity(intent);
                 }
             }
         });
