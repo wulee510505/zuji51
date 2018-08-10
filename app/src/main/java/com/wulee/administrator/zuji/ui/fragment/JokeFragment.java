@@ -335,10 +335,10 @@ public class JokeFragment extends MainBaseFrag {
                 jokeType = TYPE_JOKE_TEXT;
                 getJokeText();
 
-                titleLeft.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_white));
+                titleLeft.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_black_2));
                 titleLeft.setBackgroundResource(R.drawable.bg_btn_left_selected);
 
-                titleRight.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_black_2));
+                titleRight.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_white));
                 titleRight.setBackgroundResource(R.drawable.bg_btn_right_normal);
                 break;
             case R.id.title_right:
@@ -348,10 +348,10 @@ public class JokeFragment extends MainBaseFrag {
                 jokeType = TYPE_JOKE_PIC;
                 getJokePic();
 
-                titleLeft.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_black_2));
+                titleLeft.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_white));
                 titleLeft.setBackgroundResource(R.drawable.bg_btn_left_normal);
 
-                titleRight.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_white));
+                titleRight.setTextColor(ContextCompat.getColor(mContext,R.color.ctv_black_2));
                 titleRight.setBackgroundResource(R.drawable.bg_btn_right_selected);
                 break;
         }

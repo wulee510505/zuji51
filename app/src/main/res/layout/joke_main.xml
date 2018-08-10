@@ -33,7 +33,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="笑话"
-                android:textColor="@color/ctv_white"
+                android:textColor="@color/ctv_black_2"
                 android:background="@drawable/bg_btn_left_selected"
                 android:textSize="18sp" />
 
@@ -49,7 +49,7 @@
                 android:layout_weight="1"
                 android:gravity="center"
                 android:text="趣图"
-                android:textColor="@color/ctv_black_2"
+                android:textColor="@color/ctv_white"
                 android:background="@drawable/bg_btn_right_normal"
                 android:textSize="18sp" />
 
