@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/iv_recent_avatar"
+            android:layout_width="@dimen/dp_40"
+            android:layout_height="@dimen/dp_40"
+            android:layout_gravity="center_vertical"
+            android:layout_alignParentLeft="true"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:src="@mipmap/icon_user_def" />
+
+        <TextView
+            android:id="@+id/tv_recent_name"
+            android:layout_width="wrap_content"
+            android:layout_height="25.0dip"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="58.0dip"
+            android:layout_toRightOf="@id/iv_recent_avatar"
+            android:ellipsize="end"
+            android:gravity="left|center"
+            android:singleLine="true"
+            android:textSize="@dimen/com_tv_size_mid_lit" />
+
+        <TextView
+            android:id="@+id/tv_recent_msg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="left"
+            android:layout_below="@id/tv_recent_name"
+            android:layout_toRightOf="@id/iv_recent_avatar"
+            android:layout_marginTop="@dimen/dp_10"
+            android:layout_marginLeft="@dimen/dp_10"
+            android:layout_marginRight="@dimen/dp_40"
+            android:layout_marginBottom="@dimen/dp_10"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:textSize="@dimen/com_tv_size_nor_lit" />
+
+        <TextView
+            android:id="@+id/tv_recent_time"
+            android:layout_width="wrap_content"
+            android:layout_height="25.0dip"
+            android:layout_above="@id/tv_recent_msg"
+            android:layout_alignParentRight="true"
+            android:layout_alignWithParentIfMissing="true"
+            android:layout_marginRight="10dip"
+            android:ellipsize="end"
+            android:gravity="center"
+            android:padding="0.0dip"
+            android:singleLine="true"
+            android:textSize="@dimen/com_tv_size_nor_lit" />
+
+        <TextView
+            android:id="@+id/tv_recent_unread"
+            android:layout_alignParentRight="true"
+            android:layout_below="@id/tv_recent_time"
+            android:layout_marginRight="10.0dip"
+            android:layout_marginBottom="@dimen/dp_4"
+            android:paddingLeft="@dimen/dp_4"
+            android:paddingRight="@dimen/dp_4"
+            android:paddingTop="@dimen/dp_4"
+            android:paddingBottom="@dimen/dp_4"
+            android:visibility="gone"
+            android:textSize="13.0dip" />
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:layout_alignParentBottom="true"
+        android:background="@color/divider_line" >
+    </View>
+
+
+</RelativeLayout>

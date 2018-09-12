@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/activity_main"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:padding="10dp">
+
+    <com.wulee.administrator.zuji.widget.RCRelativeLayout
+        android:id="@+id/rl_head_layout"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_centerVertical="true"
+        app:rc_stroke_width="1px"
+        app:round_as_circle="true"
+        app:round_corner="30dp"
+        app:round_corner_bottom_right="0dp"
+        app:stroke_color="#dedede">
+
+        <ImageView
+            android:id="@+id/iv_header"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerVertical="true"
+            android:src="@mipmap/icon_user_def_colorized"/>
+
+    </com.wulee.administrator.zuji.widget.RCRelativeLayout>
+
+
+    <TextView
+        android:id="@+id/tv_user_name"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/rl_head_layout"
+        android:layout_marginLeft="12dp"
+        android:singleLine="true"
+        android:text=""
+        android:textColor="@color/ctv_black_2"
+        android:textSize="16sp" />
+
+</RelativeLayout>

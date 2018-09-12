@@ -19,7 +19,7 @@
 
     <!-- 字体大小 -->
     <dimen name="text_title">19sp</dimen>
-    <dimen name="text_subhead">17sp</dimen>
+    <dimen name="text_subhead">14sp</dimen>
     <dimen name="text_body">15sp</dimen>
     <dimen name="text_caption">13sp</dimen>
     <dimen name="line_height">1dp</dimen>

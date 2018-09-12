@@ -10,16 +10,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.utils.ConfigKey;
 
-import cn.bmob.newim.BmobIM;
-import cn.bmob.newim.listener.ConnectListener;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 
@@ -116,7 +112,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                         pi.setMobile(mobile);
                         DBHandler.insertPesonInfo(pi);
                     }
-                    connectIMServer();
 
                     startActivity(new Intent(LoginActivity.this,MainNewActivity.class));
                     LoginActivity.this.finish();
@@ -130,23 +125,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
 
     }
 
-    private void connectIMServer() {
-        PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
-        if (!TextUtils.isEmpty(piInfo.getObjectId())) {
-            BmobIM.connect(piInfo.getObjectId(), new ConnectListener() {
-                @Override
-                public void done(String uid, BmobException e) {
-                    if (e == null) {
-                        //连接成功
-                        LogUtil.i("连接成功");
-                    } else {
-                        //连接失败
-                        LogUtil.i("连接失败-----》"+ e.getMessage());
-                    }
-                }
-            });
-        }
-    }
 
 
 }

@@ -649,7 +649,7 @@ public class ImageUtil {
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
 			RequestOptions options = new RequestOptions()
-					.centerCrop()
+					.fitCenter()
 					.placeholder(defResId);
 			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{
@@ -667,7 +667,7 @@ public class ImageUtil {
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
 			RequestOptions options = new RequestOptions()
-					.centerCrop()
+					.fitCenter()
 					.transforms(new GlideRoundTransform(context, 10))
 					.placeholder(defResId);
 			glideRequest.load(imgUrl).apply(options).into(iv);
@@ -683,7 +683,7 @@ public class ImageUtil {
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
 			RequestOptions options = new RequestOptions()
-					.centerCrop()
+					.fitCenter()
 					.transforms(new GlideCircleTransform(context, 0))
 					.placeholder(defResId);
 			glideRequest.load(imgUrl).apply(options).into(iv);

@@ -7,7 +7,6 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.bumptech.glide.Glide;
 import com.jude.easyrecyclerview.adapter.BaseViewHolder;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.chatui.adapter.ChatAdapter;
@@ -15,6 +14,7 @@ import com.wulee.administrator.zuji.chatui.enity.MessageInfo;
 import com.wulee.administrator.zuji.chatui.util.Utils;
 import com.wulee.administrator.zuji.chatui.widget.BubbleImageView;
 import com.wulee.administrator.zuji.chatui.widget.GifTextView;
+import com.wulee.administrator.zuji.utils.ImageUtil;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -52,13 +52,8 @@ public class ChatAcceptViewHolder extends BaseViewHolder<MessageInfo> {
     @Override
     public void setData(MessageInfo data) {
         chatItemDate.setText(data.getTime() != null ? data.getTime() : "");
-        Glide.with(getContext()).load(data.getHeader()).into(chatItemHeader);
-        chatItemHeader.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                onItemClickListener.onHeaderClick(getDataPosition());
-            }
-        });
+        ImageUtil.setCircleImageView(chatItemHeader,data.getHeader(),R.mipmap.bg_pic_def_rect,getContext());
+        chatItemHeader.setOnClickListener(v -> onItemClickListener.onHeaderClick(getDataPosition()));
         if (data.getContent() != null) {
             chatItemContentText.setSpanText(handler, data.getContent(), true);
             chatItemVoice.setVisibility(View.GONE);
@@ -72,13 +67,8 @@ public class ChatAcceptViewHolder extends BaseViewHolder<MessageInfo> {
             chatItemVoiceTime.setVisibility(View.GONE);
             chatItemContentText.setVisibility(View.GONE);
             chatItemContentImage.setVisibility(View.VISIBLE);
-            Glide.with(getContext()).load(data.getImageUrl()).into(chatItemContentImage);
-            chatItemContentImage.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    onItemClickListener.onImageClick(chatItemContentImage, getDataPosition());
-                }
-            });
+            ImageUtil.setDefaultImageView(chatItemContentImage,data.getImageUrl(),R.mipmap.bg_pic_def_rect,getContext());
+            chatItemContentImage.setOnClickListener(v -> onItemClickListener.onImageClick(chatItemContentImage, getDataPosition()));
         } else if (data.getFilepath() != null) {
             chatItemVoice.setVisibility(View.VISIBLE);
             chatItemLayoutContent.setVisibility(View.VISIBLE);

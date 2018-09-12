@@ -16,6 +16,7 @@ public class MyDaoGenerator {
         pushMessageInfo(schema);
         addPersonInfo(schema);
         addLocationInfo(schema);
+        addNewFriendInfo(schema);
         new DaoGenerator().generateAll(schema, "./app/src/main/java");
     }
 
@@ -70,5 +71,19 @@ public class MyDaoGenerator {
         locationInfo.addStringProperty("locationdescribe");
         locationInfo.addLongProperty("time");
         locationInfo.addStringProperty("deviceId");
+    }
+
+    /**位置信息*/
+    private static void addNewFriendInfo(Schema schema){
+        Entity newFriendInfo = schema.addEntity("NewFriendInfo");
+        newFriendInfo.setTableName("NewFriend_TABLE");
+        newFriendInfo.addLongProperty("id");
+        newFriendInfo.addStringProperty("uid");
+        newFriendInfo.addStringProperty("msg");
+        newFriendInfo.addStringProperty("name");
+        newFriendInfo.addStringProperty("address");
+        newFriendInfo.addStringProperty("avatar");
+        newFriendInfo.addIntProperty("status");
+        newFriendInfo.addLongProperty("time");
     }
 }

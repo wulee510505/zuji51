@@ -2,11 +2,14 @@ package com.wulee.administrator.zuji;
 
 
 import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
+import android.os.Build;
 import android.support.v4.app.NotificationCompat;
 import android.text.TextUtils;
 
@@ -48,7 +51,20 @@ public class PushMsgReceiver extends BroadcastReceiver {
             PushMessage pushMessage = GsonUtil.parseJsonWithGson(jsonMessage, PushMessage.class);
             DBHandler.insertPushMessage(pushMessage);
 
+            if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.O){
+                NotificationChannel channel  = new NotificationChannel("channel_id","channel_name",NotificationManager.IMPORTANCE_DEFAULT);
+                channel.enableLights(true);
+                channel.setLightColor(Color.parseColor("#FF4081"));
+                channel.canShowBadge();
+                channel.enableVibration(true);
+                channel.setVibrationPattern(new long[]{100,100,200});
+                channel.shouldShowLights();
+
+                mNotificationManager.createNotificationChannel(channel);
+            }
+
             NotificationCompat.Builder mBuilder = new NotificationCompat.Builder(context)
+                            .setChannelId("channel_id")
                             .setSmallIcon(R.mipmap.ic_launcher)
                             .setContentTitle("新消息")
                             .setContentText(pushMessage.getContent());

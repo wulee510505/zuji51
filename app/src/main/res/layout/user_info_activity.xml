@@ -262,17 +262,46 @@
 
     </ScrollView>
 
+
     <Button
-        android:id="@+id/btn_message_board"
+        android:id="@+id/btn_add_friend"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/container"
-        android:layout_marginTop="40dp"
+        android:layout_marginTop="20dp"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:background="@drawable/bg_button"
         android:textColor="#fff"
-        android:textSize="18sp"
+        android:textSize="16sp"
+        android:visibility="gone"
+        android:text="添加为好友" />
+
+
+    <Button
+        android:id="@+id/btn_send_msg_to_stranger"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_add_friend"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_button"
+        android:textColor="#fff"
+        android:textSize="16sp"
+        android:text="陌生人聊天" />
+
+    <Button
+        android:id="@+id/btn_message_board"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/btn_send_msg_to_stranger"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:background="@drawable/bg_button"
+        android:textColor="#fff"
+        android:textSize="16sp"
         android:text="留言" />
 </RelativeLayout>
 

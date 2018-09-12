@@ -1,7 +1,6 @@
 package com.wulee.administrator.zuji.adapter;
 
 import android.content.Context;
-import android.content.Intent;
 import android.text.TextUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -10,14 +9,10 @@ import com.chad.library.adapter.base.BaseQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
-import com.wulee.administrator.zuji.ui.PersonalInfoActivity;
-import com.wulee.administrator.zuji.ui.UserInfoActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.PhoneUtil;
 
 import java.util.ArrayList;
-
-import cn.bmob.v3.BmobUser;
 
 
 public class UserGroupAdapter extends BaseQuickAdapter<PersonInfo,BaseViewHolder> {
@@ -60,19 +55,5 @@ public class UserGroupAdapter extends BaseQuickAdapter<PersonInfo,BaseViewHolder
                 ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
             }
         }
-        ivAvatar.setOnClickListener(view -> {
-            PersonInfo currPiInfo = BmobUser.getCurrentUser(PersonInfo.class);
-            if(currPiInfo == null){
-                return;
-            }
-            Intent intent = null;
-            if(TextUtils.equals(piInfo.getUsername(),currPiInfo.getUsername())){
-                intent = new Intent(mContext, PersonalInfoActivity.class);
-            }else{
-                intent = new Intent(mContext, UserInfoActivity.class);
-                intent.putExtra("piInfo",piInfo);
-            }
-            context.startActivity(intent);
-        });
     }
 }

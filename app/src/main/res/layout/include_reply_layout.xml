@@ -83,8 +83,8 @@
             android:text="发送"
             android:textColor="@color/white"
             android:visibility="gone"
-            app:normalBackgroundColor="@color/colorPrimary"
-            app:pressedBackgroundColor="@color/colorPrimaryDark"
+            app:normalBackgroundColor="@color/colorAccent"
+            app:pressedBackgroundColor="#FF3399"
             app:radius="5dp" />
 
     </LinearLayout>

@@ -11,12 +11,31 @@ import android.widget.TextView;
 
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
+import com.wulee.administrator.zuji.chatui.enity.AddFriendMessage;
+import com.wulee.administrator.zuji.chatui.enity.Friend;
+import com.wulee.administrator.zuji.chatui.model.UserModel;
+import com.wulee.administrator.zuji.chatui.ui.activity.ChatMainActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.utils.ImageUtil;
+import com.wulee.administrator.zuji.utils.OtherUtil;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.bmob.newim.BmobIM;
+import cn.bmob.newim.bean.BmobIMConversation;
+import cn.bmob.newim.bean.BmobIMMessage;
+import cn.bmob.newim.bean.BmobIMUserInfo;
+import cn.bmob.newim.core.BmobIMClient;
+import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.listener.MessageSendListener;
+import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.FindListener;
 
 
 /**
@@ -42,6 +61,10 @@ public class UserInfoActivity extends BaseActivity {
     RelativeLayout rlCircle;
     @InjectView(R.id.tv_birthday)
     TextView tvBirthday;
+    @InjectView(R.id.btn_add_friend)
+    Button btnAddFriend;
+    @InjectView(R.id.btn_send_msg_to_stranger)
+    Button btnSendMsgToStranger;
 
     private PersonInfo personInfo;
 
@@ -71,20 +94,50 @@ public class UserInfoActivity extends BaseActivity {
             else
                 tvGender.setText("其他");
 
-            if (!TextUtils.isEmpty(personInfo.getBirthday())){
+            if (!TextUtils.isEmpty(personInfo.getBirthday())) {
                 tvBirthday.setText(personInfo.getBirthday());
             } else {
                 tvBirthday.setText("未选择");
             }
+
+            final boolean[] isMyFiend = {false};
+            UserModel.getInstance().queryFriends(new FindListener<Friend>() {
+                @Override
+                public void done(List<Friend> list, BmobException e) {
+                    if (e == null) {
+                        if (list != null && list.size() > 0) {
+                            for (Friend friend : list) {
+                                if (TextUtils.equals(friend.getFriendUser().getObjectId(), personInfo.getObjectId())) {
+                                    isMyFiend[0] = true;
+                                }
+                            }
+                        }
+                        if (isMyFiend[0]) {
+                            btnAddFriend.setVisibility(View.GONE);
+                            btnSendMsgToStranger.setVisibility(View.GONE);
+                        } else {
+                            btnAddFriend.setVisibility(View.VISIBLE);
+                            btnSendMsgToStranger.setVisibility(View.VISIBLE);
+                        }
+                    }
+                }
+            });
         }
     }
 
 
-    @OnClick({R.id.iv_back, R.id.btn_message_board, R.id.rl_circle})
+    @OnClick({R.id.iv_back, R.id.btn_message_board, R.id.rl_circle, R.id.btn_send_msg_to_stranger, R.id.btn_add_friend})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
                 finish();
+                break;
+            case R.id.btn_add_friend:
+                sendAddFriendMessage();
+                break;
+            case R.id.btn_send_msg_to_stranger:
+                if (personInfo != null)
+                    chat(personInfo.getObjectId(), TextUtils.isEmpty(personInfo.getName()) ? personInfo.getName() : personInfo.getUsername(), personInfo.getHeader_img_url());
                 break;
             case R.id.btn_message_board:
                 startActivity(new Intent(this, MessageBoardActivity.class).putExtra("piInfo", personInfo));
@@ -93,7 +146,63 @@ public class UserInfoActivity extends BaseActivity {
                 startActivity(new Intent(this, PrivateCircleActivity.class).putExtra("piInfo", personInfo));
                 break;
         }
+    }
 
+    /**
+     * 发送添加好友的请求
+     */
+    //TODO 好友管理：9.7、发送添加好友请求
+    private void sendAddFriendMessage() {
+        //TODO 会话：4.1、创建一个暂态会话入口，发送好友请求
+        if (personInfo != null && BmobIM.getInstance().getCurrentStatus().getCode() == ConnectionStatus.CONNECTED.getCode()) {
+            BmobIMUserInfo info = new BmobIMUserInfo(personInfo.getObjectId(), !TextUtils.isEmpty(personInfo.getName()) ? personInfo.getName() : personInfo.getUsername(), personInfo.getHeader_img_url());
+            BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, true, null);
+            //TODO 消息：5.1、根据会话入口获取消息管理，发送好友请求
+            BmobIMConversation messageManager = BmobIMConversation.obtain(BmobIMClient.getInstance(), conversationEntrance);
+            AddFriendMessage msg = new AddFriendMessage();
+            PersonInfo currentUser = BmobUser.getCurrentUser(PersonInfo.class);
+            msg.setContent("很高兴认识你，可以加个好友吗?");//给对方的一个留言信息
+            //TODO 这里只是举个例子，其实可以不需要传发送者的信息过去
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", currentUser.getUsername());//发送者姓名
+            map.put("avatar", currentUser.getHeader_img_url());//发送者的头像
+            map.put("uid", currentUser.getObjectId());//发送者的uid
+            msg.setExtraMap(map);
+            messageManager.sendMessage(msg, new MessageSendListener() {
+                @Override
+                public void done(BmobIMMessage msg, BmobException e) {
+                    if (e == null) {//发送成功
+                        toast("好友请求发送成功，等待验证");
+                    } else {//发送失败
+                        toast("发送失败:" + e.getMessage());
+                    }
+                }
+            });
+        }
+    }
+
+    /**
+     * 与陌生人聊天
+     */
+    private void chat(String objectId, String name, String avatar) {
+        if (BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+            OtherUtil.showToastText("尚未连接IM服务器");
+            return;
+        }
+        Intent intent = new Intent(this, ChatMainActivity.class);
+        //创建一个常态会话入口，陌生人聊天
+        BmobIMUserInfo info = new BmobIMUserInfo(objectId, name, avatar);
+        BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("c", conversationEntrance);
+        PersonInfo userInfo = new PersonInfo();
+        userInfo.setObjectId(objectId);
+        userInfo.setName(name);
+        userInfo.setHeader_img_url(avatar);
+        bundle.putSerializable("piInfo", userInfo);
+        bundle.putInt("type",1);
+        intent.putExtras(bundle);
+        startActivity(intent);
     }
 
 }

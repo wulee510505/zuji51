@@ -108,6 +108,21 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
+        <activity android:name="com.wulee.administrator.zuji.chatui.ui.activity.AddFriendAgreeActivity"
+            android:screenOrientation="portrait" />
+
+        <activity android:name="com.wulee.administrator.zuji.ui.UserGroupActivity"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="portrait" />
+
+        <activity
+            android:name=".chatui.ui.activity.ChatMainActivity"
+            android:launchMode="singleTask"
+            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden|adjustResize">
+        </activity>
+
         <activity android:name="com.wulee.administrator.zuji.ui.StepActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
@@ -179,7 +194,6 @@
         <activity android:name="com.wulee.administrator.zuji.ui.FallingViewActivity"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
-
 
         <activity android:name="com.wulee.administrator.zuji.ui.NativeVideoAdActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -292,13 +306,6 @@
             android:process=":bmobcore" />
         <service android:name="cn.bmob.newim.core.service.ReConnectService" />
         <service android:name="cn.bmob.newim.core.service.HeartBeatService" />
-
-        <activity
-            android:name=".chatui.ui.activity.ChatMainActivity"
-            android:configChanges="orientation|keyboardHidden|navigation|screenSize"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize">
-        </activity>
 
         <activity
             android:name=".chatui.ui.activity.FullImageActivity"

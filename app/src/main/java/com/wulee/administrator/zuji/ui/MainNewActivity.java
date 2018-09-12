@@ -49,10 +49,10 @@ import com.wulee.administrator.zuji.entity.MessageInfo;
 import com.wulee.administrator.zuji.entity.SignInfo;
 import com.wulee.administrator.zuji.service.UploadLocationService;
 import com.wulee.administrator.zuji.ui.fragment.CircleFragment;
+import com.wulee.administrator.zuji.ui.fragment.FriendFragment;
 import com.wulee.administrator.zuji.ui.fragment.JokeFragment;
 import com.wulee.administrator.zuji.ui.fragment.MainBaseFrag;
 import com.wulee.administrator.zuji.ui.fragment.NewsFragment;
-import com.wulee.administrator.zuji.ui.fragment.UserGroupFragment;
 import com.wulee.administrator.zuji.ui.fragment.ZujiFragment;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
@@ -73,6 +73,10 @@ import java.util.Date;
 import java.util.List;
 
 import cn.bmob.newim.BmobIM;
+import cn.bmob.newim.bean.BmobIMUserInfo;
+import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.listener.ConnectListener;
+import cn.bmob.newim.listener.ConnectStatusChangeListener;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
@@ -162,6 +166,8 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         }else{
             startActivity(new Intent(this,TodayInHistoryActivity.class));
         }
+
+        connectIMServer();
     }
 
 
@@ -238,7 +244,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         AndPermission
                 .with(this)
                 .runtime()
-                .permission(Manifest.permission.RECORD_AUDIO)
+                .permission(Manifest.permission.WRITE_EXTERNAL_STORAGE)
                 .onGranted(permissions -> {
                     BmobUpdateAgent.forceUpdate(MainNewActivity.this);
                 })
@@ -636,8 +642,8 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                     mainBaseFrags[1] = (CircleFragment) retFragment;
                     break;
                 case 2:
-                    retFragment = new UserGroupFragment();
-                    mainBaseFrags[2] = (UserGroupFragment) retFragment;
+                    retFragment = new FriendFragment();
+                    mainBaseFrags[2] = (FriendFragment) retFragment;
                     break;
                 case 3:
                     retFragment = new JokeFragment();
@@ -764,6 +770,35 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                 }else{
                     Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
                 }
+            }
+        });
+    }
+
+    private void connectIMServer() {
+        PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
+        if(null != piInfo){
+            if (!TextUtils.isEmpty(piInfo.getObjectId()) &&
+                    BmobIM.getInstance().getCurrentStatus().getCode() != ConnectionStatus.CONNECTED.getCode()) {
+                BmobIM.connect(piInfo.getObjectId(), new ConnectListener() {
+                    @Override
+                    public void done(String uid, BmobException e) {
+                        if (e == null) {
+                            //连接成功
+                            LogUtil.i("连接成功");
+                            BmobIM.getInstance().updateUserInfo(new BmobIMUserInfo(piInfo.getObjectId(),
+                                    piInfo.getUsername(), piInfo.getHeader_img_url()));
+                        } else {
+                            //连接失败
+                            LogUtil.i("连接失败-----》"+ e.getMessage());
+                        }
+                    }
+                });
+            }
+        }
+        BmobIM.getInstance().setOnConnectStatusChangeListener(new ConnectStatusChangeListener() {
+            @Override
+            public void onChange(ConnectionStatus status) {
+                LogUtil.i(BmobIM.getInstance().getCurrentStatus().getMsg());
             }
         });
     }

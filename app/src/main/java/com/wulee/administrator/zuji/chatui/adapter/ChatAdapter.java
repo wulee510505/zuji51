@@ -13,6 +13,8 @@ import com.wulee.administrator.zuji.chatui.adapter.holder.ChatSendViewHolder;
 import com.wulee.administrator.zuji.chatui.enity.MessageInfo;
 import com.wulee.administrator.zuji.chatui.util.Constants;
 
+import cn.bmob.newim.bean.BmobIMMessage;
+
 
 /**
  * 作者：Rance on 2016/11/29 10:46
@@ -58,4 +60,17 @@ public class ChatAdapter extends RecyclerArrayAdapter<MessageInfo> {
 
         void onVoiceClick(ImageView imageView, int position);
     }
+
+    public int findPosition(BmobIMMessage message) {
+        int index = this.getCount();
+        int position = -1;
+        while(index-- > 0) {
+            if(message.equals(this.getItem(index))) {
+                position = index;
+                break;
+            }
+        }
+        return position;
+    }
+
 }

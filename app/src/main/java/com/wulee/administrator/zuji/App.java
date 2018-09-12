@@ -56,6 +56,20 @@ public class App extends MultiDexApplication {
     public NetworkUtils.NetworkType mNetType;
     private NetStateReceiver netStateReceiver;
 
+    private static App INSTANCE;
+
+    public static App INSTANCE() {
+        return INSTANCE;
+    }
+
+    private void setInstance(App app) {
+        setBmobIMApplication(app);
+    }
+
+    private static void setBmobIMApplication(App a) {
+        App.INSTANCE = a;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -63,7 +77,7 @@ public class App extends MultiDexApplication {
             return;
         }
         LeakCanary.install(this);*/
-
+        setInstance(this);
         context = getApplicationContext();
         aCache = ACache.get(this);
 
@@ -78,7 +92,7 @@ public class App extends MultiDexApplication {
         //初始化IM SDK，并注册消息接收器
         if (getApplicationInfo().packageName.equals(getMyProcessName())){
             BmobIM.init(this);
-            BmobIM.registerDefaultMessageHandler(new IMMessageHandler());
+            BmobIM.registerDefaultMessageHandler(new IMMessageHandler(context));
         }
 
         //监听连接状态，可通过BmobIM.getInstance().getCurrentStatus()来获取当前的长连接状态

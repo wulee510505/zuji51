@@ -18,8 +18,8 @@
 
         <ImageView
             android:id="@+id/chat_item_header"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="42dp"
+            android:layout_height="42dp"
             android:layout_alignParentRight="true"
             android:scaleType="fitCenter" />
 
@@ -48,7 +48,7 @@
                 android:gravity="right|center_vertical"
                 android:orientation="horizontal"
                 android:padding="@dimen/content_vertical_margin"
-                android:background="@mipmap/chatto_bg_normal">
+                android:background="@drawable/chatto_bg_normal">
 
                 <com.wulee.administrator.zuji.chatui.widget.GifTextView
                     android:id="@+id/chat_item_content_text"

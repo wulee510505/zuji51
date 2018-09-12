@@ -47,7 +47,7 @@
                 android:id="@+id/rbnt_user_group"
                 style="@style/main_tabs_radiobtn"
                 android:drawableTop="@drawable/tab_group"
-                android:text="用户群" />
+                android:text="好友" />
 
             <RadioButton
                 android:id="@+id/rbnt_joke"

@@ -18,7 +18,6 @@ import android.widget.TextView;
 import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
-import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.SplashPic;
 import com.wulee.administrator.zuji.utils.ImageUtil;
@@ -35,11 +34,8 @@ import awty.enr.pweu.nm.sp.SplashViewSettings;
 import awty.enr.pweu.nm.sp.SpotListener;
 import awty.enr.pweu.nm.sp.SpotManager;
 import awty.enr.pweu.nm.sp.SpotRequestListener;
-import cn.bmob.newim.BmobIM;
-import cn.bmob.newim.listener.ConnectListener;
 import cn.bmob.v3.Bmob;
 import cn.bmob.v3.BmobQuery;
-import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
@@ -257,7 +253,6 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         final Intent intent;
         if(OtherUtil.hasLogin()){
              intent = new Intent(SplashActivity.this, MainNewActivity.class);
-             //connectIMServer();
         } else{
              intent = new Intent(this, LoginActivity.class);
         }
@@ -273,24 +268,6 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
                 mFadeInTextView.stopFadeInAnimation();
                 startActivity();
              break;
-        }
-    }
-
-    private void connectIMServer() {
-        PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
-        if (!TextUtils.isEmpty(piInfo.getObjectId())) {
-            BmobIM.connect(piInfo.getObjectId(), new ConnectListener() {
-                @Override
-                public void done(String uid, BmobException e) {
-                    if (e == null) {
-                        //连接成功
-                        LogUtil.i("连接成功");
-                    } else {
-                        //连接失败
-                        LogUtil.i("连接失败-----》"+ e.getMessage());
-                    }
-                }
-            });
         }
     }
 
