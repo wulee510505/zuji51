@@ -21,6 +21,7 @@ import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.RequestManager;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 
 import java.io.BufferedInputStream;
@@ -650,6 +651,9 @@ public class ImageUtil {
 		if(!TextUtils.isEmpty(imgUrl)){
 			RequestOptions options = new RequestOptions()
 					.fitCenter()
+					.dontAnimate()
+                    .skipMemoryCache(false)
+					.diskCacheStrategy(DiskCacheStrategy.ALL)
 					.placeholder(defResId);
 			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{
@@ -669,6 +673,7 @@ public class ImageUtil {
 			RequestOptions options = new RequestOptions()
 					.fitCenter()
 					.transforms(new GlideRoundTransform(context, 10))
+					.dontAnimate()
 					.placeholder(defResId);
 			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{
@@ -685,6 +690,9 @@ public class ImageUtil {
 			RequestOptions options = new RequestOptions()
 					.fitCenter()
 					.transforms(new GlideCircleTransform(context, 0))
+					.dontAnimate()
+                    .skipMemoryCache(false)
+					.diskCacheStrategy(DiskCacheStrategy.ALL)
 					.placeholder(defResId);
 			glideRequest.load(imgUrl).apply(options).into(iv);
 		}else{

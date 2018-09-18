@@ -452,7 +452,7 @@ public class ChatMainActivity extends BaseActivity implements MessageListHandler
 
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         super.onPause();
         BmobIM.getInstance().removeMessageListHandler(this);
     }

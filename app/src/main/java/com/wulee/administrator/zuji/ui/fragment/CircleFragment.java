@@ -16,6 +16,7 @@ import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.facebook.stetho.common.LogUtil;
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.wulee.administrator.zuji.R;
@@ -55,6 +57,7 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
 import cn.bmob.v3.datatype.BmobPointer;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.DeleteBatchListener;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
@@ -410,6 +413,20 @@ public class CircleFragment extends MainBaseFrag {
                 public void done(BmobException e) {
                     stopProgressDialog();
                     if (e == null) {
+
+                        //删除图片素材
+                        BmobFile.deleteBatch(circleContent.getImgUrls(), new DeleteBatchListener() {
+                            @Override
+                            public void done(String[] failUrls, BmobException e) {
+                                //此处删除有时会出现失败，不管失败还是成功都去更新界面，不提示用户
+                                if(e==null){
+                                    Log.i("del","删除成功");
+                                }else{
+                                    Log.i("del","删除失败");
+                                }
+                            }
+                        });
+
                         List<CircleContent> list = dataList;
                         Iterator<CircleContent> iter = list.iterator();
                         while (iter.hasNext()) {
@@ -440,6 +457,7 @@ public class CircleFragment extends MainBaseFrag {
            mContext.unregisterReceiver(mReceiver);
            mReceiver = null;
         }
+        Glide.get(mContext).clearMemory();
     }
 
     private class OnCirclePublishOkReceiver extends BroadcastReceiver{

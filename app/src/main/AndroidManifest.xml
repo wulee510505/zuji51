@@ -335,6 +335,8 @@
         <activity android:name=".ui.UpgradeActivity"
             android:configChanges="orientation|keyboardHidden"
             android:theme="@style/DialogActivity.Transparent"/>
+
+        <meta-data android:value="59279266b27b0a188d00044f" android:name="UMENG_APPKEY"/>
     </application>
 
 </manifest>

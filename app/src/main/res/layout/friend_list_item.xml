@@ -11,18 +11,15 @@
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_centerVertical="true"
-        app:rc_stroke_width="1px"
         app:round_as_circle="true"
         app:round_corner="30dp"
-        app:round_corner_bottom_right="0dp"
-        app:stroke_color="#dedede">
+        app:round_corner_bottom_right="0dp">
 
         <ImageView
             android:id="@+id/iv_header"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_centerVertical="true"
-            android:src="@mipmap/icon_user_def_colorized"/>
+            android:layout_centerVertical="true" />
 
     </com.wulee.administrator.zuji.widget.RCRelativeLayout>
 

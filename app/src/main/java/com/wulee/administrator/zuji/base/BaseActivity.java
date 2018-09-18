@@ -11,6 +11,7 @@ import android.view.WindowManager;
 import android.widget.Toast;
 
 import com.gyf.barlibrary.ImmersionBar;
+import com.umeng.analytics.MobclickAgent;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.widget.BaseProgressDialog;
@@ -53,6 +54,18 @@ public class BaseActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         // 添加Activity到堆栈
         AppUtils.getAppManager().addActivity(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        MobclickAgent.onResume(this);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        MobclickAgent.onPause(this);
     }
 
     /**

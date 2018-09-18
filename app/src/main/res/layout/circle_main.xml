@@ -39,7 +39,7 @@
             android:paddingLeft="70dp"
             android:paddingRight="70dp"
             android:singleLine="true"
-            android:text="圈子"
+            android:text="圈子1111111111"
             android:textColor="@color/color_white"
             android:textSize="18sp" />
 

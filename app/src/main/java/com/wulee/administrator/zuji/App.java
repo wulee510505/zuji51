@@ -11,6 +11,7 @@ import com.baidu.mapapi.SDKInitializer;
 import com.facebook.stetho.Stetho;
 import com.tencent.bugly.Bugly;
 import com.tencent.bugly.beta.Beta;
+import com.umeng.commonsdk.UMConfigure;
 import com.wulee.administrator.zuji.database.dao.DaoMaster;
 import com.wulee.administrator.zuji.database.dao.DaoSession;
 import com.wulee.administrator.zuji.service.UploadLocationService;
@@ -138,6 +139,8 @@ public class App extends MultiDexApplication {
         };
         // 调试时，将第三个参数改为true
         Bugly.init(this, "ad97a458d2", true);
+
+        UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "59279266b27b0a188d00044f");
     }
 
     @Override

@@ -112,6 +112,10 @@ dependencies {
     implementation thirdDependencies.crashreport
     implementation thirdDependencies.tinker   //指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
 
+    //友盟
+    implementation 'com.umeng.sdk:common:latest.integration'
+    implementation 'com.umeng.sdk:analytics:latest.integration'
+
     implementation thirdDependencies.bmobPush    //Bmob的推送包
     //implementation thirdDependencies.bmobSms   //Bmob单独为短信服务提供的包
     //特定版本的bmob-im依赖特定版本的bmob-sdk

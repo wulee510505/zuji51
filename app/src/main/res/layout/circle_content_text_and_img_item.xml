@@ -19,9 +19,7 @@
         <com.wulee.administrator.zuji.widget.RCRelativeLayout
             android:id="@+id/avatarBg"
             android:layout_width="45dp"
-            android:layout_height="45dp"
-            app:stroke_color="#cdcdcd"
-            app:rc_stroke_width="1dp">
+            android:layout_height="45dp">
 
             <ImageView
                 android:id="@+id/userAvatar"
@@ -55,7 +53,8 @@
                 android:lineSpacingExtra="2dp"
                 android:lineSpacingMultiplier="1.2"
                 android:textColor="@color/ctv_black_2"
-                android:textSize="@dimen/com_tv_size_mid_lit" />
+                android:textSize="@dimen/com_tv_size_mid_lit"
+                android:autoLink="all"/>
 
 
             <com.jaeger.ninegridimageview.NineGridImageView

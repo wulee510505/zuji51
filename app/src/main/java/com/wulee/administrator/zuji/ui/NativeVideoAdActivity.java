@@ -205,7 +205,7 @@ public class NativeVideoAdActivity extends BaseActivity {
 	}
 	
 	@Override
-	protected void onPause() {
+	public void onPause() {
 		super.onPause();
 		// 原生视频广告
 		VideoAdManager.getInstance(mContext).onPause();

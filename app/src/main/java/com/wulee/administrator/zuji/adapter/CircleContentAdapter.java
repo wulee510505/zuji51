@@ -15,9 +15,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestManager;
-import com.bumptech.glide.request.RequestOptions;
 import com.chad.library.adapter.base.BaseMultiItemQuickAdapter;
 import com.chad.library.adapter.base.BaseViewHolder;
 import com.facebook.stetho.common.LogUtil;
@@ -72,10 +69,10 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     @Override
     protected void convert(BaseViewHolder baseViewHolder, final CircleContent circleContent) {
         ImageView ivAvatar = baseViewHolder.getView(R.id.userAvatar);
-        if (circleContent.personInfo != null && !TextUtils.isEmpty(circleContent.personInfo.getHeader_img_url()) && !isScrolling) {
-            ImageUtil.setDefaultImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_rect_colorized, mcontext);
+        if (circleContent.personInfo != null && !TextUtils.isEmpty(circleContent.personInfo.getHeader_img_url())) {
+            ImageUtil.setCircleImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, mcontext);
         } else {
-            ImageUtil.setDefaultImageView(ivAvatar, "", R.mipmap.icon_user_def_rect_colorized, mcontext);
+            ImageUtil.setCircleImageView(ivAvatar, "", R.mipmap.icon_user_def_colorized, mcontext);
         }
 
         ivAvatar.setOnClickListener(view -> {
@@ -95,7 +92,8 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         });
 
         baseViewHolder.setText(R.id.userNick, circleContent.getUserNick());
-        baseViewHolder.setText(R.id.circle_content, circleContent.getContent());
+        TextView tvContent = baseViewHolder.getView(R.id.circle_content);
+        tvContent.setText(circleContent.getContent());
 
         TextView tvLocation = baseViewHolder.getView(R.id.location);
         if (!TextUtils.isEmpty(circleContent.getLocation())) {
@@ -227,19 +225,8 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                 NineGridImageViewAdapter<CircleContent.CircleImageBean> mAdapter = new NineGridImageViewAdapter<CircleContent.CircleImageBean>() {
                     @Override
                     protected void onDisplayImage(Context context, ImageView imageView, CircleContent.CircleImageBean img) {
-                        RequestOptions options = new RequestOptions()
-                                .placeholder(R.mipmap.bg_pic_def_rect);
-                        RequestManager rm = Glide.with(context);
-                        if (!isScrolling) {
-                            rm.load(img.getUrl())
-                                    .apply(options)
-                                    .into(imageView);
-                        } else {
-                            rm.load(R.mipmap.bg_pic_def_rect)
-                                    .into(imageView);
-                        }
+                        ImageUtil.setDefaultImageView(imageView,img.getUrl(),R.mipmap.bg_pic_def_rect,context);
                     }
-
                     @Override
                     protected ImageView generateImageView(Context context) {
                         GridImageView imageView = new GridImageView(context);

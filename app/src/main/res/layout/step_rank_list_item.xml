@@ -19,8 +19,7 @@
         android:layout_width="45dp"
         android:layout_height="45dp"
         android:layout_toRightOf="@id/tv_ranking"
-        android:layout_marginLeft="8dp"
-        android:src="@mipmap/icon_user_def"/>
+        android:layout_marginLeft="8dp" />
 
     <TextView
         android:id="@+id/tv_name"

@@ -130,6 +130,10 @@ public class UserGroupActivity extends BaseActivity {
         mAdapter.setOnLoadMoreListener(() -> getUserList(curPage, STATE_MORE),recyclerview);
         titlelayout.setOnTitleClickListener(new TitleLayoutClickListener() {
             @Override
+            public void onLeftClickListener() {
+               finish();
+            }
+            @Override
             public void onRightImg1ClickListener() {
                 startActivity(new Intent(mContext, NearUserActivity.class));
             }

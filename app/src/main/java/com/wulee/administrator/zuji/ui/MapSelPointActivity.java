@@ -147,7 +147,7 @@ public class MapSelPointActivity extends BaseActivity implements OnGetGeoCoderRe
     }
 
     @Override
-    protected void onPause() {
+    public void onPause() {
         mapView.onPause();
         super.onPause();
     }

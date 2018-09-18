@@ -45,14 +45,14 @@ public class UserGroupAdapter extends BaseQuickAdapter<PersonInfo,BaseViewHolder
 
         ImageView ivAvatar = baseViewHolder.getView(R.id.iv_header);
         if(piInfo != null && !TextUtils.isEmpty(piInfo.getHeader_img_url()) && !isScrolling) {
-            ImageUtil.setDefaultImageView(ivAvatar, piInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, context);
+            ImageUtil.setCircleImageView(ivAvatar, piInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, context);
         } else{
             if(TextUtils.equals("男",piInfo.getSex())){
-                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_man_def_colorized,context);
+                ImageUtil.setCircleImageView(ivAvatar,"",R.mipmap.icon_man_def_colorized,context);
             }else if(TextUtils.equals("女",piInfo.getSex())){
-                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_woman_def_colorized,context);
+                ImageUtil.setCircleImageView(ivAvatar,"",R.mipmap.icon_woman_def_colorized,context);
             }else {
-                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
+                ImageUtil.setCircleImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
             }
         }
     }
