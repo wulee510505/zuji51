@@ -3,8 +3,8 @@ package com.wulee.administrator.zuji.adapter;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -33,6 +33,9 @@ import com.wulee.administrator.zuji.utils.DateTimeUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.NoFastClickUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
+import com.wulee.administrator.zuji.utils.PhoneUtil;
+import com.wulee.administrator.zuji.widget.CircleImageView;
+import com.wulee.administrator.zuji.widget.ExpandableTextView;
 import com.wulee.administrator.zuji.widget.NoScrollListView;
 
 import java.util.ArrayList;
@@ -40,7 +43,6 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.bmob.v3.BmobUser;
-import cn.bmob.v3.datatype.BmobRelation;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -51,6 +53,7 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     private Context mcontext;
     private PersonInfo piInfo;
     private HashMap<Integer, LinearLayout> viewMap = new HashMap<>();
+    private HashMap<String,Integer> likeNumMap = new HashMap<>();
 
     protected boolean isScrolling = false;
 
@@ -68,11 +71,11 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
 
     @Override
     protected void convert(BaseViewHolder baseViewHolder, final CircleContent circleContent) {
-        ImageView ivAvatar = baseViewHolder.getView(R.id.userAvatar);
+        CircleImageView ivAvatar = baseViewHolder.getView(R.id.userAvatar);
         if (circleContent.personInfo != null && !TextUtils.isEmpty(circleContent.personInfo.getHeader_img_url())) {
-            ImageUtil.setCircleImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, mcontext);
+            ImageUtil.setDefaultImageView(ivAvatar, circleContent.personInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, mcontext);
         } else {
-            ImageUtil.setCircleImageView(ivAvatar, "", R.mipmap.icon_user_def_colorized, mcontext);
+            ImageUtil.setDefaultImageView(ivAvatar, "", R.mipmap.icon_user_def_colorized, mcontext);
         }
 
         ivAvatar.setOnClickListener(view -> {
@@ -91,9 +94,25 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
             }
         });
 
-        baseViewHolder.setText(R.id.userNick, circleContent.getUserNick());
-        TextView tvContent = baseViewHolder.getView(R.id.circle_content);
-        tvContent.setText(circleContent.getContent());
+        String userName = circleContent.personInfo.getName();
+        String encryptTelNum = PhoneUtil.encryptTelNum(circleContent.personInfo.getUsername());
+        baseViewHolder.setText(R.id.userNick, !TextUtils.isEmpty(userName)?userName:encryptTelNum);
+        ExpandableTextView tvContent = baseViewHolder.getView(R.id.circle_content);
+        tvContent.setContent(circleContent.getContent());
+        tvContent.setLinkClickListener((linkType, content) -> {
+            //根据类型去判断
+            if (linkType.equals(ExpandableTextView.LinkType.LINK_TYPE)) {
+                LogUtil.d("你点击了链接 内容是：" + content);
+
+                Uri uri = Uri.parse(content);
+                Intent intent = new Intent();
+                intent.setAction("android.intent.action.VIEW");
+                intent.setData(uri);
+                mcontext.startActivity(intent);
+            } else if (linkType.equals(ExpandableTextView.LinkType.MENTION_TYPE)) {
+                LogUtil.d("你点击了@用户 内容是：" + content);
+            }
+        });
 
         TextView tvLocation = baseViewHolder.getView(R.id.location);
         if (!TextUtils.isEmpty(circleContent.getLocation())) {
@@ -138,9 +157,18 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                 isToolbarLikeAndCommentVisible[0] = true;
             }
         });
-
+        TextView tvLikesNum = baseViewHolder.getView(R.id.tv_likes_num);
+        int likeNum = circleContent.getLikeNum();
+        if(null != tvLikesNum){
+            if(likeNum >0 ){
+                tvLikesNum.setText(likeNum+"");
+                tvLikesNum.setVisibility(View.VISIBLE);
+            }else{
+                tvLikesNum.setVisibility(View.GONE);
+            }
+        }
         rlLike.setOnClickListener(view -> {
-            if (circleContent.getLikeList() != null && circleContent.getLikeList().size() > 0) {
+           /* if (circleContent.getLikeList() != null && circleContent.getLikeList().size() > 0) {
                 for (PersonInfo likePiInfo : circleContent.getLikeList()) {
                     if (TextUtils.equals(piInfo.getUsername(), likePiInfo.getUsername())) {
                         llLikeAndComment.setVisibility(View.GONE);
@@ -149,7 +177,6 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                     }
                 }
             }
-
             //将当前用户添加到CircleContent表中的likes字段值中，表明当前用户喜欢该帖子
             final BmobRelation relation = new BmobRelation();
             //将当前用户添加到多对多关联中
@@ -168,7 +195,9 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                         OtherUtil.showToastText("点赞失败" + e.getMessage());
                     }
                 }
-            });
+            });*/
+
+            addLikes(circleContent.getObjectId(),circleContent.getItemType(),likeNum,tvLikesNum);
         });
         TextView tvLikes = baseViewHolder.getView(R.id.tv_likes);
         StringBuilder sbLikes = new StringBuilder();
@@ -261,6 +290,39 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         }
     }
 
+
+    /**
+     * 点赞
+     */
+    private  void addLikes(final String objId,int itemType, int likeNum,final TextView tv){
+        if (NoFastClickUtils.isFastClick()) {
+            Toast.makeText(mContext, "点击过快", Toast.LENGTH_SHORT).show();
+            return;
+        }
+        CircleContent circleContent = new CircleContent(itemType);
+        circleContent.setObjectId(objId);
+        int num = ++likeNum;
+        if(likeNumMap.containsKey(objId)){
+            num = likeNumMap.get(objId);
+            num ++ ;
+            likeNumMap.remove(objId);
+        }
+        circleContent.setLikeNum(num);
+        likeNumMap.put(objId,num);
+        circleContent.update(new UpdateListener() {
+            @Override
+            public void done(BmobException e) {
+                if(e == null){
+                    mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
+                    tv.setText(likeNumMap.get(objId)+"");
+                    OtherUtil.showToastText("点赞成功");
+                }else{
+                    OtherUtil.showToastText("点赞失败");
+                }
+            }
+        });
+    }
+
     /**
      * 评论Dialog
      */
@@ -272,26 +334,23 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
 
 
         builder.setView(dialogView);
-        builder.setPositiveButton("确定", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                final CircleComment comment = new CircleComment();
-                comment.setContent(etComment.getText().toString().trim());
-                comment.setCircleContent(content);
-                comment.setPersonInfo(piInfo);
-                comment.save(new SaveListener<String>() {
-                    @Override
-                    public void done(String objectId, BmobException e) {
-                        likeAndCommentView.setVisibility(View.GONE);
-                        if (e == null) {
-                            mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
-                            LogUtil.i("zuji", "评论发表成功");
-                        } else {
-                            OtherUtil.showToastText("评论失败" + e.getMessage());
-                        }
+        builder.setPositiveButton("确定", (dialog, which) -> {
+            final CircleComment comment = new CircleComment();
+            comment.setContent(etComment.getText().toString().trim());
+            comment.setCircleContent(content);
+            comment.setPersonInfo(piInfo);
+            comment.save(new SaveListener<String>() {
+                @Override
+                public void done(String objectId, BmobException e) {
+                    likeAndCommentView.setVisibility(View.GONE);
+                    if (e == null) {
+                        mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
+                        LogUtil.i("zuji", "评论发表成功");
+                    } else {
+                        OtherUtil.showToastText("评论失败" + e.getMessage());
                     }
-                });
-            }
+                }
+            });
         });
         builder.setNegativeButton("取消", null);
         Dialog dialog = builder.create();

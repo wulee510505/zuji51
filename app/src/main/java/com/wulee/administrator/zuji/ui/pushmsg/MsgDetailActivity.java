@@ -47,6 +47,7 @@ public class MsgDetailActivity extends BaseActivity {
     ImageView ivPlayMsgContent;
 
     private PushMessage msgObj;
+    private OnText2SpeechListener mSpeechListener;
 
     @Override
     protected void onCreate(Bundle bundle) {
@@ -76,45 +77,61 @@ public class MsgDetailActivity extends BaseActivity {
                 finish();
                 break;
             case R.id.rl_play_msg_content:
-                final ScaleAnimation animation = new ScaleAnimation(1f, 1.2f, 1f, 1.2f,
-                        Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
-                        0.5f);
-                animation.setDuration(500);
-                animation.setRepeatCount(ValueAnimator.INFINITE);
-                animation.setRepeatMode(ValueAnimator.INFINITE);
-                animation.setInterpolator(new AccelerateInterpolator());
-
-                Text2Speech.speech(MsgDetailActivity.this, msgObj.getContent(), true);
-                Text2Speech.setOnText2SpeechListener(new OnText2SpeechListener() {
-                    @Override
-                    public void onCompletion() {
-                        animation.cancel();
-                    }
-
-                    @Override
-                    public void onPrepared() {
-                        ivPlayMsgContent.startAnimation(animation);
-                    }
-
-                    @Override
-                    public void onError(Exception e, String s) {
-                        animation.cancel();
-                    }
-
-                    @Override
-                    public void onStart() {
-                    }
-
-                    @Override
-                    public void onLoadProgress(int i, int i1) {
-                    }
-
-                    @Override
-                    public void onPlayProgress(int i, int i1) {
-
-                    }
-                });
+                play();
                 break;
         }
+    }
+
+    private void play(){
+        final ScaleAnimation animation = new ScaleAnimation(1f, 1.2f, 1f, 1.2f,
+                Animation.RELATIVE_TO_SELF, 0.5f, Animation.RELATIVE_TO_SELF,
+                0.5f);
+        animation.setDuration(500);
+        animation.setRepeatCount(ValueAnimator.INFINITE);
+        animation.setRepeatMode(ValueAnimator.INFINITE);
+        animation.setInterpolator(new AccelerateInterpolator());
+
+        mSpeechListener = new OnText2SpeechListener() {
+            @Override
+            public void onCompletion() {
+                animation.cancel();
+            }
+
+            @Override
+            public void onPrepared() {
+                ivPlayMsgContent.startAnimation(animation);
+            }
+
+            @Override
+            public void onError(Exception e, String s) {
+                animation.cancel();
+            }
+
+            @Override
+            public void onStart() {
+            }
+
+            @Override
+            public void onLoadProgress(int i, int i1) {
+            }
+
+            @Override
+            public void onPlayProgress(int i, int i1) {
+
+            }
+        };
+        Text2Speech.speech(MsgDetailActivity.this, msgObj.getContent(), true);
+        Text2Speech.setOnText2SpeechListener(mSpeechListener);
+    }
+
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if(Text2Speech.isSpeeching()){
+            Text2Speech.shutUp(this);
+        }
+        Text2Speech.removeText2SpeechListener(mSpeechListener);
+        mSpeechListener = null;
     }
 }

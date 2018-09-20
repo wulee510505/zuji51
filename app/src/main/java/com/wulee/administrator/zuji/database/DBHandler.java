@@ -53,6 +53,10 @@ public class DBHandler {
         return  pushMessageDao.loadAll();
     }
 
+    public static void delAllPushMessage() {
+        pushMessageDao.deleteAll();
+    }
+
     public static void insertPesonInfo(PersonInfo personInfo) {
         personInfoDao.insertOrReplace(personInfo);
     }

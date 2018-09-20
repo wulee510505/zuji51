@@ -37,7 +37,14 @@
         <item
             android:id="@+id/item_goto_market"
             android:icon="@mipmap/icon_go_to_market"
-            android:title="给足迹评分"/>
+            android:title="给足迹评分"
+            android:visible="false"/>
+
+        <item
+            app:actionLayout="@layout/menu_left_item_cache"
+            android:id="@+id/item_clear_cache"
+            android:icon="@mipmap/icon_delete_white"
+            android:title="清理缓存"/>
 
         <item
             android:id="@+id/item_checkupdate"

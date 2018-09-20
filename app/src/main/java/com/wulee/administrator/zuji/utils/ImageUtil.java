@@ -688,7 +688,7 @@ public class ImageUtil {
 		RequestManager glideRequest = Glide.with(context);
 		if(!TextUtils.isEmpty(imgUrl)){
 			RequestOptions options = new RequestOptions()
-					.fitCenter()
+					.centerCrop()
 					.transforms(new GlideCircleTransform(context, 0))
 					.dontAnimate()
                     .skipMemoryCache(false)

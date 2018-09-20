@@ -2,39 +2,23 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:fitsSystemWindows="true">
 
-    <RelativeLayout
+
+    <com.wulee.administrator.zuji.widget.BaseTitleLayout
         android:id="@+id/titlelayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/com_title_height"
-        android:orientation="vertical"
-        android:background="@color/colorAccent">
+        android:layout_below="@id/ivstatebar"
+        android:background="@color/colorAccent"
+        app:titleCenterText="消息"
+        app:titleLeftImg="@mipmap/icon_back"
+        app:titleLeftText=""
+        app:titleRightText="清空"
+        app:titleTextColor="@color/color_white"
+        app:titleTextSize="18sp" />
 
-        <ImageView
-            android:id="@+id/iv_back"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_centerVertical="true"
-            android:layout_marginLeft="15dp"
-            android:src="@mipmap/icon_back" />
-
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
-            android:ellipsize="end"
-            android:gravity="center"
-            android:paddingLeft="70dp"
-            android:paddingRight="70dp"
-            android:singleLine="true"
-            android:text=""
-            android:textColor="@color/color_white"
-            android:textSize="17sp" />
-    </RelativeLayout>
 
     <RelativeLayout
         android:layout_below="@id/titlelayout"
@@ -58,13 +42,10 @@
             android:visibility="gone"/>
 
 
-        <TextView
-            android:id="@+id/tv_nodata"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:textSize="18sp"
-            android:text="暂无数据"/>
+        <include layout="@layout/com_view_empty"
+            android:id="@+id/emptyview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
     </RelativeLayout>
 
 </RelativeLayout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toos="http://schemas.android.com/tools"
     android:id="@+id/card_view"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -28,7 +29,7 @@
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1.2"
             android:maxLines="2"
-            android:text="aaaaa"
+            toos:text="aaaaa"
             android:textColor="@color/baseGrayMore"
             android:textSize="16sp" />
 
@@ -40,7 +41,7 @@
             android:layout_alignParentRight="true"
             android:layout_below="@id/tv_content"
             android:layout_marginTop="10dp"
-            android:text="bbbbb"
+            toos:text="bbbbb"
             android:singleLine="true"
             android:textColor="@color/baseGrayNor"
             android:textSize="14sp" />

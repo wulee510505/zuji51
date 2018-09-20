@@ -342,7 +342,7 @@ public class ZujiFragment extends MainBaseFrag{
         // 如果是加载更多
         if(actionType == STATE_MORE){
             // 跳过之前页数并去掉重复数据
-            query.setSkip(page * PAGE_SIZE + 1);
+            query.setSkip(page * PAGE_SIZE);
         }else{
             query.setSkip(0);
         }

@@ -51,14 +51,14 @@ public class FriendAdapter extends BaseQuickAdapter<Friend,BaseViewHolder> {
 
         ImageView ivAvatar = baseViewHolder.getView(R.id.iv_header);
         if(friendInfo != null && !TextUtils.isEmpty(friendInfo.getHeader_img_url())) {
-            ImageUtil.setCircleImageView(ivAvatar, friendInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, context);
+            ImageUtil.setDefaultImageView(ivAvatar, friendInfo.getHeader_img_url(), R.mipmap.icon_user_def_colorized, context);
         } else{
             if(TextUtils.equals("男",friendInfo.getSex())){
-                ImageUtil.setCircleImageView(ivAvatar,"",R.mipmap.icon_man_def_colorized,context);
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_man_def_colorized,context);
             }else if(TextUtils.equals("女",friendInfo.getSex())){
-                ImageUtil.setCircleImageView(ivAvatar,"",R.mipmap.icon_woman_def_colorized,context);
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_woman_def_colorized,context);
             }else {
-                ImageUtil.setCircleImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
+                ImageUtil.setDefaultImageView(ivAvatar,"",R.mipmap.icon_user_def_colorized,context);
             }
         }
         ivAvatar.setOnClickListener(view -> {

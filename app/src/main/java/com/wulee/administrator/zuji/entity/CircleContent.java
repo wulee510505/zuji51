@@ -30,7 +30,6 @@ public class CircleContent extends BmobObject implements MultiItemEntity{
     private long id;
 
     private String userId;
-    private String userNick;
 
     private String title;
     private String content;
@@ -41,6 +40,7 @@ public class CircleContent extends BmobObject implements MultiItemEntity{
     private String[] imgUrls;
     private ArrayList<CircleImageBean> imageList;
 
+    private int likeNum;
     private BmobRelation likes;
 
     private List<CircleComment> commentList;
@@ -96,14 +96,6 @@ public class CircleContent extends BmobObject implements MultiItemEntity{
         this.userId = userId;
     }
 
-    public String getUserNick() {
-        return userNick;
-    }
-
-    public void setUserNick(String userNick) {
-        this.userNick = userNick;
-    }
-
 
     public String getTitle() {
         return title;
@@ -121,6 +113,13 @@ public class CircleContent extends BmobObject implements MultiItemEntity{
         this.content = content;
     }
 
+    public int getLikeNum() {
+        return likeNum;
+    }
+
+    public void setLikeNum(int likeNum) {
+        this.likeNum = likeNum;
+    }
 
     public String getLocation() {
         return location;

@@ -12,6 +12,7 @@ import android.view.WindowManager;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
+import android.widget.ToggleButton;
 
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.PublishPicGridAdapter;
@@ -57,6 +58,9 @@ public class PublishCircleActivity extends BaseActivity {
     ProgressBar progressBar;
     @InjectView(R.id.titlelayout)
     BaseTitleLayout titlelayout;
+    @InjectView(R.id.tbtn_location)
+    ToggleButton tbtnLocation;
+
 
     public static final String PUBLISH_TYPE = "publish_type";
 
@@ -68,9 +72,10 @@ public class PublishCircleActivity extends BaseActivity {
     private ArrayList<PublishPicture> picList = new ArrayList<>();
     private int maxSelPicNum = 9;
 
-    public static final String ACTION_PUBLISH_CIRCLE_OK  = "action_publish_circle_ok";
+    public static final String ACTION_PUBLISH_CIRCLE_OK = "action_publish_circle_ok";
 
     private String[] imgUrls;
+    private boolean isShowLocation = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -139,7 +144,7 @@ public class PublishCircleActivity extends BaseActivity {
                             .choose(MimeType.allOf())
                             .maxSelectable(maxSelPicNum - picList.size() + 1)
                             .restrictOrientation(ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED)
-                            . thumbnailScale(0.85f)
+                            .thumbnailScale(0.85f)
                             .imageEngine(new NewGlideEngine())
                             .forResult(0);
                 } else {
@@ -148,9 +153,16 @@ public class PublishCircleActivity extends BaseActivity {
                     intent.putExtra(BigMultiImgActivity.IMAGES_URL, imgUrls);
                     intent.putExtra(BigMultiImgActivity.IMAGE_INDEX, pos);
                     intent.putExtra(BigMultiImgActivity.SHOW_TITLE, true);
-                    startActivityForResult(intent,0);
+                    startActivityForResult(intent, 0);
                 }
             }
+        });
+        tbtnLocation.setOnCheckedChangeListener((tb, b) -> {
+           if(tb.isChecked()){
+               isShowLocation =  true;
+           }else{
+               isShowLocation =  false;
+           }
         });
     }
 
@@ -164,7 +176,7 @@ public class PublishCircleActivity extends BaseActivity {
             return;
         }
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
-        if (null == piInfo){
+        if (null == piInfo) {
             OtherUtil.showToastText("请重新登录");
             return;
         }
@@ -172,11 +184,12 @@ public class PublishCircleActivity extends BaseActivity {
             final CircleContent circlrContent = new CircleContent(CircleContent.TYPE_TEXT_AND_IMG);
             circlrContent.setId(System.currentTimeMillis());
             circlrContent.setUserId(piInfo.getUid());
-            circlrContent.setUserNick(TextUtils.isEmpty(piInfo.getName()) ? "游客" : piInfo.getName());
             circlrContent.setContent(content);
-            String currCity = aCache.getAsString("location_city");
-            if (!TextUtils.isEmpty(currCity))
-                circlrContent.setLocation(currCity);
+            if(isShowLocation){
+                String currCity = aCache.getAsString("location_city");
+                if (!TextUtils.isEmpty(currCity))
+                    circlrContent.setLocation(currCity);
+            }
             circlrContent.personInfo = piInfo;
             if (picList.size() > 1) {
                 picList.remove(picList.size() - 1);
@@ -223,7 +236,7 @@ public class PublishCircleActivity extends BaseActivity {
                         //4、totalPercent--表示总的上传进度（百分比）
                     }
                 });
-            }else{
+            } else {
                 OtherUtil.showToastText("请添加图片");
             }
         } else if (mType == TYPE_PUBLISH_TEXT_ONLY) {
@@ -231,11 +244,12 @@ public class PublishCircleActivity extends BaseActivity {
             final CircleContent circlrContent = new CircleContent(CircleContent.TYPE_ONLY_TEXT);
             circlrContent.setId(System.currentTimeMillis());
             circlrContent.setUserId(piInfo.getUid());
-            circlrContent.setUserNick(TextUtils.isEmpty(piInfo.getName()) ? "游客" : piInfo.getName());
             circlrContent.setContent(content);
-            String currCity = aCache.getAsString("location_city");
-            if (!TextUtils.isEmpty(currCity))
-                circlrContent.setLocation(currCity);
+            if(isShowLocation){
+                String currCity = aCache.getAsString("location_city");
+                if (!TextUtils.isEmpty(currCity))
+                    circlrContent.setLocation(currCity);
+            }
             circlrContent.personInfo = piInfo;
             circlrContent.save(new SaveListener<String>() {
                 @Override
@@ -261,39 +275,39 @@ public class PublishCircleActivity extends BaseActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-           switch (requestCode){
-               case 0:
-                   String[] imgUrlsArray = null;
-                   List<Uri> selectedUri = Matisse.obtainResult(data);
-                   ContentResolver resolver = getContentResolver();
-                   if(selectedUri!=null&& selectedUri.size()>0){
-                       imgUrlsArray = new String[selectedUri.size()];
-                       for (int i = 0; i < selectedUri.size(); i++) {
-                           Uri uri = selectedUri.get(i);
-                           String path = FileUtils.getFilePathFromContentUri(uri,resolver);
-                           imgUrlsArray[i] = path;
-                       }
-                   }
-                   if(imgUrlsArray != null && imgUrlsArray.length>0){
-                       imgUrls = imgUrlsArray;
-                       picList.clear();
-                       for (int i = 0; i < imgUrlsArray.length; i++) {
-                           PublishPicture pic = new PublishPicture();
-                           pic.setId(i);
-                           pic.setPath(imgUrlsArray[i]);
-                           picList.add(pic);
-                       }
-                       if (picList.size() < 9) {
-                           PublishPicture pic = new PublishPicture();
-                           pic.setId(-1);
-                           pic.setPath("");
-                           picList.add(picList.size(), pic);
-                       }
-                       mGridAdapter.setSelPic(picList);
-                   }
-               break;
-           }
+        if (resultCode == RESULT_OK) {
+            switch (requestCode) {
+                case 0:
+                    String[] imgUrlsArray = null;
+                    List<Uri> selectedUri = Matisse.obtainResult(data);
+                    ContentResolver resolver = getContentResolver();
+                    if (selectedUri != null && selectedUri.size() > 0) {
+                        imgUrlsArray = new String[selectedUri.size()];
+                        for (int i = 0; i < selectedUri.size(); i++) {
+                            Uri uri = selectedUri.get(i);
+                            String path = FileUtils.getFilePathFromContentUri(uri, resolver);
+                            imgUrlsArray[i] = path;
+                        }
+                    }
+                    if (imgUrlsArray != null && imgUrlsArray.length > 0) {
+                        imgUrls = imgUrlsArray;
+                        picList.clear();
+                        for (int i = 0; i < imgUrlsArray.length; i++) {
+                            PublishPicture pic = new PublishPicture();
+                            pic.setId(i);
+                            pic.setPath(imgUrlsArray[i]);
+                            picList.add(pic);
+                        }
+                        if (picList.size() < 9) {
+                            PublishPicture pic = new PublishPicture();
+                            pic.setId(-1);
+                            pic.setPath("");
+                            picList.add(picList.size(), pic);
+                        }
+                        mGridAdapter.setSelPic(picList);
+                    }
+                    break;
+            }
         }
     }
 }

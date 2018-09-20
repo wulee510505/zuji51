@@ -6,22 +6,12 @@
     android:layout_height="wrap_content"
     android:padding="10dp">
 
-    <com.wulee.administrator.zuji.widget.RCRelativeLayout
-        android:id="@+id/rl_head_layout"
+
+    <com.wulee.administrator.zuji.widget.CircleImageView
+        android:id="@+id/iv_header"
         android:layout_width="40dp"
         android:layout_height="40dp"
-        android:layout_centerVertical="true"
-        app:round_as_circle="true"
-        app:round_corner="30dp"
-        app:round_corner_bottom_right="0dp">
-
-        <ImageView
-            android:id="@+id/iv_header"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_centerVertical="true" />
-
-    </com.wulee.administrator.zuji.widget.RCRelativeLayout>
+        android:layout_centerVertical="true" />
 
 
     <TextView
@@ -29,8 +19,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/rl_head_layout"
         android:layout_marginLeft="12dp"
+        android:layout_toRightOf="@id/iv_header"
         android:singleLine="true"
         android:text=""
         android:textColor="@color/ctv_black_2"

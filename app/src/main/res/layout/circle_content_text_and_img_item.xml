@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toos="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:paddingBottom="10dp"
@@ -16,53 +17,61 @@
         android:layout_centerVertical="true"
         android:orientation="horizontal">
 
-        <com.wulee.administrator.zuji.widget.RCRelativeLayout
-            android:id="@+id/avatarBg"
-            android:layout_width="45dp"
-            android:layout_height="45dp">
 
-            <ImageView
-                android:id="@+id/userAvatar"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.wulee.administrator.zuji.widget.RCRelativeLayout>
+        <com.wulee.administrator.zuji.widget.CircleImageView
+            android:id="@+id/userAvatar"
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
 
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:layout_marginLeft="15dp">
+            android:layout_marginLeft="15dp"
+            android:orientation="vertical">
 
             <TextView
                 android:id="@+id/userNick"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center_vertical"
-                android:text="AAAAAAAAAAAAAA"
+                toos:text="AAAAAAAAAAAAAA"
                 android:textColor="@android:color/black"
-                android:textSize="18sp" />
+                android:textSize="@dimen/com_tv_size_middle" />
 
 
             <com.wulee.administrator.zuji.widget.ReadMoreTextView
-                android:id="@+id/circle_content"
+                android:id="@+id/circle_content1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="6dp"
                 android:layout_marginBottom="6dp"
+                android:layout_marginTop="6dp"
+                android:autoLink="all"
                 android:lineSpacingExtra="2dp"
                 android:lineSpacingMultiplier="1.2"
                 android:textColor="@color/ctv_black_2"
-                android:textSize="@dimen/com_tv_size_mid_lit"
-                android:autoLink="all"/>
+                android:textSize="@dimen/com_tv_size_normal"
+                android:visibility="gone"/>
+
+            <com.wulee.administrator.zuji.widget.ExpandableTextView
+                android:id="@+id/circle_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:lineSpacingExtra="2dp"
+                android:layout_marginTop="@dimen/dp_10"
+                android:layout_marginBottom="@dimen/dp_10"
+                android:textSize="@dimen/com_tv_size_normal"
+                app:ep_max_line="3"
+                app:ep_need_contract="true"
+                app:ep_need_expand="true" />
 
 
             <com.jaeger.ninegridimageview.NineGridImageView
                 android:id="@+id/nine_grid_view"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
+                android:layout_marginTop="8dp"
                 app:imgGap="4dp"
                 app:showStyle="fill"
                 app:singleImgSize="120dp" />
@@ -86,9 +95,9 @@
                         android:drawableLeft="@mipmap/icon_location"
                         android:drawablePadding="2dp"
                         android:gravity="center_vertical"
-                        android:text="cccccccccccccccc"
+                        toos:text="cccccccccccccccc"
                         android:textColor="@color/color_light_blue"
-                        android:textSize="12sp" />
+                        android:textSize="@dimen/com_tv_size_nor_lit" />
 
 
                     <LinearLayout
@@ -101,9 +110,9 @@
                             android:id="@+id/time"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="dddddddd"
+                            toos:text="dddddddd"
                             android:textColor="@color/baseGrayNor"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/com_tv_size_nor_lit" />
 
                         <android.support.v4.widget.Space
                             android:layout_width="20dp"
@@ -115,7 +124,7 @@
                             android:layout_height="wrap_content"
                             android:text="删除"
                             android:textColor="@color/color_light_blue"
-                            android:textSize="12sp" />
+                            android:textSize="@dimen/com_tv_size_nor_lit" />
 
                     </LinearLayout>
                 </LinearLayout>
@@ -195,6 +204,18 @@
                 </RelativeLayout>
 
             </LinearLayout>
+
+            <TextView
+                android:id="@+id/tv_likes_num"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:drawableLeft="@mipmap/icon_like_light"
+                android:drawablePadding="4dp"
+                android:textColor="@color/baseGrayNor"
+                android:textSize="@dimen/com_tv_size_normal"
+                toos:text="100" />
+
 
             <TextView
                 android:id="@+id/tv_likes"

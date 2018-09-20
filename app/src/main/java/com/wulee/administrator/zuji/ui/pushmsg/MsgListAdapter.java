@@ -20,7 +20,8 @@ public class MsgListAdapter extends BaseQuickAdapter<PushMessage,BaseViewHolder>
     protected void convert(BaseViewHolder baseViewHolder, final PushMessage msg) {
 
         baseViewHolder.setText(R.id.tv_content,msg.getContent());
-        baseViewHolder.setText(R.id.tv_time, DateTimeUtils.getStringDateTime(msg.getTime()));
-
+        if(msg.getTime()!=null && msg.getTime() >0 ){
+            baseViewHolder.setText(R.id.tv_time, DateTimeUtils.getStringDateTime(msg.getTime()));
+        }
     }
 }

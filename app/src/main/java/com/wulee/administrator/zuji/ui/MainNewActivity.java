@@ -57,6 +57,7 @@ import com.wulee.administrator.zuji.ui.fragment.ZujiFragment;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.ConfigKey;
+import com.wulee.administrator.zuji.utils.DataCleanManager;
 import com.wulee.administrator.zuji.utils.HolidayUtil;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
@@ -67,6 +68,7 @@ import com.wulee.administrator.zuji.widget.CoolImageView;
 import com.yanzhenjie.permission.AndPermission;
 import com.zhouwei.blurlibrary.EasyBlur;
 
+import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -110,6 +112,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
     private TextView mTvIntegral;
     private TextView tvNewPushMsg;
     private TextView tvNewMsg;
+    private TextView tvCacheSize;
 
     private MainFPagerAdaper mainFPagerAdaper;
 
@@ -212,6 +215,13 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                 }
             });
         }
+
+        File file =new File(getCacheDir().getPath());
+        try {
+            tvCacheSize.setText(DataCleanManager.getCacheSize(file));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -299,6 +309,10 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
         LinearLayout llpushmsg = (LinearLayout) navigationView.getMenu().findItem(R.id.item_pushmsg).getActionView();
         tvNewPushMsg = llpushmsg.findViewById(R.id.tv_new_msg);
+
+        LinearLayout llcache = (LinearLayout) navigationView.getMenu().findItem(R.id.item_clear_cache).getActionView();
+        tvCacheSize  = llcache.findViewById(R.id.tv_cache_size);
+
 
         final PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         if(piInfo == null)
@@ -589,6 +603,18 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
             } catch (PackageManager.NameNotFoundException e) {
                 e.printStackTrace();
             }
+        }else  if (id ==  R.id.item_clear_cache) {
+            String cacheSize = tvCacheSize.getText().toString().trim();
+            if(TextUtils.equals("0.0KB",cacheSize)){
+                return true;
+            }
+            showProgressDialog(true);
+            try {
+                DataCleanManager.cleanInternalCache(getApplicationContext());
+                mHandler.sendEmptyMessageDelayed( 0x01,1000);
+            } catch (Exception e) {
+                mHandler.sendEmptyMessageDelayed( 0x02,1000);
+            }
         }
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -733,6 +759,13 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                  case MSG_QUERY_MESSAGE_COUNT:
                      queryMessageCount();
                  break;
+                case 0x01:
+                    stopProgressDialog();
+                    tvCacheSize.setText("0.0KB");
+                    break;
+                case 0x02:
+                    stopProgressDialog();
+                    break;
             }
             super.handleMessage(msg);
         }

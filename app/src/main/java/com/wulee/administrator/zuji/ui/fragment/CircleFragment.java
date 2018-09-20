@@ -47,6 +47,7 @@ import com.zhihu.matisse.MimeType;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 
@@ -289,7 +290,7 @@ public class CircleFragment extends MainBaseFrag {
         // 如果是加载更多
         if (actionType == STATE_MORE) {
             // 跳过之前页数并去掉重复数据
-            query.setSkip(page * PAGE_SIZE + 1);
+            query.setSkip(page * PAGE_SIZE);
         } else {
             query.setSkip(0);
         }
@@ -323,14 +324,15 @@ public class CircleFragment extends MainBaseFrag {
         });
     }
 
+    HashMap<String ,BmobQuery<CircleComment>> queryMap = new HashMap<>();
     private List<CircleContent> processCircleContent(List<CircleContent> list) {
         for (int i = 0; i < list.size(); i++) {
             final CircleContent content = list.get(i);
             // 查询喜欢这个帖子的所有用户，因此查询的是用户表
-            BmobQuery<PersonInfo> query = new BmobQuery<>();
+             /*BmobQuery<PersonInfo> query = new BmobQuery<>();
             //likes是CircleContent表中的字段，用来存储所有喜欢该帖子的用户
             query.addWhereRelatedTo("likes", new BmobPointer(content));
-            query.findObjects(new FindListener<PersonInfo>() {
+           query.findObjects(new FindListener<PersonInfo>() {
                 @Override
                 public void done(List<PersonInfo> list, BmobException e) {
                     if (e == null) {
@@ -342,9 +344,14 @@ public class CircleFragment extends MainBaseFrag {
                         LogUtil.i("zuji", "失败：" + e.getMessage());
                     }
                 }
-            });
-
-            BmobQuery<CircleComment> queryComment = new BmobQuery<>();
+            });*/
+            BmobQuery<CircleComment>  queryComment;
+            if(queryMap.containsKey(content.getObjectId())){
+                queryComment = queryMap.get(content.getObjectId());
+            }else{
+                queryComment = new BmobQuery<>();
+                queryMap.put(content.getObjectId(),queryComment);
+            }
             queryComment.addWhereEqualTo("circleContent", new BmobPointer(content));
             //希望同时查询该评论的发布者的信息，以及该帖子的作者的信息，这里用到上面`include`的并列对象查询和内嵌对象的查询
             queryComment.include("personInfo,circleContent.personInfo");
@@ -399,12 +406,16 @@ public class CircleFragment extends MainBaseFrag {
         builder.setPositiveButton("确定", (dialog, which) -> {
             final List<CircleContent> dataList = mAdapter.getData();
             String objectId = null;
+            String[] imgUrls = null;
             if (dataList != null && dataList.size() > 0) {
                 CircleContent circleContent = dataList.get(pos);
                 objectId = circleContent.getObjectId();
+                imgUrls = circleContent.getImgUrls();
             }
             final CircleContent circleContent = new CircleContent(CircleContent.TYPE_TEXT_AND_IMG);
             circleContent.setObjectId(objectId);
+            if(imgUrls != null && imgUrls.length>0)
+                circleContent.setImgUrls(imgUrls);
             final String finalObjectId = objectId;
 
             showProgressDialog(getActivity(), false);
@@ -415,17 +426,19 @@ public class CircleFragment extends MainBaseFrag {
                     if (e == null) {
 
                         //删除图片素材
-                        BmobFile.deleteBatch(circleContent.getImgUrls(), new DeleteBatchListener() {
-                            @Override
-                            public void done(String[] failUrls, BmobException e) {
-                                //此处删除有时会出现失败，不管失败还是成功都去更新界面，不提示用户
-                                if(e==null){
-                                    Log.i("del","删除成功");
-                                }else{
-                                    Log.i("del","删除失败");
+                        if(circleContent.getImgUrls() != null && circleContent.getImgUrls().length>0){
+                            BmobFile.deleteBatch(circleContent.getImgUrls(), new DeleteBatchListener() {
+                                @Override
+                                public void done(String[] failUrls, BmobException e) {
+                                    //此处删除有时会出现失败，不管失败还是成功都去更新界面，不提示用户
+                                    if(e==null){
+                                        Log.i("del","删除成功");
+                                    }else{
+                                        Log.i("del","删除失败");
+                                    }
                                 }
-                            }
-                        });
+                            });
+                        }
 
                         List<CircleContent> list = dataList;
                         Iterator<CircleContent> iter = list.iterator();
@@ -453,7 +466,7 @@ public class CircleFragment extends MainBaseFrag {
     @Override
     public void onDestroy() {
         super.onDestroy();
-        if(mReceiver!=null){
+        if(mReceiver != null){
            mContext.unregisterReceiver(mReceiver);
            mReceiver = null;
         }
