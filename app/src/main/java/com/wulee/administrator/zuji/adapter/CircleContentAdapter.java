@@ -8,9 +8,9 @@ import android.net.Uri;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +35,7 @@ import com.wulee.administrator.zuji.utils.NoFastClickUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.PhoneUtil;
 import com.wulee.administrator.zuji.widget.CircleImageView;
+import com.wulee.administrator.zuji.widget.CommonPopupWindow;
 import com.wulee.administrator.zuji.widget.ExpandableTextView;
 import com.wulee.administrator.zuji.widget.NoScrollListView;
 
@@ -52,7 +53,6 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
 
     private Context mcontext;
     private PersonInfo piInfo;
-    private HashMap<Integer, LinearLayout> viewMap = new HashMap<>();
     private HashMap<String,Integer> likeNumMap = new HashMap<>();
 
     protected boolean isScrolling = false;
@@ -140,23 +140,6 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
             }
         });
 
-        //喜欢、评论按钮是否显示
-        final boolean[] isToolbarLikeAndCommentVisible = {false};
-
-        final LinearLayout llLikeAndComment = baseViewHolder.getView(R.id.album_toolbar);
-        viewMap.put(pos, llLikeAndComment);
-
-        final RelativeLayout rlLike = baseViewHolder.getView(R.id.toolbarLike);
-        ImageView ivOpt = baseViewHolder.getView(R.id.album_opt);
-        ivOpt.setOnClickListener(view -> {
-            if (isToolbarLikeAndCommentVisible[0]) {
-                llLikeAndComment.setVisibility(View.GONE);
-                isToolbarLikeAndCommentVisible[0] = false;
-            } else {
-                llLikeAndComment.setVisibility(View.VISIBLE);
-                isToolbarLikeAndCommentVisible[0] = true;
-            }
-        });
         TextView tvLikesNum = baseViewHolder.getView(R.id.tv_likes_num);
         int likeNum = circleContent.getLikeNum();
         if(null != tvLikesNum){
@@ -167,38 +150,34 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                 tvLikesNum.setVisibility(View.GONE);
             }
         }
-        rlLike.setOnClickListener(view -> {
-           /* if (circleContent.getLikeList() != null && circleContent.getLikeList().size() > 0) {
-                for (PersonInfo likePiInfo : circleContent.getLikeList()) {
-                    if (TextUtils.equals(piInfo.getUsername(), likePiInfo.getUsername())) {
-                        llLikeAndComment.setVisibility(View.GONE);
-                        Toast.makeText(mcontext, "您已经赞过了", Toast.LENGTH_SHORT).show();
-                        return;
-                    }
-                }
-            }
-            //将当前用户添加到CircleContent表中的likes字段值中，表明当前用户喜欢该帖子
-            final BmobRelation relation = new BmobRelation();
-            //将当前用户添加到多对多关联中
-            relation.add(piInfo);
-            //多对多关联指向CircleContent的`likes`字段
-            circleContent.setLikes(relation);
 
-            circleContent.update(new UpdateListener() {
-                @Override
-                public void done(BmobException e) {
-                    llLikeAndComment.setVisibility(View.GONE);
-                    if (e == null) {
-                        mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
-                        LogUtil.i("zuji", "点赞成功");
-                    } else {
-                        OtherUtil.showToastText("点赞失败" + e.getMessage());
-                    }
-                }
-            });*/
+        ImageView ivOpt = baseViewHolder.getView(R.id.album_opt);
+        ivOpt.setOnClickListener(view -> {
+            CommonPopupWindow popupWindow = new CommonPopupWindow.Builder(mcontext)
+                    //设置PopupWindow布局
+                    .setView(R.layout.circle_opt_pop_layout)
+                    //设置宽高
+                    .setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT)
+                    //设置背景颜色，取值范围0.0f-1.0f 值越小越暗 1.0f为透明
+                    .setBackGroundLevel(0.5f)
+                    //设置PopupWindow里的子View及点击事件
+                    .setViewOnclickListener((view1, layoutResId) -> {
+                        RelativeLayout rlLike =  view1.findViewById(R.id.toolbarLike);
+                        RelativeLayout rlComment = view1.findViewById(R.id.toolbarComment);
+                        rlLike.setOnClickListener(view2 -> addLikes(circleContent.getObjectId(),circleContent.getItemType(),likeNum,tvLikesNum));
 
-            addLikes(circleContent.getObjectId(),circleContent.getItemType(),likeNum,tvLikesNum);
+                        rlComment.setOnClickListener(view2 -> showComentDialog(circleContent));
+                    })
+                    //设置外部是否可点击 默认是true
+                    .setOutsideTouchable(true)
+                    //开始构建
+                    .create();
+            //弹出PopupWindow
+            popupWindow.showAsDropDown(view, -view.getWidth(), -view.getHeight());
+
         });
+
         TextView tvLikes = baseViewHolder.getView(R.id.tv_likes);
         StringBuilder sbLikes = new StringBuilder();
         List<PersonInfo> likePiList = circleContent.getLikeList();
@@ -217,9 +196,6 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         } else {
             tvLikes.setVisibility(View.GONE);
         }
-
-        final RelativeLayout rlComment = baseViewHolder.getView(R.id.toolbarComment);
-        rlComment.setOnClickListener(view -> showComentDialog(circleContent, llLikeAndComment));
 
 
         NoScrollListView lvComment = baseViewHolder.getView(R.id.lv_comment);
@@ -326,11 +302,11 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     /**
      * 评论Dialog
      */
-    private void showComentDialog(final CircleContent content, final View likeAndCommentView) {
+    private void showComentDialog(final CircleContent content) {
         AlertDialog.Builder builder = new AlertDialog.Builder(mcontext);
         builder.setTitle("评论");
         View dialogView = LayoutInflater.from(mcontext).inflate(R.layout.circle_comment_dialog, null);
-        final EditText etComment = (EditText) dialogView.findViewById(R.id.et_comment);
+        final EditText etComment = dialogView.findViewById(R.id.et_comment);
 
 
         builder.setView(dialogView);
@@ -342,7 +318,6 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
             comment.save(new SaveListener<String>() {
                 @Override
                 public void done(String objectId, BmobException e) {
-                    likeAndCommentView.setVisibility(View.GONE);
                     if (e == null) {
                         mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
                         LogUtil.i("zuji", "评论发表成功");
@@ -358,17 +333,6 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         dialog.show();
     }
 
-
-    public void setLikeAndCommentViewGone() {
-        for (int i = 0; i < getData().size(); i++) {
-            LinearLayout llLikeAndComment = viewMap.get(i);
-            if (llLikeAndComment != null) {
-                if (llLikeAndComment.getVisibility() == View.VISIBLE) {
-                    llLikeAndComment.setVisibility(View.GONE);
-                }
-            }
-        }
-    }
 
 
     public void setDelBtnClickListenerListener(OnDelBtnClickListener mListener) {

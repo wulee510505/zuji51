@@ -203,7 +203,6 @@ public class CircleFragment extends MainBaseFrag {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
-                mAdapter.setLikeAndCommentViewGone();
             }
         });
     }

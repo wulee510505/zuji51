@@ -3,6 +3,7 @@ package com.wulee.administrator.zuji.utils;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
+import android.view.View;
 import android.view.WindowManager;
 
 import com.wulee.administrator.zuji.App;
@@ -63,4 +64,16 @@ public class UIUtils {
 		int height = wm.getDefaultDisplay().getHeight();
 		return new int[]{width,height};
 	}
+
+	/**
+	 * 测量View的宽高
+	 *
+	 * @param view View
+	 */
+	public static void measureWidthAndHeight(View view) {
+		int widthMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+		int heightMeasureSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
+		view.measure(widthMeasureSpec, heightMeasureSpec);
+	}
+
 }

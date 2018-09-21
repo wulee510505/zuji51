@@ -106,4 +106,24 @@
         android:text="QQ邮箱:1241394859@qq.com"
         android:textColorLink="@color/colorPrimary" />
 
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/activity_horizontal_margin"
+            android:text="QQ交流群:" />
+
+        <TextView
+            android:id="@+id/tv_qq_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="546662190"
+            android:textColor="@color/colorPrimary"/>
+    </LinearLayout>
+
 </LinearLayout>

@@ -136,8 +136,8 @@ public class UserInfoActivity extends BaseActivity {
                 sendAddFriendMessage();
                 break;
             case R.id.btn_send_msg_to_stranger:
-                if (personInfo != null)
-                    chat(personInfo.getObjectId(), TextUtils.isEmpty(personInfo.getName()) ? personInfo.getName() : personInfo.getUsername(), personInfo.getHeader_img_url());
+                if (personInfo != null  && personInfo.getObjectId()!= null)
+                    chat(personInfo.getObjectId(), !TextUtils.isEmpty(personInfo.getName()) ? personInfo.getName() : personInfo.getUsername(), personInfo.getHeader_img_url());
                 break;
             case R.id.btn_message_board:
                 startActivity(new Intent(this, MessageBoardActivity.class).putExtra("piInfo", personInfo));
@@ -154,7 +154,7 @@ public class UserInfoActivity extends BaseActivity {
     //TODO 好友管理：9.7、发送添加好友请求
     private void sendAddFriendMessage() {
         //TODO 会话：4.1、创建一个暂态会话入口，发送好友请求
-        if (personInfo != null && BmobIM.getInstance().getCurrentStatus().getCode() == ConnectionStatus.CONNECTED.getCode()) {
+        if (personInfo != null && personInfo.getObjectId()!= null && BmobIM.getInstance().getCurrentStatus().getCode() == ConnectionStatus.CONNECTED.getCode()) {
             BmobIMUserInfo info = new BmobIMUserInfo(personInfo.getObjectId(), !TextUtils.isEmpty(personInfo.getName()) ? personInfo.getName() : personInfo.getUsername(), personInfo.getHeader_img_url());
             BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, true, null);
             //TODO 消息：5.1、根据会话入口获取消息管理，发送好友请求

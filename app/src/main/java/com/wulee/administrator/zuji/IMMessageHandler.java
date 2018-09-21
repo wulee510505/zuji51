@@ -19,7 +19,6 @@ import com.wulee.administrator.zuji.database.NewFriendManager;
 import com.wulee.administrator.zuji.database.bean.NewFriendInfo;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.RefreshEvent;
-import com.wulee.administrator.zuji.ui.MainNewActivity;
 
 import java.util.List;
 import java.util.Map;
@@ -32,9 +31,9 @@ import cn.bmob.newim.bean.BmobIMUserInfo;
 import cn.bmob.newim.event.MessageEvent;
 import cn.bmob.newim.event.OfflineMessageEvent;
 import cn.bmob.newim.listener.BmobIMMessageHandler;
-import cn.bmob.newim.notification.BmobNotificationManager;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
+import cn.bmob.v3.util.BmobNotificationManager;
 import de.greenrobot.event.EventBus;
 
 import static android.content.Context.NOTIFICATION_SERVICE;
@@ -48,9 +47,10 @@ public class IMMessageHandler extends BmobIMMessageHandler {
 
     private Context context;
     private NotificationManager mNotificationManager;
+
     public IMMessageHandler(Context context) {
         this.context = context;
-        mNotificationManager = (NotificationManager)context.getSystemService(NOTIFICATION_SERVICE);
+        mNotificationManager = (NotificationManager) context.getSystemService(NOTIFICATION_SERVICE);
     }
 
     @Override
@@ -108,25 +108,29 @@ public class IMMessageHandler extends BmobIMMessageHandler {
      * @param event
      */
     private void processSDKMessage(BmobIMMessage msg, MessageEvent event) {
-        if (BmobNotificationManager.getInstance(context).isShowNotification()) {
-            //如果需要显示通知栏，SDK提供以下两种显示方式：
-            Intent pendingIntent = new Intent(context, MainNewActivity.class);
-            pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        //如果需要显示通知栏，SDK提供以下两种显示方式：
+        Intent pendingIntent = new Intent(context, ChatMainActivity.class);
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
 
 
-            //TODO 消息接收：8.5、多个用户的多条消息合并成一条通知：有XX个联系人发来了XX条消息
-            //BmobNotificationManager.getInstance(context).showNotification(event, pendingIntent);
+        //TODO 消息接收：8.5、多个用户的多条消息合并成一条通知：有XX个联系人发来了XX条消息
+        //BmobNotificationManager.getInstance(context).showNotification(event, pendingIntent);
 
-            //TODO 消息接收：8.6、自定义通知消息：始终只有一条通知，新消息覆盖旧消息
-            BmobIMUserInfo info = event.getFromUserInfo();
-            //这里可以是应用图标，也可以将聊天头像转成bitmap
-            Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
-            BmobNotificationManager.getInstance(context).showNotification(largeIcon,
-                    info.getName(), msg.getContent(), "您有一条新消息", pendingIntent);
-        } else {
-            //直接发送消息事件
-            EventBus.getDefault().post(event);
-        }
+        //TODO 消息接收：8.6、自定义通知消息：始终只有一条通知，新消息覆盖旧消息
+        BmobIMUserInfo info = event.getFromUserInfo();
+        BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("c", conversationEntrance);
+        PersonInfo userInfo = new PersonInfo();
+        userInfo.setObjectId(info.getUserId());
+        userInfo.setName(info.getName());
+        userInfo.setHeader_img_url(info.getAvatar());
+        bundle.putSerializable("piInfo", userInfo);
+        pendingIntent.putExtras(bundle);
+        //这里可以是应用图标，也可以将聊天头像转成bitmap
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        BmobNotificationManager.getInstance(context).showNotification(largeIcon,
+                info.getName(), msg.getContent(), "您有一条新消息", pendingIntent);
     }
 
     /**
@@ -160,11 +164,12 @@ public class IMMessageHandler extends BmobIMMessageHandler {
 
     /**
      * 显示对方添加自己为好友的通知
+     *
      * @param friend
      */
     private void showAddNotify(NewFriendInfo friend) {
         Intent pendingIntent = new Intent(context, AddFriendAgreeActivity.class);
-        pendingIntent.putExtra("new_friend_info",friend);
+        pendingIntent.putExtra("new_friend_info", friend);
         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         //这里可以是应用图标，也可以将聊天头像转成bitmap
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
@@ -183,7 +188,7 @@ public class IMMessageHandler extends BmobIMMessageHandler {
         BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, null);
         Bundle bundle = new Bundle();
         bundle.putSerializable("c", conversationEntrance);
-        bundle.putInt("type",0);
+        bundle.putInt("type", 0);
         pendingIntent.putExtras(bundle);
         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);

@@ -137,10 +137,10 @@ public class ChatMainActivity extends BaseActivity implements MessageListHandler
 
     private void initWidget() {
         mConversationId = mConversationManager.getConversationId();
-        if(mType == 0)
-           title.setText(mConversationManager.getConversationTitle());
+        if(mType == 1)
+            title.setText("匿名用户");
         else
-           title.setText("匿名用户");
+            title.setText(mConversationManager.getConversationTitle());
 
         fragments = new ArrayList<>();
         chatEmotionFragment = new ChatEmotionFragment();
