@@ -97,7 +97,7 @@ public class AboutMeActivity extends BaseActivity {
         } catch (IOException e) {
             e.printStackTrace();
         }*/
-        OtherUtil.shareTextAndImage(this,"足迹","一款可以记录并查看出行轨迹的工具类软件 \nhttp://zuji51.bmob.site/", null);//分享图文
+        OtherUtil.shareTextAndImage(this,"足迹","一款有灵魂的软件 \nhttp://zuji51.bmob.site/", null);//分享图文
     }
 
 

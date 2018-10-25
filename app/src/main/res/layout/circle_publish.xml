@@ -5,37 +5,49 @@
     android:layout_height="match_parent"
     android:fitsSystemWindows="true">
 
-
     <com.wulee.administrator.zuji.widget.BaseTitleLayout
         android:id="@+id/titlelayout"
         android:layout_width="match_parent"
         android:layout_height="@dimen/com_title_height"
         android:background="@color/colorAccent"
-        app:titleTextColor="@color/color_white"
-        app:titleRightImg1="@mipmap/icon_submit"
-        app:titleTextSize = "18sp"
         app:titleCenterText="发表"
-        app:titleLeftText=""/>
+        app:titleLeftText=""
+        app:titleRightImg1="@mipmap/icon_submit"
+        app:titleTextColor="@color/color_white"
+        app:titleTextSize="18sp" />
 
-
-    <com.wulee.administrator.zuji.widget.AnFQNumEditText
-        android:id="@+id/edittext"
+    <ScrollView
+        android:id="@+id/sc_edittext"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="150dp"
         android:layout_below="@id/titlelayout"
-        android:layout_margin="10dp"
-        android:background="@drawable/bg_com_edittext"
-        android:gravity="top|left"
-        android:padding="10dp" />
+        android:fadingEdge="none"
+        android:overScrollMode="never">
 
+        <com.wulee.administrator.zuji.widget.AnFQNumEditText
+            android:id="@+id/edittext"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_margin="10dp"
+            android:background="@drawable/bg_com_edittext"
+            android:gravity="top|left"
+            android:padding="10dp" />
+    </ScrollView>
+
+    <View
+        android:id="@+id/line0"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_below="@id/sc_edittext"
+        android:background="@color/ctv_black_4" />
 
     <com.wulee.administrator.zuji.widget.MyGridView
         android:id="@+id/gridview_pic"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/edittext"
-        android:cacheColorHint="#00000000"
+        android:layout_below="@id/line0"
         android:layout_margin="10dp"
+        android:cacheColorHint="#00000000"
         android:horizontalSpacing="20dp"
         android:listSelector="#00000000"
         android:numColumns="3"
@@ -46,9 +58,9 @@
         android:id="@+id/line1"
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_4"
         android:layout_below="@id/gridview_pic"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_4"
         android:background="@color/ctv_black_4" />
 
     <RelativeLayout
@@ -56,21 +68,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@id/line1"
-        android:paddingTop="@dimen/dp_4"
         android:paddingBottom="@dimen/dp_4"
         android:paddingLeft="@dimen/dp_10"
-        android:paddingRight="20dp">
+        android:paddingRight="20dp"
+        android:paddingTop="@dimen/dp_4">
 
         <TextView
             android:id="@+id/location_tv"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
+            android:drawableLeft="@mipmap/ic_location"
+            android:drawablePadding="@dimen/dp_10"
             android:focusable="true"
             android:focusableInTouchMode="true"
             android:text="显示位置"
-            android:drawableLeft="@mipmap/ic_location"
-            android:drawablePadding="@dimen/dp_10"
             android:textColor="@color/ctv_black_2"
             android:textSize="@dimen/com_tv_size_mid_lit" />
 
@@ -78,12 +90,12 @@
             android:id="@+id/tbtn_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:minWidth="0dp"
-            android:minHeight="0dp"
             android:layout_alignParentRight="true"
             android:background="@color/transparent"
             android:button="@drawable/toggle_button"
             android:checked="true"
+            android:minHeight="0dp"
+            android:minWidth="0dp"
             android:textOff=""
             android:textOn="" />
     </RelativeLayout>
@@ -91,16 +103,9 @@
     <View
         android:layout_width="match_parent"
         android:layout_height="1px"
-        android:layout_marginTop="@dimen/dp_4"
-        android:layout_marginBottom="@dimen/dp_4"
         android:layout_below="@id/rl_show_location"
+        android:layout_marginBottom="@dimen/dp_4"
+        android:layout_marginTop="@dimen/dp_4"
         android:background="@color/ctv_black_4" />
-
-    <ProgressBar
-        android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_centerInParent="true"
-        android:visibility="gone"/>
 
 </RelativeLayout>

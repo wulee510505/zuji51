@@ -29,10 +29,11 @@
             android:id="@+id/tv_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/colorAccent"
+            android:textColor="@color/ctv_black_2"
             android:textSize="@dimen/com_tv_size_middle"
             android:gravity="center"
             android:text=""
+            android:autoLink="all"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1.2"/>
 

@@ -3,14 +3,12 @@ package com.wulee.administrator.zuji.ui;
 import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.graphics.Bitmap;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.GridView;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 import android.widget.ToggleButton;
 
@@ -19,9 +17,10 @@ import com.wulee.administrator.zuji.adapter.PublishPicGridAdapter;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.CircleContent;
+import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.PublishPicture;
-import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.FileUtils;
+import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.NewGlideEngine;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.UIUtils;
@@ -31,6 +30,8 @@ import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
 import com.zhihu.matisse.Matisse;
 import com.zhihu.matisse.MimeType;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,8 +55,6 @@ public class PublishCircleActivity extends BaseActivity {
     AnFQNumEditText edittext;
     @InjectView(R.id.gridview_pic)
     GridView gridviewPic;
-    @InjectView(R.id.progress_bar)
-    ProgressBar progressBar;
     @InjectView(R.id.titlelayout)
     BaseTitleLayout titlelayout;
     @InjectView(R.id.tbtn_location)
@@ -83,12 +82,6 @@ public class PublishCircleActivity extends BaseActivity {
 
         setContentView(R.layout.circle_publish);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        AppUtils.setStateBarColor(this, R.color.colorAccent);
-
         ButterKnife.inject(this);
 
         mType = getIntent().getIntExtra(PUBLISH_TYPE, 0);
@@ -100,7 +93,7 @@ public class PublishCircleActivity extends BaseActivity {
     private void initView() {
         edittext.setEtHint("说点什么吧...")//设置提示文字
                 .setEtMinHeight(UIUtils.dip2px(120))//设置最小高度，单位px
-                .setLength(300)//设置总字数
+                .setLength(1000)//设置总字数
                 .setType(AnFQNumEditText.SINGULAR)//TextView显示类型(SINGULAR单数类型)(PERCENTAGE百分比类型)
                 .show();
         if (mType == TYPE_PUBLISH_TEXT_AND_IMG) {
@@ -198,7 +191,7 @@ public class PublishCircleActivity extends BaseActivity {
                 for (int i = 0; i < picList.size(); i++) {
                     filePaths[i] = picList.get(i).getPath();
                 }
-                progressBar.setVisibility(View.VISIBLE);
+                showProgressDialog(true);
                 BmobFile.uploadBatch(filePaths, new UploadBatchListener() {
                     @Override
                     public void onSuccess(List<BmobFile> files, List<String> urls) {
@@ -213,7 +206,7 @@ public class PublishCircleActivity extends BaseActivity {
                             circlrContent.save(new SaveListener<String>() {
                                 @Override
                                 public void done(String s, BmobException e) {
-                                    progressBar.setVisibility(View.GONE);
+                                    stopProgressDialog();
                                     if (e == null) {
                                         sendBroadcast(new Intent(ACTION_PUBLISH_CIRCLE_OK));
                                         PublishCircleActivity.this.finish();
@@ -240,7 +233,7 @@ public class PublishCircleActivity extends BaseActivity {
                 OtherUtil.showToastText("请添加图片");
             }
         } else if (mType == TYPE_PUBLISH_TEXT_ONLY) {
-            progressBar.setVisibility(View.VISIBLE);
+           showProgressDialog(true);
             final CircleContent circlrContent = new CircleContent(CircleContent.TYPE_ONLY_TEXT);
             circlrContent.setId(System.currentTimeMillis());
             circlrContent.setUserId(piInfo.getUid());
@@ -254,7 +247,7 @@ public class PublishCircleActivity extends BaseActivity {
             circlrContent.save(new SaveListener<String>() {
                 @Override
                 public void done(String s, BmobException e) {
-                    progressBar.setVisibility(View.GONE);
+                    stopProgressDialog();
                     if (e == null) {
                         sendBroadcast(new Intent(ACTION_PUBLISH_CIRCLE_OK));
                         PublishCircleActivity.this.finish();
@@ -286,7 +279,22 @@ public class PublishCircleActivity extends BaseActivity {
                         for (int i = 0; i < selectedUri.size(); i++) {
                             Uri uri = selectedUri.get(i);
                             String path = FileUtils.getFilePathFromContentUri(uri, resolver);
-                            imgUrlsArray[i] = path;
+                            Bitmap bmp = ImageUtil.resizeBitmap(path,1024,1024);
+                            File file = null;
+                            String dstFilePath = "";
+                            try {
+                                File dir = new File(Constant.TEMP_FILE_PATH);
+                                if (!dir.exists()) {
+                                    dir.mkdirs();
+                                }
+                                dstFilePath = Constant.TEMP_FILE_PATH + "circle_" + System.currentTimeMillis() + ".png";
+                                file = ImageUtil.resizeBitmapAndSave(bmp, dstFilePath,0.7f);
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            if (file != null && file.exists()) {
+                                imgUrlsArray[i] = dstFilePath;
+                            }
                         }
                     }
                     if (imgUrlsArray != null && imgUrlsArray.length > 0) {

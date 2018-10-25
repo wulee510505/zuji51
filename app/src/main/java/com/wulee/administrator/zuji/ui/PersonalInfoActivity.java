@@ -6,11 +6,9 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,6 +21,8 @@ import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.utils.AppUtils;
+import com.wulee.administrator.zuji.utils.Config;
+import com.wulee.administrator.zuji.utils.ConfigKey;
 import com.wulee.administrator.zuji.utils.FileUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
@@ -45,7 +45,6 @@ import cn.bmob.v3.listener.UpdateListener;
 import cn.bmob.v3.listener.UploadFileListener;
 
 import static cn.bmob.v3.BmobUser.getCurrentUser;
-import static com.wulee.administrator.zuji.App.aCache;
 
 
 /**
@@ -92,12 +91,6 @@ public class PersonalInfoActivity extends BaseActivity implements ActionSheet.Me
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.me_personal_center);
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
-            //透明状态栏
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-        }
-        AppUtils.setStateBarColor(this, R.color.colorAccent);
 
         ButterKnife.inject(this);
 
@@ -160,7 +153,7 @@ public class PersonalInfoActivity extends BaseActivity implements ActionSheet.Me
                 } else {
                     if (e.getErrorCode() == 206) {
                         OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
-                        aCache.put("has_login", "no");
+                        Config.get(PersonalInfoActivity.this).remove(ConfigKey.KEY_HAS_LOGIN);
                         LocationUtil.getInstance().stopGetLocation();
                         AppUtils.AppExit(PersonalInfoActivity.this);
                         PersonInfo.logOut();
@@ -239,7 +232,7 @@ public class PersonalInfoActivity extends BaseActivity implements ActionSheet.Me
                             } else {
                                 if (e.getErrorCode() == 206) {
                                     OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
-                                    aCache.put("has_login", "no");
+                                    Config.get(PersonalInfoActivity.this).remove(ConfigKey.KEY_HAS_LOGIN);
                                     LocationUtil.getInstance().stopGetLocation();
                                     AppUtils.AppExit(PersonalInfoActivity.this);
                                     PersonInfo.logOut();

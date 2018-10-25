@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:toos="http://schemas.android.com/tools"
     android:fitsSystemWindows="true">
 
     <RelativeLayout
@@ -100,7 +101,8 @@
             android:layout_below="@id/line"
             android:paddingLeft="15dp"
             android:paddingRight="15dp"
-            android:text="sssssssssssssssssssssssssssssssssssss"
+            toos:text="sssssssssssssssssssssssssssssssssssss"
+            android:autoLink="all"
             android:lineSpacingMultiplier="1.2"
             android:lineSpacingExtra="2dp"
             android:textColor="@color/baseGrayMore"

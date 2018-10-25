@@ -42,7 +42,7 @@ public class PushMsgReceiver extends BroadcastReceiver {
         String action = intent.getAction();
         if(action.equals(PushConstants.ACTION_MESSAGE)){
 
-            if(!OtherUtil.hasLogin())
+            if(!OtherUtil.hasLogin(context))
                 return;
 
             String jsonMessage = intent.getStringExtra("msg");

@@ -1,16 +1,15 @@
 package com.wulee.administrator.zuji.widget;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.text.Editable;
 import android.text.InputFilter;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import com.wulee.administrator.zuji.R;
 
 
@@ -25,7 +24,6 @@ public class AnFQNumEditText extends RelativeLayout {
     public static final String PERCENTAGE = "Percentage";//类型2(百分比类型)
     private EditText etContent;//文本框
     private TextView tvNum;//字数显示TextView
-    private View vLine;//底部横线
     private String TYPES = SINGULAR;//类型
     private int MaxNum = 100;//最大字符
 
@@ -38,7 +36,6 @@ public class AnFQNumEditText extends RelativeLayout {
         LayoutInflater.from(context).inflate(R.layout.anfq_num_edittext, this, true);
         etContent = (EditText) findViewById(R.id.etContent);
         tvNum = (TextView) findViewById(R.id.tvNum);
-        vLine = findViewById(R.id.vLine);
     }
 
     /**
@@ -55,16 +52,6 @@ public class AnFQNumEditText extends RelativeLayout {
         etContent.setFilters(new InputFilter[]{new InputFilter.LengthFilter(MaxNum)});
         //监听输入
         etContent.addTextChangedListener(mTextWatcher);
-        return this;
-    }
-
-    /**
-     * 设置横线颜色
-     * @param color --颜色值
-     * @return
-     */
-    public AnFQNumEditText setLineColor(String color){
-        vLine.setBackgroundColor(Color.parseColor(color));
         return this;
     }
 

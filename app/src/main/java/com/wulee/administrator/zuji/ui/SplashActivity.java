@@ -126,7 +126,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
         // 设置是否展示失败自动跳转，默认自动跳转
         //splashViewSettings.setAutoJumpToTargetWhenShowFailed(false);
         // 设置跳转的窗口类
-        if(OtherUtil.hasLogin()){
+        if(OtherUtil.hasLogin(this)){
             splashViewSettings.setTargetClass(MainNewActivity.class);
         } else{
             splashViewSettings.setTargetClass(LoginActivity.class);
@@ -251,7 +251,7 @@ public class SplashActivity extends BaseActivity implements View.OnClickListener
 
     private void startActivity() {
         final Intent intent;
-        if(OtherUtil.hasLogin()){
+        if(OtherUtil.hasLogin(this)){
              intent = new Intent(SplashActivity.this, MainNewActivity.class);
         } else{
              intent = new Intent(this, LoginActivity.class);

@@ -36,6 +36,8 @@ import com.wulee.administrator.zuji.ui.LoginActivity;
 import com.wulee.administrator.zuji.ui.PersonalInfoActivity;
 import com.wulee.administrator.zuji.ui.PublishCircleActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
+import com.wulee.administrator.zuji.utils.Config;
+import com.wulee.administrator.zuji.utils.ConfigKey;
 import com.wulee.administrator.zuji.utils.FileUtils;
 import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
@@ -65,7 +67,6 @@ import cn.bmob.v3.listener.UploadFileListener;
 
 import static android.app.Activity.RESULT_OK;
 import static android.support.v7.widget.RecyclerView.SCROLL_STATE_IDLE;
-import static com.wulee.administrator.zuji.App.aCache;
 
 /**
  * Created by wulee on 2017/9/6 09:52
@@ -257,7 +258,7 @@ public class CircleFragment extends MainBaseFrag {
                             } else {
                                 if (e.getErrorCode() == 206) {
                                     OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
-                                    aCache.put("has_login", "no");
+                                    Config.get(getContext()).remove(ConfigKey.KEY_HAS_LOGIN);
                                     LocationUtil.getInstance().stopGetLocation();
                                     AppUtils.AppExit(mContext);
                                     PersonInfo.logOut();

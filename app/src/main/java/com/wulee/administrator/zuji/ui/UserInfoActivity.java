@@ -126,7 +126,7 @@ public class UserInfoActivity extends BaseActivity {
     }
 
 
-    @OnClick({R.id.iv_back, R.id.btn_message_board, R.id.rl_circle, R.id.btn_send_msg_to_stranger, R.id.btn_add_friend})
+    @OnClick({R.id.iv_back, R.id.btn_message_board, R.id.rl_circle, R.id.btn_send_msg_to_stranger, R.id.btn_add_friend,R.id.user_photo})
     public void onViewClicked(View view) {
         switch (view.getId()) {
             case R.id.iv_back:
@@ -144,6 +144,11 @@ public class UserInfoActivity extends BaseActivity {
                 break;
             case R.id.rl_circle:
                 startActivity(new Intent(this, PrivateCircleActivity.class).putExtra("piInfo", personInfo));
+                break;
+            case R.id.user_photo:
+                if(personInfo != null){
+                    startActivity(new Intent(this, BigSingleImgActivity.class).putExtra(BigSingleImgActivity.IMAGE_URL, personInfo.getHeader_img_url()));
+                }
                 break;
         }
     }

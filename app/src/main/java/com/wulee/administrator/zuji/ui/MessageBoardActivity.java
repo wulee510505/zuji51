@@ -101,6 +101,7 @@ public class MessageBoardActivity extends BaseActivity {
     }
 
     private void init() {
+        swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
         String mobile = aCache.getAsString(ConfigKey.KEY_CURR_LOGIN_MOBILE);
         if (TextUtils.equals(piInfo.getUsername(), mobile)) {
             llOpt.setVisibility(View.GONE);

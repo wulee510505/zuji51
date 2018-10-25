@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item
+        android:id="@+id/menu_zuji"
+        android:checked="true"
+        android:icon="@mipmap/tab_zuji_gray"
+        android:title="足迹" />
+
+    <item
+        android:id="@+id/menu_circle"
+        android:icon="@mipmap/tab_circle_gray"
+        android:title="圈子" />
+
+
+    <item
+        android:id="@+id/menu_group"
+        android:icon="@mipmap/tab_group_gray"
+        android:title="好友" />
+
+    <item
+        android:id="@+id/menu_joke"
+        android:icon="@mipmap/tab_joke_gray"
+        android:title="笑话" />
+
+    <item
+        android:id="@+id/menu_news"
+        android:icon="@mipmap/tab_news_gray"
+        android:title="新闻" />
+
+</menu>

@@ -186,8 +186,8 @@ public class BigMultiImgActivity extends BaseActivity {
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            RelativeLayout rlLayout = (RelativeLayout) object;
-            container.removeView(rlLayout);
+            ZoomImageView imageView = (ZoomImageView) object;
+            container.removeView(imageView);
         }
 
         public List<String> getmImgUrls() {

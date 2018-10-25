@@ -1,15 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<com.wulee.administrator.zuji.widget.ZoomImageView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/iv_bigimg"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="#000000"
+    android:src="@mipmap/bg_pic_def_rect" />
 
-
-    <com.wulee.administrator.zuji.widget.ZoomImageView
-        android:id="@+id/iv_bigimg"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:src="@mipmap/bg_pic_def_rect" />
-
-</RelativeLayout>

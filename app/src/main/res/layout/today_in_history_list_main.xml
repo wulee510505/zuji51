@@ -27,6 +27,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/titlelayout"
         android:overScrollMode="never"
+        android:fadingEdge="none"
         app:layout_empty="@layout/com_view_empty"
         app:layout_error="@layout/com_view_error"
         app:layout_progress="@layout/com_view_progress"

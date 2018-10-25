@@ -11,7 +11,6 @@ import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.facebook.stetho.common.LogUtil;
@@ -60,8 +59,6 @@ public class StepActivity extends BaseActivity {
     EasyRecyclerView recyclerview;
     @InjectView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
-    @InjectView(R.id.progress_bar)
-    ProgressBar progressBar;
     @InjectView(R.id.iv_history)
     ImageView ivHistory;
     @InjectView(R.id.progress_step)
@@ -108,11 +105,12 @@ public class StepActivity extends BaseActivity {
     private void queryStepRankList() {
         BmobQuery<StepInfo> query = new BmobQuery<StepInfo>();
         query.include("personInfo");// 希望在查询计步信息的同时也把当前用户的信息查询出来
+        showProgressDialog(true);
         query.findObjects(new FindListener<StepInfo>() {
             @Override
             public void done(List<StepInfo> dataList, BmobException e) {
                 swipeLayout.setRefreshing(false);
-                progressBar.setVisibility(View.GONE);
+                stopProgressDialog();
                 if (e == null) {
                     if (null != dataList && dataList.size() > 0) {
                         //数据重复问题，暂未想到解决的好办法

@@ -3,18 +3,17 @@ package com.wulee.administrator.zuji.ui.fragment;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.jude.easyrecyclerview.EasyRecyclerView;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.NewsAdapter;
+import com.wulee.administrator.zuji.base.BaseFragment;
 import com.wulee.administrator.zuji.base.ComWebActivity;
 import com.wulee.administrator.zuji.entity.NewsInfo;
 import com.wulee.administrator.zuji.utils.GsonUtil;
@@ -31,15 +30,13 @@ import okhttp3.Headers;
 /**
  * Created by wulee on 2017/9/7 10:52
  */
-public class NewsChildFragment extends Fragment {
+public class NewsChildFragment extends BaseFragment {
 
 
     @InjectView(R.id.recyclerview)
     EasyRecyclerView recyclerview;
     @InjectView(R.id.swipeLayout)
     SwipeRefreshLayout swipeLayout;
-    @InjectView(R.id.progress_bar)
-    ProgressBar progressBar;
     private View mRootView;
     private Context mContext;
 
@@ -116,7 +113,7 @@ public class NewsChildFragment extends Fragment {
             @Override
             public void onStart() {
                 if (!isRefresh)
-                    progressBar.setVisibility(View.VISIBLE);
+                    showProgressDialog(getActivity(),false);
             }
             @Override
             public void onResponse(String response, Headers headers) {
@@ -144,8 +141,7 @@ public class NewsChildFragment extends Fragment {
             //请求网络结束
             @Override
             public void onFinish() {
-                if(progressBar != null)
-                   progressBar.setVisibility(View.GONE);
+               stopProgressDialog();
             }
         });
     }

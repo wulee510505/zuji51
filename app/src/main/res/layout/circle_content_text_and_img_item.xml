@@ -40,19 +40,6 @@
                 android:textSize="@dimen/com_tv_size_middle" />
 
 
-            <com.wulee.administrator.zuji.widget.ReadMoreTextView
-                android:id="@+id/circle_content1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="6dp"
-                android:layout_marginTop="6dp"
-                android:autoLink="all"
-                android:lineSpacingExtra="2dp"
-                android:lineSpacingMultiplier="1.2"
-                android:textColor="@color/ctv_black_2"
-                android:textSize="@dimen/com_tv_size_normal"
-                android:visibility="gone"/>
-
             <com.wulee.administrator.zuji.widget.ExpandableTextView
                 android:id="@+id/circle_content"
                 android:layout_width="match_parent"
@@ -65,6 +52,15 @@
                 app:ep_need_contract="true"
                 app:ep_need_expand="true" />
 
+
+            <TextView
+                android:id="@+id/tv_copy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="复制"
+                android:paddingRight="@dimen/dp_4"
+                android:textColor="@color/color_light_blue"
+                android:textSize="@dimen/com_tv_size_nor_lit" />
 
             <com.jaeger.ninegridimageview.NineGridImageView
                 android:id="@+id/nine_grid_view"

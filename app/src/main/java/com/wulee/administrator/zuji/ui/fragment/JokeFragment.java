@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -60,8 +59,6 @@ public class JokeFragment extends MainBaseFrag {
     RelativeLayout titlelayout;
     @InjectView(R.id.swipCardsView)
     SwipeCardsView swipCardsView;
-    @InjectView(R.id.progress_bar)
-    ProgressBar progressBar;
     @InjectView(R.id.iv_nodata)
     ImageView ivNodata;
     private View mRootView;
@@ -117,8 +114,7 @@ public class JokeFragment extends MainBaseFrag {
                 //请求网络前
                 @Override
                 public void onStart() {
-                    if (progressBar != null)
-                        progressBar.setVisibility(View.VISIBLE);
+                  showProgressDialog(getActivity(),true);
                 }
 
                 @Override
@@ -157,7 +153,7 @@ public class JokeFragment extends MainBaseFrag {
                 //请求网络结束
                 @Override
                 public void onFinish() {
-                    progressBar.setVisibility(View.GONE);
+                    stopProgressDialog();
                 }
             });
         }

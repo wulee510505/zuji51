@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.annotation.Nullable;
-import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,6 +30,7 @@ import com.baidu.mapapi.map.OverlayOptions;
 import com.baidu.mapapi.model.LatLng;
 import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.R;
+import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.LocationInfo;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
@@ -52,7 +52,7 @@ import static com.wulee.administrator.zuji.App.aCache;
  * Created by wulee on 2017/3/15 11:47
  */
 
-public class ZuJiMapActivity extends AppCompatActivity implements BaiduMap.OnMarkerClickListener,BaiduMap.OnMapClickListener{
+public class ZuJiMapActivity extends BaseActivity implements BaiduMap.OnMarkerClickListener,BaiduMap.OnMapClickListener{
 
 
     public static final String ACTION_LOCATION_CHANGE = "action_location_change";

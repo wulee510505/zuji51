@@ -54,6 +54,7 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     private Context mcontext;
     private PersonInfo piInfo;
     private HashMap<String,Integer> likeNumMap = new HashMap<>();
+    private HashMap<Integer,CommonPopupWindow> mapPopwindow = new HashMap<>();
 
     protected boolean isScrolling = false;
 
@@ -113,6 +114,11 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                 LogUtil.d("你点击了@用户 内容是：" + content);
             }
         });
+        TextView tvCopy = baseViewHolder.getView(R.id.tv_copy);
+        tvCopy.setOnClickListener(v -> {
+            OtherUtil.copy(circleContent.getContent(),mContext);
+            OtherUtil.showToastText("已复制到剪切板，快去粘贴吧~");
+        });
 
         TextView tvLocation = baseViewHolder.getView(R.id.location);
         if (!TextUtils.isEmpty(circleContent.getLocation())) {
@@ -153,29 +159,34 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
 
         ImageView ivOpt = baseViewHolder.getView(R.id.album_opt);
         ivOpt.setOnClickListener(view -> {
-            CommonPopupWindow popupWindow = new CommonPopupWindow.Builder(mcontext)
-                    //设置PopupWindow布局
-                    .setView(R.layout.circle_opt_pop_layout)
-                    //设置宽高
-                    .setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT,
-                            ViewGroup.LayoutParams.WRAP_CONTENT)
-                    //设置背景颜色，取值范围0.0f-1.0f 值越小越暗 1.0f为透明
-                    .setBackGroundLevel(0.5f)
-                    //设置PopupWindow里的子View及点击事件
-                    .setViewOnclickListener((view1, layoutResId) -> {
-                        RelativeLayout rlLike =  view1.findViewById(R.id.toolbarLike);
-                        RelativeLayout rlComment = view1.findViewById(R.id.toolbarComment);
-                        rlLike.setOnClickListener(view2 -> addLikes(circleContent.getObjectId(),circleContent.getItemType(),likeNum,tvLikesNum));
+            CommonPopupWindow popupWindow;
+            if(mapPopwindow.containsKey(pos)){
+                popupWindow = mapPopwindow.get(pos);
+            }else{
+                popupWindow = new CommonPopupWindow.Builder(mcontext)
+                        //设置PopupWindow布局
+                        .setView(R.layout.circle_opt_pop_layout)
+                        //设置宽高
+                        .setWidthAndHeight(ViewGroup.LayoutParams.MATCH_PARENT,
+                                ViewGroup.LayoutParams.WRAP_CONTENT)
+                        //设置背景颜色，取值范围0.0f-1.0f 值越小越暗 1.0f为透明
+                        .setBackGroundLevel(0.5f)
+                        //设置PopupWindow里的子View及点击事件
+                        .setViewOnclickListener((view1, layoutResId) -> {
+                            RelativeLayout rlLike =  view1.findViewById(R.id.toolbarLike);
+                            RelativeLayout rlComment = view1.findViewById(R.id.toolbarComment);
+                            rlLike.setOnClickListener(view2 -> addLikes(pos,circleContent.getObjectId(),circleContent.getItemType(),likeNum,tvLikesNum));
 
-                        rlComment.setOnClickListener(view2 -> showComentDialog(circleContent));
-                    })
-                    //设置外部是否可点击 默认是true
-                    .setOutsideTouchable(true)
-                    //开始构建
-                    .create();
+                            rlComment.setOnClickListener(view2 -> showComentDialog(circleContent));
+                        })
+                        //设置外部是否可点击 默认是true
+                        .setOutsideTouchable(true)
+                        //开始构建
+                        .create();
+                mapPopwindow.put(pos,popupWindow);
+            }
             //弹出PopupWindow
             popupWindow.showAsDropDown(view, -view.getWidth(), -view.getHeight());
-
         });
 
         TextView tvLikes = baseViewHolder.getView(R.id.tv_likes);
@@ -270,7 +281,7 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
     /**
      * 点赞
      */
-    private  void addLikes(final String objId,int itemType, int likeNum,final TextView tv){
+    private  void addLikes(int postion,final String objId,int itemType, int likeNum,final TextView tv){
         if (NoFastClickUtils.isFastClick()) {
             Toast.makeText(mContext, "点击过快", Toast.LENGTH_SHORT).show();
             return;
@@ -292,6 +303,8 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
                     mcontext.sendBroadcast(new Intent(PublishCircleActivity.ACTION_PUBLISH_CIRCLE_OK));
                     tv.setText(likeNumMap.get(objId)+"");
                     OtherUtil.showToastText("点赞成功");
+                    if(mapPopwindow.get(postion) != null && mapPopwindow.get(postion).isShowing())
+                        mapPopwindow.get(postion).dismiss();
                 }else{
                     OtherUtil.showToastText("点赞失败");
                 }

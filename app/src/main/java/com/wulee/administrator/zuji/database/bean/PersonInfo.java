@@ -23,6 +23,8 @@ public class PersonInfo extends BmobUser {
     private String companyAddress;
     private String uid;
     private int integral;
+    private PersonInfo linkmaninfo;
+    private String installationId;//设备Id
 
     public int getIntegral() {
         return integral;
@@ -168,4 +170,19 @@ public class PersonInfo extends BmobUser {
         this.companyAddress = companyAddress;
     }
 
+    public PersonInfo getLinkman() {
+        return linkmaninfo;
+    }
+
+    public void setLinkman(PersonInfo linkman) {
+        this.linkmaninfo = linkman;
+    }
+
+    public String getInstallationId() {
+        return installationId;
+    }
+
+    public void setInstallationId(String installationId) {
+        this.installationId = installationId;
+    }
 }

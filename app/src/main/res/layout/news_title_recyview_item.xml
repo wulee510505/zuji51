@@ -17,6 +17,8 @@
         android:gravity="center"
         android:textColor="@color/ctv_black_3"
         android:text="标题"
+        android:maxLines="1"
+        android:ellipsize="end"
         android:textStyle="bold"
         android:paddingTop="8dp"
         android:paddingBottom="8dp"

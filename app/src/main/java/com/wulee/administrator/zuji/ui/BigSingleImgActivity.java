@@ -1,12 +1,12 @@
 package com.wulee.administrator.zuji.ui;
 
 import android.os.Bundle;
+import android.view.WindowManager;
 import android.widget.ImageView;
 
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.utils.ImageUtil;
-import com.wulee.administrator.zuji.utils.UIUtils;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -27,24 +27,14 @@ public class BigSingleImgActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
         setContentView(R.layout.big_single_image);
         ButterKnife.inject(this);
 
-
-        int sw = UIUtils.getScreenWidthAndHeight(this)[0];
-       /* RelativeLayout.LayoutParams rlp = (RelativeLayout.LayoutParams) ivBigimg.getLayoutParams();
-        rlp.width = sw;
-        rlp.height = sw * 3/2;
-        ivBigimg.setLayoutParams(rlp);*/
-
         imgUrl = getIntent().getStringExtra(IMAGE_URL);
         ImageUtil.setDefaultImageView(ivBigimg,imgUrl,R.mipmap.bg_pic_def_rect,this);
-    }
-
-    @Override
-    protected int getImmersionBarColor() {
-        return R.color.color_transparent;
     }
 
 }

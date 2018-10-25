@@ -4,6 +4,10 @@ package com.wulee.administrator.zuji.utils;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONObject;
+
+import java.lang.reflect.Method;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -55,5 +59,42 @@ public class GsonUtil {
         map = gson.fromJson(gsonString, new TypeToken<Map<String, T>>() {
         }.getType());
         return map;
+    }
+
+
+    /**
+     * 将javaBean转换成Map
+     *
+     * @param javaBean javaBean
+     * @return Map对象
+     */
+    public static Map<String, String> BeantoMap(Object javaBean) {
+        Map<String, String> result = new HashMap<>();
+        Method[] methods = javaBean.getClass().getDeclaredMethods();
+
+        for (Method method : methods) {
+            try {
+                if (method.getName().startsWith("get")) {
+                    String field = method.getName();//getName  getPassword
+                    field = field.substring(field.indexOf("get") + 3);//Name  Password
+                    field = field.toLowerCase().charAt(0) + field.substring(1);//name password
+                    Object value = method.invoke(javaBean, (Object[]) null);
+                    result.put(field, null == value ? "" : value.toString());
+                }
+            } catch (Exception e) {
+            }
+        }
+
+        return result;
+    }
+
+    /**
+     * 将javaBean转换成JSONObject
+     *
+     * @param bean javaBean
+     * @return json对象
+     */
+    public static JSONObject toJSON(Object bean) {
+        return new JSONObject(BeantoMap(bean));
     }
 }

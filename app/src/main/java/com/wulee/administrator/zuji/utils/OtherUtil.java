@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
-import static com.wulee.administrator.zuji.App.aCache;
-
 /**
  * Created by wulee on 2017/4/25 10:40
  */
@@ -89,14 +87,8 @@ public class OtherUtil {
      * 判断是否登录
      * @return
      */
-    public static boolean hasLogin(){
-        boolean isLogin = false;
-        if(TextUtils.equals("yes",aCache.getAsString("has_login"))){
-            isLogin = true;
-        }else{
-            isLogin = false;
-        }
-        return isLogin;
+    public static boolean hasLogin(Context context){
+       return Config.get(context).getBoolean(ConfigKey.KEY_HAS_LOGIN,false);
     }
 
 

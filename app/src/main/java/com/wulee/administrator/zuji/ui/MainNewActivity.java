@@ -11,7 +11,8 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
-import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
+import android.support.design.widget.BottomNavigationView;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -30,8 +31,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RadioButton;
-import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.facebook.stetho.common.LogUtil;
@@ -56,6 +55,7 @@ import com.wulee.administrator.zuji.ui.fragment.NewsFragment;
 import com.wulee.administrator.zuji.ui.fragment.ZujiFragment;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
+import com.wulee.administrator.zuji.utils.Config;
 import com.wulee.administrator.zuji.utils.ConfigKey;
 import com.wulee.administrator.zuji.utils.DataCleanManager;
 import com.wulee.administrator.zuji.utils.HolidayUtil;
@@ -64,6 +64,7 @@ import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.MarketUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.utils.PhoneUtil;
+import com.wulee.administrator.zuji.widget.BottomNavigationViewEx;
 import com.wulee.administrator.zuji.widget.CoolImageView;
 import com.yanzhenjie.permission.AndPermission;
 import com.zhouwei.blurlibrary.EasyBlur;
@@ -99,16 +100,16 @@ import static com.wulee.administrator.zuji.App.aCache;
  * Created by wulee on 2017/9/6 09:52
  */
 
-public class MainNewActivity extends BaseActivity implements RadioGroup.OnCheckedChangeListener, ViewPager.OnPageChangeListener,NavigationView.OnNavigationItemSelectedListener,ZujiFragment.OnMenuBtnClickListener{
-
+public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageChangeListener,NavigationView.OnNavigationItemSelectedListener,ZujiFragment.OnMenuBtnClickListener{
+    private BottomNavigationViewEx mBnve;
     private ViewPager mViewPager;
-    private RadioGroup mRg;
     private NavigationView navigationView;
     private View menuHeaderView;
     private ImageView ivHeader;
     private TextView mTvName;
     private TextView mTvMobile;
     private TextView mTvSign;
+    private ImageView mIvSign;
     private TextView mTvIntegral;
     private TextView tvNewPushMsg;
     private TextView tvNewMsg;
@@ -205,7 +206,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                     }else{
                         if(e.getErrorCode() == 206){
                             OtherUtil.showToastText("您的账号在其他地方登录，请重新登录");
-                            aCache.put("has_login","no");
+                            Config.get(MainNewActivity.this).remove(ConfigKey.KEY_HAS_LOGIN);
                             LocationUtil.getInstance().stopGetLocation();
                             AppUtils.AppExit(MainNewActivity.this);
                             PersonInfo.logOut();
@@ -265,12 +266,15 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
 
     private void initView() {
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.id_drawerLayout);
+        mDrawerLayout = findViewById(R.id.id_drawerLayout);
         mDrawerLayout.setScrimColor(0x80000000);
 
-        mViewPager = (ViewPager) findViewById(R.id.mviewpager);
-        mRg = (RadioGroup) findViewById(R.id.mnc_rg);
-        navigationView = (NavigationView) findViewById(R.id.nav_view);
+        mBnve =  findViewById(R.id.bottom_navigation_view);
+        mBnve.enableShiftingMode(false);
+        mBnve.enableItemShiftingMode(false);
+
+        mViewPager =  findViewById(R.id.mviewpager);
+        navigationView = findViewById(R.id.nav_view);
 
         //自定义menu菜单icon和title颜色
         int[][] states = new int[][]{
@@ -303,6 +307,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         mTvName = (TextView) menuHeaderView.findViewById(R.id.tv_name);
         mTvMobile = (TextView) menuHeaderView.findViewById(R.id.tv_mobile);
         mTvSign = (TextView) menuHeaderView.findViewById(R.id.tv_sign);
+        mIvSign  = menuHeaderView.findViewById(R.id.iv_sign);
         mTvIntegral= (TextView) menuHeaderView.findViewById(R.id.tv_integral);
         LinearLayout llmsg = (LinearLayout) navigationView.getMenu().findItem(R.id.item_msg_board).getActionView();
         tvNewMsg = llmsg.findViewById(R.id.tv_new_msg);
@@ -341,9 +346,11 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
                 if(e == null && count > 0){
                     mTvSign.setTextColor(ContextCompat.getColor(MainNewActivity.this,R.color.baseGrayNor));
                     mTvSign.setText("已签到");
+                    mIvSign.setVisibility(View.VISIBLE);
                     mTvSign.setEnabled(false);
                 }else{
                     mTvSign.setEnabled(true);
+                    mIvSign.setVisibility(View.GONE);
                 }
             }
         });
@@ -411,6 +418,13 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
     private void initMenuHeaderInfo() {
         PersonInfo personalInfo = DBHandler.getCurrPesonInfo();
+        if(personalInfo == null){
+            PersonInfo pi = BmobUser.getCurrentUser(PersonInfo.class);
+            if(null != pi){
+                personalInfo = pi;
+                DBHandler.insertPesonInfo(pi);
+            }
+        }
         if(null != personalInfo){
             if(!TextUtils.isEmpty(personalInfo.getName()))
                 mTvName.setText(personalInfo.getName());
@@ -422,8 +436,38 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
     }
 
     private void addListner() {
+         mBnve.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            private int previousPosition = -1;
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                int position = 0;
+                switch (item.getItemId()) {
+                    case R.id.menu_zuji:
+                        position = 0;
+                        break;
+                    case R.id.menu_circle:
+                        position = 1;
+                        break;
+                    case R.id.menu_group:
+                        position = 2;
+                        break;
+                    case R.id.menu_joke:
+                        position = 3;
+                        break;
+                    case R.id.menu_news:
+                        position = 4;
+                        break;
+                    default:
+                        break;
+                }
+                if (previousPosition != position) {
+                    mViewPager.setCurrentItem(position, false);
+                    previousPosition = position;
+                }
+                return true;
+            }
+        });
         mViewPager.setOnPageChangeListener(this);
-        mRg.setOnCheckedChangeListener(this);
         mDrawerLayout.addDrawerListener(new DrawerLayout.DrawerListener() {
             @Override
             public void onDrawerSlide(View drawerView, float slideOffset) {
@@ -445,31 +489,9 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
     }
 
     private void initSelectTab(int pos) {
-        if (pos < POS_ONE || pos > POS_FIVE)
-            return;
-        RadioButton rb = findRadioButtonByPos(pos);
-        if (rb != null) {
-            rb.setChecked(true);
-        }
         mViewPager.setCurrentItem(pos, false);
     }
 
-
-    private RadioButton findRadioButtonByPos(int position) {
-        switch (position) {
-            case POS_ONE:
-                return (RadioButton) mRg.findViewById(R.id.rbnt_zuji);
-            case POS_TWO:
-                return (RadioButton) mRg.findViewById(R.id.rbnt_circle);
-            case POS_THREE:
-                return (RadioButton) mRg.findViewById(R.id.rbnt_user_group);
-            case POS_FOUR:
-                return (RadioButton) mRg.findViewById(R.id.rbnt_joke);
-            case POS_FIVE:
-                return (RadioButton) mRg.findViewById(R.id.rbnt_news);
-        }
-        return null;
-    }
 
     private void sendFragmentFirstSelectedMsg(int position) {
         if(false == hasFragSelected[position]) {
@@ -504,12 +526,9 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
     @Override
     public void onPageSelected(int position) {
-        RadioButton rb = findRadioButtonByPos(position);
-        if (rb != null) {
-            rb.setChecked(true);
-        }
         aCache.put(ConfigKey.KEY_MAIN_TAB_POS, position+"");
         sendFragmentFirstSelectedMsg(position);
+        mBnve.setCurrentItem(position);
     }
 
     @Override
@@ -517,36 +536,6 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
 
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup radioGroup, @IdRes int checkedId) {
-        switch (checkedId) {
-            case R.id.rbnt_zuji:
-                if (POS_ONE != mViewPager.getCurrentItem()) {
-                    mViewPager.setCurrentItem(POS_ONE, false);
-                }
-                break;
-            case R.id.rbnt_circle:
-                if (POS_TWO != mViewPager.getCurrentItem()) {
-                    mViewPager.setCurrentItem(POS_TWO, false);
-                }
-                break;
-            case R.id.rbnt_user_group:
-                if (POS_THREE != mViewPager.getCurrentItem()) {
-                    mViewPager.setCurrentItem(POS_THREE, false);
-                }
-                break;
-            case R.id.rbnt_joke:
-                if (POS_FOUR != mViewPager.getCurrentItem()) {
-                    mViewPager.setCurrentItem(POS_FOUR, false);
-                }
-                break;
-            case R.id.rbnt_news:
-                if (POS_FIVE != mViewPager.getCurrentItem()) {
-                    mViewPager.setCurrentItem(POS_FIVE, false);
-                }
-                break;
-        }
-    }
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
@@ -625,7 +614,7 @@ public class MainNewActivity extends BaseActivity implements RadioGroup.OnChecke
         builder.setTitle("提示");
         builder.setMessage("确定要退出吗？");
         builder.setPositiveButton("确定", (dialog, which) -> {
-            aCache.put("has_login","no");
+            Config.get(MainNewActivity.this).remove(ConfigKey.KEY_HAS_LOGIN);
             LocationUtil.getInstance().stopGetLocation();
             AppUtils.AppExit(MainNewActivity.this);
             PersonInfo.logOut();

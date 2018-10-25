@@ -8,6 +8,8 @@ import java.io.Serializable;
  * Entity mapped to table "PUSH_MESSAGE_TABLE".
  */
 public class PushMessage implements Serializable{
+    public static final String MSG_TYPE_LOCATION = "location";
+    public static final String MSG_TYPE_SYSTEM = "system";
 
     private String type;
     private String content;

@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.text.TextUtils;
-import android.view.View;
-import android.widget.ProgressBar;
 
 import com.facebook.stetho.common.LogUtil;
 import com.huxq17.swipecardsview.SwipeCardsView;
@@ -44,8 +42,6 @@ public class FunPicActivity extends BaseActivity {
     BaseTitleLayout titlelayout;
     @InjectView(R.id.swipCardsView)
     SwipeCardsView swipCardsView;
-    @InjectView(R.id.progress_bar)
-    ProgressBar progressBar;
 
 
     private FunPicAdapter mAdapter;
@@ -93,7 +89,7 @@ public class FunPicActivity extends BaseActivity {
                 //请求网络前
                 @Override
                 public void onStart() {
-                    progressBar.setVisibility(View.VISIBLE);
+                    showProgressDialog(true);
                 }
 
                 @Override
@@ -117,7 +113,7 @@ public class FunPicActivity extends BaseActivity {
                 //请求网络结束
                 @Override
                 public void onFinish() {
-                    progressBar.setVisibility(View.GONE);
+                    stopProgressDialog();
                 }
             });
 

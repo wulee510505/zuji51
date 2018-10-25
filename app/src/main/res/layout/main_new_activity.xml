@@ -6,62 +6,37 @@
     android:layout_height="match_parent">
 
 
-    <LinearLayout
+    <RelativeLayout
         android:id="@+id/parentId"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/ctv_white"
         android:orientation="vertical">
 
+        <com.wulee.administrator.zuji.widget.BottomNavigationViewEx
+            android:id="@+id/bottom_navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:background="@color/white"
+            app:itemIconTint="@color/selector_item_color"
+            app:itemTextColor="@color/selector_item_color"
+            app:menu="@menu/menu_bottom_navigation"/>
+
+        <View
+            android:id="@+id/line"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_above="@id/bottom_navigation_view"
+            android:background="@color/ctv_black_4"/>
+
         <android.support.v4.view.ViewPager
             android:id="@+id/mviewpager"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1" />
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:background="@color/color_main_tab_top_line" />
-
-        <RadioGroup
-            android:id="@+id/mnc_rg"
-            android:layout_width="match_parent"
-            android:layout_height="58dp"
-            android:background="@color/ctv_white"
-            android:orientation="horizontal">
-
-            <RadioButton
-                android:id="@+id/rbnt_zuji"
-                style="@style/main_tabs_radiobtn"
-                android:drawableTop="@drawable/tab_zuji"
-                android:text="足迹" />
-
-            <RadioButton
-                android:id="@+id/rbnt_circle"
-                style="@style/main_tabs_radiobtn"
-                android:drawableTop="@drawable/tab_circle"
-                android:text="圈子" />
-
-            <RadioButton
-                android:id="@+id/rbnt_user_group"
-                style="@style/main_tabs_radiobtn"
-                android:drawableTop="@drawable/tab_group"
-                android:text="好友" />
-
-            <RadioButton
-                android:id="@+id/rbnt_joke"
-                style="@style/main_tabs_radiobtn"
-                android:drawableTop="@drawable/tab_joke"
-                android:text="笑话" />
-
-            <RadioButton
-                android:id="@+id/rbnt_news"
-                style="@style/main_tabs_radiobtn"
-                android:drawableTop="@drawable/tab_news"
-                android:text="新闻" />
-        </RadioGroup>
-    </LinearLayout>
+            android:layout_height="match_parent"
+            android:layout_above="@id/line"
+            android:overScrollMode="never"/>
+    </RelativeLayout>
 
 
     <android.support.design.widget.NavigationView

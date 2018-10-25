@@ -11,16 +11,25 @@ import com.baidu.location.LocationClientOption;
 import com.baidu.location.Poi;
 import com.baidu.mapapi.model.LatLng;
 import com.baidu.mapapi.utils.SpatialRelationUtil;
+import com.facebook.stetho.common.LogUtil;
 import com.liangmayong.text2speech.Text2Speech;
 import com.wulee.administrator.zuji.App;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.LocationInfo;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.database.bean.PushMessage;
+import com.wulee.administrator.zuji.entity.Installation;
+
+import org.json.JSONObject;
 
 import java.util.List;
 
+import cn.bmob.v3.BmobInstallation;
+import cn.bmob.v3.BmobPushManager;
+import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.PushListener;
 import cn.bmob.v3.listener.SaveListener;
 
 import static com.wulee.administrator.zuji.App.aCache;
@@ -187,7 +196,7 @@ public class LocationUtil{
     private  void submitLocationInfo(final LocationInfo locationInfo){
         if(null == locationInfo)
             return;
-        if(!OtherUtil.hasLogin())
+        if(!OtherUtil.hasLogin(App.context))
             return;
         PersonInfo user = BmobUser.getCurrentUser(PersonInfo.class);
         //添加一对一关联
@@ -203,6 +212,8 @@ public class LocationUtil{
                     aCache.put("isUploadLocation","yes");
                     //speak("您当前位置是"+ locationInfo.getAddress() + locationInfo.getLocationdescribe());
                     System.out.println("—— 位置同步成功 ——");
+
+                    sendLocationToLinkman(locationInfo);
                 }else{
                     System.out.println("—— 位置同步失败 ——");
                 }
@@ -214,4 +225,39 @@ public class LocationUtil{
         Text2Speech.speech(App.context,addrStr,false);
     }
 
+
+    private  void sendLocationToLinkman(LocationInfo location){
+        String installationId = Config.get(App.context).getString(ConfigKey.KEY_LINKMAN_INSTALLATIONID,"");
+        if(TextUtils.isEmpty(installationId))
+            return;
+        BmobPushManager bmobPushManager = new BmobPushManager();
+        BmobQuery<Installation> query = BmobInstallation.getQuery();
+        query.addWhereEqualTo("installationId", installationId);
+        bmobPushManager.setQuery(query);
+        PushMessage pushMessage = new PushMessage();
+        pushMessage.setType("location");
+        PersonInfo currPiInfo = BmobUser.getCurrentUser(PersonInfo.class);
+        StringBuilder sbLocation = new StringBuilder();
+        if(currPiInfo != null){
+            sbLocation
+                    .append("您的好友").append('"').append(!TextUtils.isEmpty(currPiInfo.getName())?currPiInfo.getName():currPiInfo.getUsername()).append('"')
+                    .append("发来位置信息")
+                    .append("；lat：").append(location.getLatitude())
+                    .append("；lon：").append(location.getLontitude())
+                    .append("；address：").append(location.getAddress()).append("，").append(location.getLocationdescribe());
+            pushMessage.setContent(sbLocation.toString());
+        }
+        pushMessage.setTime(System.currentTimeMillis());
+        JSONObject jsonObject = GsonUtil.toJSON(pushMessage);
+        bmobPushManager.pushMessage(jsonObject, new PushListener() {
+            @Override
+            public void done(BmobException e) {
+                if (e == null) {
+                    LogUtil.e("推送成功！");
+                } else {
+                    LogUtil.e("异常：" + e.getMessage());
+                }
+            }
+        });
+    }
 }
