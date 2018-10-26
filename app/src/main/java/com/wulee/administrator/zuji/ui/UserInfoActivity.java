@@ -119,6 +119,9 @@ public class UserInfoActivity extends BaseActivity {
                             btnAddFriend.setVisibility(View.VISIBLE);
                             btnSendMsgToStranger.setVisibility(View.VISIBLE);
                         }
+                    }else if(TextUtils.equals("暂无联系人",e.toString())){
+                        btnAddFriend.setVisibility(View.VISIBLE);
+                        btnSendMsgToStranger.setVisibility(View.VISIBLE);
                     }
                 }
             });
