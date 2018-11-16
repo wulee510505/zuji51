@@ -26,9 +26,10 @@ import com.wulee.administrator.zuji.utils.SortList;
 import com.wulee.administrator.zuji.widget.ProgressWheel;
 import com.wulee.administrator.zuji.widget.RecycleViewDivider;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -36,6 +37,7 @@ import butterknife.InjectView;
 import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
 import cn.bmob.v3.listener.QueryListener;
@@ -90,22 +92,54 @@ public class StepActivity extends BaseActivity {
     private void initData() {
         title.setText("今日步数");
 
+        swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
         mAdapter = new StepRankingAdapter(this, R.layout.step_rank_list_item, null);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL));
         recyclerview.setAdapter(mAdapter);
 
-        queryStepRankList();
+        queryStepRankList(true);
     }
 
     private void addListener() {
-        swipeLayout.setOnRefreshListener(() -> queryStepRankList());
+        swipeLayout.setOnRefreshListener(() -> queryStepRankList(false));
     }
 
-    private void queryStepRankList() {
+    private void queryStepRankList(boolean showProgressBar) {
         BmobQuery<StepInfo> query = new BmobQuery<StepInfo>();
         query.include("personInfo");// 希望在查询计步信息的同时也把当前用户的信息查询出来
-        showProgressDialog(true);
+        String currdate = DateTimeUtils.formatTime(new Date());
+
+        List<BmobQuery<StepInfo>> and = new ArrayList<>();
+        //大于00：00：00
+        BmobQuery<StepInfo> q1 = new BmobQuery<>();
+        String start = currdate+" 00:00:00" ;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date  = null;
+        try {
+            date = sdf.parse(start);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        q1.addWhereGreaterThanOrEqualTo("updatedAt",new BmobDate(date));
+        and.add(q1);
+        //小于23：59：59
+        BmobQuery<StepInfo> q2 = new BmobQuery<>();
+        String end = currdate+" 23:59:59";
+        SimpleDateFormat sdf1 = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        Date date1  = null;
+        try {
+            date1 = sdf1.parse(end);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        q2.addWhereLessThanOrEqualTo("updatedAt",new BmobDate(date1));
+        and.add(q2);
+        //添加复合与查询
+        query.and(and);
+
+        if(showProgressBar)
+           showProgressDialog(true);
         query.findObjects(new FindListener<StepInfo>() {
             @Override
             public void done(List<StepInfo> dataList, BmobException e) {
@@ -124,18 +158,6 @@ public class StepActivity extends BaseActivity {
     }
 
     private List<StepInfo> processReturnList(List<StepInfo> dataList) {
-        Date now = new Date();
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        String currdate = dateFormat.format(now);
-
-        Iterator<StepInfo> iter = dataList.iterator();
-        while (iter.hasNext()) {
-            StepInfo step = iter.next();
-            if (!TextUtils.equals(currdate, step.getCreatedAt().substring(0, 10))) {//去除非当天的数据
-                iter.remove();
-            }
-        }
-
         SortList<StepInfo> msList = new SortList<>();
         msList.sortByMethod(dataList, "getCount", true);
 
@@ -180,6 +202,7 @@ public class StepActivity extends BaseActivity {
             if (TextUtils.equals(ACTION_ON_STEP_COUNT_CHANGE, intent.getAction())) {
                 // 支付宝步数统计就是依据了此原理
                 progressStep.setStepCountText(pedometer.getStepCount() + "");
+                progressStep.setPercentage(pedometer.getStepCount());
 
                 uploadStepInfo(pedometer.getStepCount());
             }

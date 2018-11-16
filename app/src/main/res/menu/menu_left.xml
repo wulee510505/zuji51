@@ -13,12 +13,6 @@
             android:id="@+id/item_feedback"
             android:icon="@mipmap/icon_menu_feedback"
             android:title="反馈"/>
-
-        <item
-            app:actionLayout="@layout/message_badge"
-            android:id="@+id/item_msg_board"
-            android:icon="@mipmap/icon_msg_board"
-            android:title="留言板"/>
     </group>
 
 

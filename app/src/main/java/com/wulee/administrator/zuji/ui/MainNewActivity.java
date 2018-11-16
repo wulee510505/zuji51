@@ -23,7 +23,6 @@ import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AlertDialog;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -34,17 +33,14 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.facebook.stetho.common.LogUtil;
-import com.liangmayong.text2speech.Text2Speech;
 import com.tencent.bugly.beta.Beta;
 import com.tencent.bugly.beta.upgrade.UpgradeStateListener;
-import com.wulee.administrator.zuji.App;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.database.bean.PushMessage;
 import com.wulee.administrator.zuji.entity.Constant;
-import com.wulee.administrator.zuji.entity.MessageInfo;
 import com.wulee.administrator.zuji.entity.SignInfo;
 import com.wulee.administrator.zuji.service.UploadLocationService;
 import com.wulee.administrator.zuji.ui.fragment.CircleFragment;
@@ -112,7 +108,6 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
     private ImageView mIvSign;
     private TextView mTvIntegral;
     private TextView tvNewPushMsg;
-    private TextView tvNewMsg;
     private TextView tvCacheSize;
 
     private MainFPagerAdaper mainFPagerAdaper;
@@ -309,8 +304,6 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
         mTvSign = (TextView) menuHeaderView.findViewById(R.id.tv_sign);
         mIvSign  = menuHeaderView.findViewById(R.id.iv_sign);
         mTvIntegral= (TextView) menuHeaderView.findViewById(R.id.tv_integral);
-        LinearLayout llmsg = (LinearLayout) navigationView.getMenu().findItem(R.id.item_msg_board).getActionView();
-        tvNewMsg = llmsg.findViewById(R.id.tv_new_msg);
 
         LinearLayout llpushmsg = (LinearLayout) navigationView.getMenu().findItem(R.id.item_pushmsg).getActionView();
         tvNewPushMsg = llpushmsg.findViewById(R.id.tv_new_msg);
@@ -544,11 +537,6 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
             showLogoutDialog();
         }else  if (id ==  R.id.item_pushmsg) {
             startActivityForResult(new Intent(this,PushMsgListActivity.class),INTENT_TO_PUSHMSG_LIST);
-        }else  if (id ==  R.id.item_msg_board) {
-            PersonInfo personInfo = getCurrentUser(PersonInfo.class);
-            if(personInfo != null){
-                startActivity(new Intent(this,MessageBoardActivity.class).putExtra("piInfo",personInfo));
-            }
         }else  if (id ==  R.id.item_checkupdate) {
             /* 设置更新状态回调接口 */
             Beta.upgradeStateListener = new UpgradeStateListener() {
@@ -746,7 +734,7 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
         public void handleMessage(Message msg) {
             switch (msg.what){
                  case MSG_QUERY_MESSAGE_COUNT:
-                     queryMessageCount();
+                     //queryMessageCount();
                  break;
                 case 0x01:
                     stopProgressDialog();
@@ -761,7 +749,7 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
     };
 
 
-    public void queryMessageCount() {
+   /* public void queryMessageCount() {
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         BmobQuery<MessageInfo> messageQuery = new BmobQuery<>();
         messageQuery.addWhereEqualTo("owner", piInfo);
@@ -794,7 +782,7 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
                 }
             }
         });
-    }
+    }*/
 
     private void connectIMServer() {
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);

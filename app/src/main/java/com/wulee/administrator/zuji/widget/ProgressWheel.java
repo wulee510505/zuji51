@@ -59,7 +59,8 @@ public class ProgressWheel extends View {
     private float mDefTextWidth;
 
     // Set percentage
-    private int mPercentage = 60;
+    private int mPercentage = 0;
+    private int mMaxSteps = 10000;
 
     public ProgressWheel(Context context) {
         super(context);
@@ -183,7 +184,7 @@ public class ProgressWheel extends View {
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
         canvas.drawArc(mRimBounds, 0, 360, false, mCirclePaint);
-        canvas.drawArc(mProgressBounds, -90, mPercentage, false, mBarPaint);
+        canvas.drawArc(mProgressBounds, -90, (mPercentage* 360)/mMaxSteps, false, mBarPaint);
 
         float horizontalCountTextOffset = mCountTextPaint.measureText(mCountText) / 2;
 

@@ -6,6 +6,9 @@
     <dimen name="content_vertical_margin">10dp</dimen>
     <dimen name="content_small">5dp</dimen>
 
+    <dimen name="dp_10">10dp</dimen>
+    <dimen name="dp_15">15dp</dimen>
+    <dimen name="dp_20">20dp</dimen>
 
     <!-- 列表标题 -->
     <dimen name="com_tv_size_middle">16sp</dimen>

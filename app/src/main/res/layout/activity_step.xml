@@ -61,8 +61,8 @@
         app:countTextSize="18sp"
         app:defTextColor="@android:color/black"
         app:defTextSize="10sp"
-        app:definitionText="Steps"
-        app:percentage="90"
+        app:definitionText="步数"
+        app:percentage="0"
         app:progressColor="@color/colorAccent"/>
 
     <TextView

@@ -13,6 +13,7 @@ import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.FeedBackInfo;
 
+import cn.bmob.v3.BmobInstallationManager;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
@@ -41,12 +42,7 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
     public void initView() {
         ((TextView)findViewById(R.id.title)).setText("问题反馈");
         ImageView ivBack = (ImageView) findViewById(R.id.iv_back);
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                finish();
-            }
-        });
+        ivBack.setOnClickListener(view -> finish());
 
         buttonSave = (Button) findViewById(R.id.button_submit);
         etContent = (EditText) findViewById(R.id.et_content);
@@ -73,12 +69,9 @@ public class FeedBackActivity extends BaseActivity implements View.OnClickListen
         FeedBackInfo feedBackInfo = new FeedBackInfo();
         feedBackInfo.personInfo  = user;
         feedBackInfo.setContent(content);
-       /* BmobInstallation installation = BmobInstallation.getCurrentInstallation();
-        String installationId;
-        if(installation != null){
-            installationId = installation.getInstallationId();
+        String installationId = BmobInstallationManager.getInstallationId();
+        if(!TextUtils.isEmpty(installationId))
             feedBackInfo.setInstallationId(installationId);
-        }*/
         feedBackInfo.save(new SaveListener<String>() {
             @Override
             public void done(String s, BmobException e) {

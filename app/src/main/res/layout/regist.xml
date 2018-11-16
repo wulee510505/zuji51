@@ -50,6 +50,7 @@
                     android:src="@mipmap/icon_user_name" />
 
                 <LinearLayout
+                    android:id="@+id/ll_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
@@ -77,6 +78,7 @@
                         android:textColor="@color/baseGrayNor"
                         android:textSize="15sp" />
                 </LinearLayout>
+
             </RelativeLayout>
 
             <RelativeLayout

@@ -29,6 +29,19 @@ import java.util.regex.Pattern;
  */
 
 public class OtherUtil {
+
+
+
+    /**
+     * 用户名校验
+     * 由汉字、数字、字母、下划线组成，且不能以下划线开头
+     * @param name
+     * @return
+     */
+    public static boolean matchUserName(String name) {
+        return validation("^(?!_)[a-zA-Z0-9_\\u4e00-\\u9fa5]+$", name);
+    }
+
     /**
      * 密码校验
      * 要求6-16位数字和英文字母组合

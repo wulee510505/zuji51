@@ -109,6 +109,7 @@ dependencies {
     implementation thirdDependencies.newbieGuide
     //implementation thirdDependencies.SuperLogPicture
 
+
     implementation thirdDependencies.crashreport
     implementation thirdDependencies.tinker   //指定tinker依赖版本（注：应用升级1.3.5版本起，不再内置tinker）
 

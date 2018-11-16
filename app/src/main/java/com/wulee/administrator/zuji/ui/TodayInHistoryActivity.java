@@ -17,6 +17,7 @@ import com.wulee.administrator.zuji.adapter.TodayInHistoryAdapter;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.entity.HistoryInfo;
 import com.wulee.administrator.zuji.utils.CountDownHelper;
+import com.wulee.administrator.zuji.utils.SortList;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 
 import org.json.JSONArray;
@@ -138,6 +139,8 @@ public class TodayInHistoryActivity extends BaseActivity {
                     historyInfo.setLsdate(date);
                     historyInfoList.add(historyInfo);
                 }
+                SortList<HistoryInfo> sortList = new SortList<>();
+                sortList.sortByMethod(historyInfoList, "getLsdate", true);//按消息时间倒序
                 return historyInfoList;
             } else {
                 Toast.makeText(TodayInHistoryActivity.this, "获取数据失败", Toast.LENGTH_SHORT).show();
