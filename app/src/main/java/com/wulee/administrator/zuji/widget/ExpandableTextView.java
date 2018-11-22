@@ -11,6 +11,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.AppCompatTextView;
 import android.text.DynamicLayout;
 import android.text.Layout;
@@ -159,6 +160,7 @@ public class ExpandableTextView extends AppCompatTextView {
 
     private void init(Context context, AttributeSet attrs, int defStyleAttr) {
         if (attrs != null) {
+            mContext = context;
             TypedArray a =
                     getContext().obtainStyledAttributes(attrs, R.styleable.ExpandableTextView,
                             defStyleAttr, 0);
@@ -176,17 +178,14 @@ public class ExpandableTextView extends AppCompatTextView {
             mContractTextColor = a.getColor(R.styleable.ExpandableTextView_ep_contract_color,
                     Color.parseColor("#999999"));
             mLinkTextColor = a.getColor(R.styleable.ExpandableTextView_ep_link_color,
-                    Color.parseColor("#FF6200"));
-            int resId = a.getResourceId(R.styleable.ExpandableTextView_ep_link_res, R.mipmap.link);
+                    ContextCompat.getColor(mContext,R.color.colorAccent));
+            int resId = a.getResourceId(R.styleable.ExpandableTextView_ep_link_res, R.mipmap.icon_link);
             mLinkDrawable = getResources().getDrawable(resId);
             currentLines = mLimitLines;
             a.recycle();
         } else {
-            mLinkDrawable = context.getResources().getDrawable(R.mipmap.link);
+            mLinkDrawable = context.getResources().getDrawable(R.mipmap.icon_link);
         }
-
-        mContext = context;
-
         mPaint = getPaint();
         mPaint.setStyle(Paint.Style.FILL_AND_STROKE);
 

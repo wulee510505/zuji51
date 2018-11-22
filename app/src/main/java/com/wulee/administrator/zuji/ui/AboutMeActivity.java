@@ -41,7 +41,7 @@ public class AboutMeActivity extends BaseActivity {
 
     private void initView() {
         ((TextView) findViewById(R.id.title)).setText("关于");
-        ImageView ivBack = (ImageView) findViewById(R.id.iv_back);
+        ImageView ivBack = findViewById(R.id.iv_back);
         ivBack.setOnClickListener(view -> finish());
 
         tvVersionName= findViewById(R.id.tv_version_name);

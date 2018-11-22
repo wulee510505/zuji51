@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cn.bmob.v3.BmobObject;
+import cn.bmob.v3.datatype.BmobGeoPoint;
 import cn.bmob.v3.datatype.BmobRelation;
 
 /**
@@ -35,6 +36,9 @@ public class CircleContent extends BmobObject implements MultiItemEntity{
     private String content;
 
     private String location;
+    private BmobGeoPoint locationInfo;
+    private String address;
+
     public PersonInfo personInfo;
 
     private String[] imgUrls;
@@ -127,6 +131,22 @@ public class CircleContent extends BmobObject implements MultiItemEntity{
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getAddress() {
+        return address;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public BmobGeoPoint getLocationInfo() {
+        return locationInfo;
+    }
+
+    public void setLocationInfo(BmobGeoPoint locationInfo) {
+        this.locationInfo = locationInfo;
     }
 
     public String[] getImgUrls() {

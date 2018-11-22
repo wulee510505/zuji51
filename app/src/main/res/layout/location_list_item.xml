@@ -16,15 +16,15 @@
 
         <ImageView
             android:id="@+id/iv_circle_dot"
-            android:layout_width="@dimen/dp_10"
-            android:layout_height="@dimen/dp_10"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
             android:layout_centerInParent="true"
-            android:src="@drawable/dot_solid" />
+            android:src="@mipmap/icon_timeline_zuji" />
 
         <TextView
             android:layout_width="1px"
-            android:layout_height="100dp"
+            android:layout_height="80dp"
             android:layout_centerInParent="true"
             android:background="@color/colorAccent" />
     </RelativeLayout>
@@ -35,7 +35,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_15"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_toRightOf="@id/rl_time_line"
         toos:text="ccccc"
         android:textColor="@color/baseGrayNor"
@@ -45,8 +45,9 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/bg_location_rec"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_marginLeft="@dimen/dp_10"
         android:layout_toRightOf="@id/tv_time"
         android:orientation="vertical">
 
@@ -62,7 +63,7 @@
             android:id="@+id/tv_location_desc"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="2dp"
             toos:text="bbbbb"
             android:textColor="@color/baseGrayNor"
             android:textSize="@dimen/com_tv_size_mid_lit" />

@@ -74,10 +74,10 @@ public class App extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
-        /*if (LeakCanary.isInAnalyzerProcess(this)) {
+       /* if (LeakCanary.isInAnalyzerProcess(this)) {
             return;
-        }
-        LeakCanary.install(this);*/
+        }*/
+        //LeakCanary.install(this);
         setInstance(this);
         context = getApplicationContext();
         aCache = ACache.get(this);

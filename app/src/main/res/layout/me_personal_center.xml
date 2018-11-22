@@ -39,13 +39,13 @@
 
         <ImageView
             android:id="@+id/iv_submit"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:onClick="shareClick"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
-            android:src="@mipmap/icon_submit"/>
+            android:src="@mipmap/icon_save"/>
     </RelativeLayout>
 
 

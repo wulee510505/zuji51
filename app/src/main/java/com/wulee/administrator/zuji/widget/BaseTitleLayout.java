@@ -122,7 +122,7 @@ public class BaseTitleLayout extends View {
             rect.top = layoutHeight / 2 - (iconSize + dip2px(5)) / 2;
             rect.bottom = layoutHeight / 2 + (iconSize + dip2px(5)) / 2;
             rect.left = paddingLeft;
-            rect.right = paddingLeft + iconSize;
+            rect.right = paddingLeft + iconSize + dip2px(5);
             mCanvas.drawBitmap(leftBitmap, null, rect, mPaint);
         }
 

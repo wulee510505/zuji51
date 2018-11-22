@@ -119,7 +119,7 @@
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.wulee.administrator.zuji.chatui.ui.activity.AddFriendAgreeActivity"
+        <activity android:name="com.wulee.administrator.zuji.chatui.ui.activity.AddAgreeActivity"
             android:screenOrientation="portrait" />
 
         <activity android:name="com.wulee.administrator.zuji.ui.UserGroupActivity"

@@ -39,6 +39,7 @@ import butterknife.ButterKnife;
 import butterknife.InjectView;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobFile;
+import cn.bmob.v3.datatype.BmobGeoPoint;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UploadBatchListener;
@@ -179,9 +180,15 @@ public class PublishCircleActivity extends BaseActivity {
             circlrContent.setUserId(piInfo.getUid());
             circlrContent.setContent(content);
             if(isShowLocation){
+                double lastlat = Double.parseDouble(aCache.getAsString("lat"));
+                double lastlon = Double.parseDouble(aCache.getAsString("lon"));
+                circlrContent.setLocationInfo(new BmobGeoPoint(lastlon,lastlat));
                 String currCity = aCache.getAsString("location_city");
                 if (!TextUtils.isEmpty(currCity))
                     circlrContent.setLocation(currCity);
+                String address = aCache.getAsString("address");
+                if (!TextUtils.isEmpty(address))
+                    circlrContent.setAddress(address);
             }
             circlrContent.personInfo = piInfo;
             if (picList.size() > 1) {
@@ -239,9 +246,15 @@ public class PublishCircleActivity extends BaseActivity {
             circlrContent.setUserId(piInfo.getUid());
             circlrContent.setContent(content);
             if(isShowLocation){
+                double lastlat = Double.parseDouble(aCache.getAsString("lat"));
+                double lastlon = Double.parseDouble(aCache.getAsString("lon"));
+                circlrContent.setLocationInfo(new BmobGeoPoint(lastlon,lastlat));
                 String currCity = aCache.getAsString("location_city");
                 if (!TextUtils.isEmpty(currCity))
                     circlrContent.setLocation(currCity);
+                String address = aCache.getAsString("address");
+                if (!TextUtils.isEmpty(address))
+                    circlrContent.setAddress(address);
             }
             circlrContent.personInfo = piInfo;
             circlrContent.save(new SaveListener<String>() {

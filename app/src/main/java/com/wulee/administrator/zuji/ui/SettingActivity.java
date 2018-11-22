@@ -11,16 +11,26 @@ import android.widget.TextView;
 import com.baidu.mapapi.model.LatLng;
 import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
+import com.wulee.administrator.zuji.chatui.enity.AddLinkmanMessage;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.utils.Config;
 import com.wulee.administrator.zuji.utils.ConfigKey;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import butterknife.OnClick;
+import cn.bmob.newim.BmobIM;
+import cn.bmob.newim.bean.BmobIMConversation;
+import cn.bmob.newim.bean.BmobIMMessage;
+import cn.bmob.newim.bean.BmobIMUserInfo;
+import cn.bmob.newim.core.BmobIMClient;
+import cn.bmob.newim.core.ConnectionStatus;
+import cn.bmob.newim.listener.MessageSendListener;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
@@ -78,10 +88,10 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
     }
 
     private void initView() {
-        ivBack = (ImageView) findViewById(R.id.iv_back);
-        ivSave = (ImageView) findViewById(R.id.iv_save);
-        mEtHome = (TextView) findViewById(R.id.et_home);
-        mEtCompany = (TextView) findViewById(R.id.et_company);
+        ivBack = findViewById(R.id.iv_back);
+        ivSave = findViewById(R.id.iv_save);
+        mEtHome = findViewById(R.id.et_home);
+        mEtCompany = findViewById(R.id.et_company);
 
 
         if (currentUser != null) {
@@ -219,7 +229,7 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
                                 public void done(BmobException e) {
                                     stopProgressDialog();
                                     if(e == null){
-                                        toast("添加联系人成功");
+                                        sendAddLinkmanMessage(piInfo);
                                         if(!TextUtils.isEmpty(piInfo.getName())){
                                             tvLinkman.setText(piInfo.getName());
                                         }
@@ -240,6 +250,39 @@ public class SettingActivity extends BaseActivity implements View.OnClickListene
             case R.id.linkman:
                 startActivityForResult(new Intent(this, SelectFriendActivity.class), INTENT_KEY_LINKMAN);
                 break;
+        }
+    }
+
+
+    /**
+     * 发送添加紧急联系人的请求
+     */
+    private void sendAddLinkmanMessage(PersonInfo personInfo) {
+        //TODO 会话：4.1、创建一个暂态会话入口，发送紧急联系人请求
+        if (personInfo != null && personInfo.getObjectId()!= null && BmobIM.getInstance().getCurrentStatus().getCode() == ConnectionStatus.CONNECTED.getCode()) {
+            BmobIMUserInfo info = new BmobIMUserInfo(personInfo.getObjectId(), !TextUtils.isEmpty(personInfo.getName()) ? personInfo.getName() : personInfo.getUsername(), personInfo.getHeader_img_url());
+            BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, true, null);
+            //TODO 消息：5.1、根据会话入口获取消息管理，发送紧急联系人请求
+            BmobIMConversation messageManager = BmobIMConversation.obtain(BmobIMClient.getInstance(), conversationEntrance);
+            AddLinkmanMessage msg = new AddLinkmanMessage();
+            PersonInfo currentUser = BmobUser.getCurrentUser(PersonInfo.class);
+            msg.setContent("请求添加您为紧急联系人");//给对方的一个留言信息
+            //TODO 这里只是举个例子，其实可以不需要传发送者的信息过去
+            Map<String, Object> map = new HashMap<>();
+            map.put("name", currentUser.getUsername());//发送者姓名
+            map.put("avatar", currentUser.getHeader_img_url());//发送者的头像
+            map.put("uid", currentUser.getObjectId());//发送者的uid
+            msg.setExtraMap(map);
+            messageManager.sendMessage(msg, new MessageSendListener() {
+                @Override
+                public void done(BmobIMMessage msg, BmobException e) {
+                    if (e == null) {//发送成功
+                        toast("紧急联系人请求发送成功，等待验证");
+                    } else {//发送失败
+                        toast("发送失败:" + e.getMessage());
+                    }
+                }
+            });
         }
     }
 }

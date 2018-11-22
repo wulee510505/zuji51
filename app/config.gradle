@@ -16,7 +16,7 @@ ext{
             recording           : "com.github.wulee510505:Recording:1.0.2",
             text2Speach         : "com.github.wulee510505:Text2Speach:1.0.0",
             floatingActionButton: "com.github.clans:fab:1.6.4",
-            superTextView       : "com.github.chenBingX:SuperTextView:v1.0",
+            superTextView       : "com.github.chenBingX:SuperTextView:v3.1.1",
             okhttpfinal         : "cn.finalteam:okhttpfinal:2.0.7",
             butterknife         : "com.jakewharton:butterknife:5.1.1",
             eventbus            : "de.greenrobot:eventbus:3.0.0-beta1",
@@ -55,8 +55,8 @@ ext{
             compileSdkVersion : 27,
             minSdkVersion     : 21,
             targetSdkVersion  : 27,
-            versionCode       : 38,
-            versionName       : "1.5.6"
+            versionCode       : 40,
+            versionName       : "1.5.8"
     ]
 
 }

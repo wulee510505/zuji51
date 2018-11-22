@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.StateListDrawable;
+import android.support.v4.content.ContextCompat;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.View;
@@ -348,14 +349,14 @@ public class ActionSheet extends Dialog implements OnClickListener {
         public Attributes(Context context) {
             mContext = context;
             this.background = new ColorDrawable(Color.TRANSPARENT);
-            this.cancelButtonBackground = new ColorDrawable(Color.BLACK);
+            this.cancelButtonBackground = new ColorDrawable(ContextCompat.getColor(mContext,R.color.colorAccent));
             ColorDrawable gray = new ColorDrawable(Color.GRAY);
             this.otherButtonTopBackground = gray;
             this.otherButtonMiddleBackground = gray;
             this.otherButtonBottomBackground = gray;
             this.otherButtonSingleBackground = gray;
             this.cancelButtonTextColor = Color.WHITE;
-            this.otherButtonTextColor = Color.BLACK;
+            this.otherButtonTextColor = ContextCompat.getColor(mContext,R.color.ctv_black_2);
             this.padding = dp2px(20);
             this.otherButtonSpacing = dp2px(1);
             this.cancelButtonMarginTop = dp2px(10);

@@ -138,6 +138,9 @@ public class LocationUtil{
             if(!TextUtils.isEmpty(location.getCity()))
                aCache.put("location_city",location.getCity());
 
+            if(!TextUtils.isEmpty(location.getLocationDescribe()))
+                aCache.put("address",location.getLocationDescribe());
+
             if(location.getLatitude() == 0 || location.getLongitude()  == 0)
                 return;
 

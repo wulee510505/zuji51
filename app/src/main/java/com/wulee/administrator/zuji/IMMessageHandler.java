@@ -10,14 +10,17 @@ import android.widget.Toast;
 
 import com.app.hubert.guide.util.LogUtil;
 import com.wulee.administrator.zuji.chatui.enity.AddFriendMessage;
+import com.wulee.administrator.zuji.chatui.enity.AddLinkmanMessage;
 import com.wulee.administrator.zuji.chatui.enity.AgreeAddFriendMessage;
+import com.wulee.administrator.zuji.chatui.enity.AgreeAddLinkmanMessage;
 import com.wulee.administrator.zuji.chatui.listener.UpdateCacheListener;
 import com.wulee.administrator.zuji.chatui.model.UserModel;
-import com.wulee.administrator.zuji.chatui.ui.activity.AddFriendAgreeActivity;
+import com.wulee.administrator.zuji.chatui.ui.activity.AddAgreeActivity;
 import com.wulee.administrator.zuji.chatui.ui.activity.ChatMainActivity;
 import com.wulee.administrator.zuji.database.NewFriendManager;
 import com.wulee.administrator.zuji.database.bean.NewFriendInfo;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.entity.LinkmanInfo;
 import com.wulee.administrator.zuji.entity.RefreshEvent;
 
 import java.util.List;
@@ -157,7 +160,13 @@ public class IMMessageHandler extends BmobIMMessageHandler {
             addFriend(agree.getFromId());//添加消息的发送方为好友
             //这里应该也需要做下校验--来检测下是否已经同意过该好友请求，我这里省略了
             showAgreeNotify(info, agree);
-        } else {
+        } else if (type.equals(AddLinkmanMessage.ADD_LINKMAN)) {//接收到的添加联系人的请求
+            LinkmanInfo linkmanInfo = AddLinkmanMessage.convert(msg);
+            showAddNotify(linkmanInfo);
+        } else if (type.equals(AgreeAddLinkmanMessage.AGREE_LINKMAN)) {
+            AgreeAddLinkmanMessage agreeLinkman = AgreeAddLinkmanMessage.convert(msg);
+            showAgreeNotify(info, agreeLinkman);
+        }else {
             Toast.makeText(context, "接收到的自定义消息：" + msg.getMsgType() + "," + msg.getContent() + "," + msg.getExtra(), Toast.LENGTH_SHORT).show();
         }
     }
@@ -168,13 +177,30 @@ public class IMMessageHandler extends BmobIMMessageHandler {
      * @param friend
      */
     private void showAddNotify(NewFriendInfo friend) {
-        Intent pendingIntent = new Intent(context, AddFriendAgreeActivity.class);
+        Intent pendingIntent = new Intent(context, AddAgreeActivity.class);
         pendingIntent.putExtra("new_friend_info", friend);
+        pendingIntent.putExtra("type", AddAgreeActivity.INTENT_TYPE_ADD_FRIEND);
         pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
         //这里可以是应用图标，也可以将聊天头像转成bitmap
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
         BmobNotificationManager.getInstance(context).showNotification(largeIcon,
-                friend.getName(), friend.getMsg(), friend.getName() + "请求添加你为朋友", pendingIntent);
+                friend.getName(), friend.getMsg(), friend.getName() + "请求添加您为朋友", pendingIntent);
+    }
+
+
+    /**
+     * 显示对方添加自己为联系人的通知
+     * @param linkman
+     */
+    private void showAddNotify(LinkmanInfo linkman) {
+        Intent pendingIntent = new Intent(context, AddAgreeActivity.class);
+        pendingIntent.putExtra("linkman_info", linkman);
+        pendingIntent.putExtra("type", AddAgreeActivity.INTENT_TYPE_ADD_LINKMAN);
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        //这里可以是应用图标，也可以将聊天头像转成bitmap
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        BmobNotificationManager.getInstance(context).showNotification(largeIcon,
+                linkman.getName(), linkman.getMsg(), linkman.getName() + "请求添加您为紧急联系人", pendingIntent);
     }
 
     /**
@@ -194,6 +220,24 @@ public class IMMessageHandler extends BmobIMMessageHandler {
         Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
         BmobNotificationManager.getInstance(context).showNotification(largeIcon, info.getName(), agree.getMsg(), agree.getMsg(), pendingIntent);
     }
+
+    /**
+     * 显示对方同意添加自己为紧急联系人的通知
+     * @param info
+     * @param agree
+     */
+    private void showAgreeNotify(BmobIMUserInfo info, AgreeAddLinkmanMessage agree) {
+        Intent pendingIntent = new Intent(context, ChatMainActivity.class);
+        BmobIMConversation conversationEntrance = BmobIM.getInstance().startPrivateConversation(info, null);
+        Bundle bundle = new Bundle();
+        bundle.putSerializable("c", conversationEntrance);
+        bundle.putInt("type", 0);
+        pendingIntent.putExtras(bundle);
+        pendingIntent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        Bitmap largeIcon = BitmapFactory.decodeResource(context.getResources(), R.mipmap.ic_launcher);
+        BmobNotificationManager.getInstance(context).showNotification(largeIcon, info.getName(), agree.getMsg(), agree.getMsg(), pendingIntent);
+    }
+
 
     /**
      * TODO 好友管理：9.11、收到同意添加好友后添加好友

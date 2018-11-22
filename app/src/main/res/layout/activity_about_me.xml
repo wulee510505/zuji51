@@ -38,8 +38,8 @@
 
         <ImageView
             android:id="@+id/iv_share"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
             android:layout_alignParentRight="true"
             android:layout_centerVertical="true"
             android:layout_marginRight="15dp"
@@ -78,7 +78,7 @@
         android:layout_marginTop="20dp"
         android:autoLink="web"
         android:padding="@dimen/activity_horizontal_margin"
-        android:text="GitHub:https://github.com/wulee510505"
+        android:text="GitHub: https://github.com/wulee510505"
         android:textColorLink="@color/colorPrimary" />
 
     <TextView
@@ -86,7 +86,7 @@
         android:layout_height="wrap_content"
         android:autoLink="web"
         android:padding="@dimen/activity_horizontal_margin"
-        android:text="简书:http://www.jianshu.com/u/346d01ff61f1"
+        android:text="简书: http://www.jianshu.com/u/346d01ff61f1"
         android:textColorLink="@color/colorPrimary" />
 
     <TextView
@@ -103,7 +103,7 @@
         android:layout_height="wrap_content"
         android:autoLink="email"
         android:padding="@dimen/activity_horizontal_margin"
-        android:text="QQ邮箱:1241394859@qq.com"
+        android:text="邮箱: 1241394859@qq.com"
         android:textColorLink="@color/colorPrimary" />
 
 

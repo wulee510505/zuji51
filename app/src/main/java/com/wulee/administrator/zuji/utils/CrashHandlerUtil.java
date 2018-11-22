@@ -1,6 +1,9 @@
 package com.wulee.administrator.zuji.utils;
 
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -13,6 +16,7 @@ import com.facebook.stetho.common.LogUtil;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.LogFile;
+import com.wulee.administrator.zuji.ui.SplashActivity;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -134,14 +138,17 @@ public class CrashHandlerUtil implements Thread.UncaughtExceptionHandler {
             //如果用户没有处理则让系统默认的异常处理器来处理
             mDefaultHandler.uncaughtException(thread, ex);
         } else {
-            try {
-                Thread.sleep(3000);
-            } catch (InterruptedException e) {
-                Log.e(TAG, "error : ", e);
-                e.printStackTrace();
-            }
-            //退出程序
-            AppUtils.getAppManager().AppExit(mContext);
+            AlarmManager mgr = (AlarmManager) mContext.getSystemService(Context.ALARM_SERVICE);
+
+            Intent intent = new Intent(mContext, SplashActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            intent.putExtra("crash", true);
+            PendingIntent restartIntent = PendingIntent.getActivity(mContext, 0, intent, PendingIntent.FLAG_ONE_SHOT);
+            mgr.set(AlarmManager.RTC, System.currentTimeMillis() + 1000, restartIntent); // 1秒钟后重启应用
+
+            android.os.Process.killProcess(android.os.Process.myPid());
+            System.exit(0);
+            System.gc();
         }
     }
 

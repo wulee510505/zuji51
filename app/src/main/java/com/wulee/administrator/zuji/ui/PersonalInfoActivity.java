@@ -301,7 +301,7 @@ public class PersonalInfoActivity extends BaseActivity implements ActionSheet.Me
             case R.id.rl_gender:
                 ActionSheet menuView = new ActionSheet(this);
                 menuView.setCancelButtonTitle("取消");
-                menuView.addItems("男", "女", "其他");
+                menuView.addItems("男", "女");
                 menuView.setItemClickListener(this);
                 menuView.setCancelableOnTouchMenuOutside(true);
                 menuView.showMenu();

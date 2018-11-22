@@ -26,6 +26,7 @@ import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.CircleComment;
 import com.wulee.administrator.zuji.entity.CircleContent;
 import com.wulee.administrator.zuji.ui.BigMultiImgActivity;
+import com.wulee.administrator.zuji.ui.MapActivity;
 import com.wulee.administrator.zuji.ui.PersonalInfoActivity;
 import com.wulee.administrator.zuji.ui.PublishCircleActivity;
 import com.wulee.administrator.zuji.ui.UserInfoActivity;
@@ -44,6 +45,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import cn.bmob.v3.BmobUser;
+import cn.bmob.v3.datatype.BmobGeoPoint;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
@@ -121,12 +123,28 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         });
 
         TextView tvLocation = baseViewHolder.getView(R.id.location);
-        if (!TextUtils.isEmpty(circleContent.getLocation())) {
+        StringBuilder sbLocation = new StringBuilder();
+        if(!TextUtils.isEmpty(circleContent.getLocation())&& !TextUtils.isEmpty(circleContent.getAddress())){
+            sbLocation.append(circleContent.getLocation()).append("·").append(circleContent.getAddress());
+        }else  if(!TextUtils.isEmpty(circleContent.getLocation())&& TextUtils.isEmpty(circleContent.getAddress())){
+            sbLocation.append(circleContent.getLocation());
+        }
+        if(sbLocation.toString().length()>0){
             tvLocation.setVisibility(View.VISIBLE);
-            tvLocation.setText(circleContent.getLocation());
-        } else {
+            tvLocation.setText(sbLocation.toString());
+            BmobGeoPoint bp = circleContent.getLocationInfo();
+            if(bp != null){
+                tvLocation.setOnClickListener(v -> {
+                    Intent intent = new Intent(mContext,MapActivity.class);
+                    intent.putExtra(MapActivity.INTENT_KEY_LATITUDE,String.valueOf(bp.getLatitude()));
+                    intent.putExtra(MapActivity.INTENT_KEY_LONTITUDE,String.valueOf(bp.getLongitude()));
+                    mcontext.startActivity(intent);
+                });
+            }
+        }else{
             tvLocation.setVisibility(View.GONE);
         }
+
         baseViewHolder.setText(R.id.time, DateTimeUtils.showDifferenceTime(DateTimeUtils.parseDateTime(circleContent.getCreatedAt()), System.currentTimeMillis()) + "前");
 
         TextView tvDel = baseViewHolder.getView(R.id.tv_delete);
