@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:toos="http://schemas.android.com/tools"
     android:id="@+id/activity_main"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -23,27 +24,36 @@
     </com.wulee.administrator.zuji.widget.RCRelativeLayout>
 
 
-    <TextView
-        android:id="@+id/tv_user_name"
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_toRightOf="@id/rl_head_layout"
         android:layout_marginLeft="12dp"
-        android:singleLine="true"
-        android:text=""
-        android:textColor="@color/ctv_black_2"
-        android:textSize="16sp" />
+        android:layout_centerVertical="true">
 
-    <TextView
-        android:id="@+id/tv_first_login"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@id/rl_head_layout"
-        android:layout_alignLeft="@id/tv_user_name"
-        android:layout_below="@id/tv_user_name"
-        android:singleLine="true"
-        android:text=""
-        android:textColor="@color/ctv_black_3"
-        android:textSize="13sp" />
+        <TextView
+            android:id="@+id/tv_user_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:singleLine="true"
+            toos:text="姓名"
+            android:textColor="@color/ctv_black_2"
+            android:textSize="16sp" />
+
+        <TextView
+            android:id="@+id/tv_first_login"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/tv_user_name"
+            android:layout_below="@id/tv_user_name"
+            android:layout_marginTop="@dimen/dp_4"
+            android:singleLine="true"
+            android:text="2018-11-20"
+            android:textColor="@color/ctv_black_3"
+            android:textSize="13sp" />
+    </RelativeLayout>
+
+
 
 </RelativeLayout>

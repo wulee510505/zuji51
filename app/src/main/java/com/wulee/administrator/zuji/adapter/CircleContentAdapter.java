@@ -125,7 +125,7 @@ public class CircleContentAdapter extends BaseMultiItemQuickAdapter<CircleConten
         TextView tvLocation = baseViewHolder.getView(R.id.location);
         StringBuilder sbLocation = new StringBuilder();
         if(!TextUtils.isEmpty(circleContent.getLocation())&& !TextUtils.isEmpty(circleContent.getAddress())){
-            sbLocation.append(circleContent.getLocation()).append("·").append(circleContent.getAddress());
+            sbLocation.append(circleContent.getLocation()).append(" · ").append(circleContent.getAddress());
         }else  if(!TextUtils.isEmpty(circleContent.getLocation())&& TextUtils.isEmpty(circleContent.getAddress())){
             sbLocation.append(circleContent.getLocation());
         }

@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:toos="http://schemas.android.com/tools">
 
     <TextView
         android:id="@+id/txt_comment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="aaaaaaaaaaaaaaa"
+        toos:text="aaaaaaaaaaaaaaa"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
         android:lineSpacingExtra="2dp"
         android:lineSpacingMultiplier="1.2"
         android:textColor="@color/baseGrayMore"

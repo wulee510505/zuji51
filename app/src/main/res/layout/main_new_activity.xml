@@ -36,6 +36,12 @@
             android:layout_height="match_parent"
             android:layout_above="@id/line"
             android:overScrollMode="never"/>
+
+        <com.wulee.administrator.zuji.widget.AnimArcButtons
+            android:id="@+id/arc_menu_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="40dp"/>
     </RelativeLayout>
 
 

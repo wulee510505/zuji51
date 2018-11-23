@@ -31,6 +31,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.facebook.stetho.common.LogUtil;
 import com.tencent.bugly.beta.Beta;
@@ -50,6 +51,7 @@ import com.wulee.administrator.zuji.ui.fragment.MainBaseFrag;
 import com.wulee.administrator.zuji.ui.fragment.NewsFragment;
 import com.wulee.administrator.zuji.ui.fragment.ZujiFragment;
 import com.wulee.administrator.zuji.ui.pushmsg.PushMsgListActivity;
+import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
 import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.Config;
 import com.wulee.administrator.zuji.utils.ConfigKey;
@@ -59,7 +61,9 @@ import com.wulee.administrator.zuji.utils.ImageUtil;
 import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.MarketUtils;
 import com.wulee.administrator.zuji.utils.OtherUtil;
+import com.wulee.administrator.zuji.utils.Pedometer;
 import com.wulee.administrator.zuji.utils.PhoneUtil;
+import com.wulee.administrator.zuji.widget.AnimArcButtons;
 import com.wulee.administrator.zuji.widget.BottomNavigationViewEx;
 import com.wulee.administrator.zuji.widget.CoolImageView;
 import com.yanzhenjie.permission.AndPermission;
@@ -109,7 +113,7 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
     private TextView mTvIntegral;
     private TextView tvNewPushMsg;
     private TextView tvCacheSize;
-
+    private AnimArcButtons menuBtns;
     private MainFPagerAdaper mainFPagerAdaper;
 
 
@@ -124,6 +128,8 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
     private long mLastClickReturnTime = 0l; // 记录上一次点击返回按钮的时间
     private Bitmap finalBitmap;
     private final int INTENT_TO_PUSHMSG_LIST = 100;
+
+    private Pedometer pedometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -167,8 +173,12 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
         }
 
         connectIMServer();
-    }
 
+        if(pedometer == null){
+            pedometer = new Pedometer(this);
+        }
+        pedometer.register();
+    }
 
 
 
@@ -218,6 +228,9 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        if(menuBtns.isOpen())
+            menuBtns.closeMenu();
     }
 
     @Override
@@ -270,6 +283,8 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
 
         mViewPager =  findViewById(R.id.mviewpager);
         navigationView = findViewById(R.id.nav_view);
+
+        menuBtns = findViewById(R.id.arc_menu_button);
 
         //自定义menu菜单icon和title颜色
         int[][] states = new int[][]{
@@ -479,6 +494,24 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
         });
         navigationView.setNavigationItemSelectedListener(this);
         ivHeader.setOnClickListener(view -> startActivity(new Intent(MainNewActivity.this,PersonalInfoActivity.class)));
+
+        menuBtns.setOnButtonClickListener((v, id) -> {
+            switch (id){
+                case 0:
+                    startActivity(new Intent(MainNewActivity.this,WeatherActivity.class).putExtra("curr_time",""));
+                    break;
+                case 1:
+                    if (pedometer.hasStepSensor()) {
+                        startActivity(new Intent(MainNewActivity.this, StepActivity.class));
+                    } else {
+                        Toast.makeText(MainNewActivity.this, "设备没有计步传感器", Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case 2:
+                    startActivity(new Intent(MainNewActivity.this,FunPicActivity.class));
+                    break;
+            }
+        });
     }
 
     private void initSelectTab(int pos) {
@@ -725,6 +758,10 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
             System.gc();  //提醒系统及时回收
         }
         EventBus.getDefault().unregister(this);
+        if(pedometer!= null){
+            pedometer.unRegister();
+            pedometer = null;
+        }
     }
 
 

@@ -18,7 +18,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.stetho.common.LogUtil;
@@ -30,17 +29,12 @@ import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.BannerInfo;
 import com.wulee.administrator.zuji.service.ScreenService;
 import com.wulee.administrator.zuji.service.UploadLocationService;
-import com.wulee.administrator.zuji.ui.FunPicActivity;
 import com.wulee.administrator.zuji.ui.MapActivity;
-import com.wulee.administrator.zuji.ui.StepActivity;
 import com.wulee.administrator.zuji.ui.ZuJiMapActivity;
-import com.wulee.administrator.zuji.ui.weather.WeatherActivity;
 import com.wulee.administrator.zuji.utils.GlideImageLoader;
 import com.wulee.administrator.zuji.utils.LocationUtil;
 import com.wulee.administrator.zuji.utils.OtherUtil;
-import com.wulee.administrator.zuji.utils.Pedometer;
 import com.wulee.administrator.zuji.utils.UIUtils;
-import com.wulee.administrator.zuji.widget.AnimArcButtons;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.TitleLayoutClickListener;
 import com.xdandroid.hellodaemon.DaemonEnv;
@@ -81,15 +75,7 @@ public class ZujiFragment extends MainBaseFrag{
     private int curPage = 0;
     private boolean isRefresh = false;
 
-    private TextView tvTime;
-    private long  currServerTime;
-
     private LocationChangeReceiver mReceiver;
-
-    private AnimArcButtons menuBtns;
-
-    private Pedometer pedometer;
-
 
     @Nullable
     @Override
@@ -137,17 +123,8 @@ public class ZujiFragment extends MainBaseFrag{
         mReceiver = new LocationChangeReceiver();
         IntentFilter filter  = new IntentFilter(LocationUtil.ACTION_LOCATION_CHANGE);
         mContext.registerReceiver(mReceiver,filter);
-
-        pedometer = new Pedometer(mContext);
-        pedometer.register();
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-        if(menuBtns.isOpen())
-            menuBtns.closeMenu();
-    }
 
     private void addListener() {
         titleLayout.setOnTitleClickListener(new TitleLayoutClickListener() {
@@ -190,23 +167,7 @@ public class ZujiFragment extends MainBaseFrag{
         mAdapter.setEnableLoadMore(true);
         mAdapter.setPreLoadNumber(PAGE_SIZE);
         mAdapter.setOnLoadMoreListener(() -> getLocationList(curPage, STATE_MORE));
-        menuBtns.setOnButtonClickListener((v, id) -> {
-            switch (id){
-                case 0:
-                    startActivity(new Intent(mContext,WeatherActivity.class).putExtra("curr_time",currServerTime));
-                    break;
-                case 1:
-                    if (pedometer.hasStepSensor()) {
-                        startActivity(new Intent(mContext, StepActivity.class));
-                    } else {
-                        Toast.makeText(mContext, "设备没有计步传感器", Toast.LENGTH_SHORT).show();
-                    }
-                    break;
-                case 2:
-                    startActivity(new Intent(mContext,FunPicActivity.class));
-                    break;
-            }
-        });
+
     }
 
     private void initView(View view) {
@@ -217,7 +178,6 @@ public class ZujiFragment extends MainBaseFrag{
             topHeaderIv.setVisibility(View.GONE);
         }
         titleLayout = (BaseTitleLayout) view.findViewById(R.id.titlelayout);
-        menuBtns = (AnimArcButtons) view.findViewById(R.id.arc_menu_button);
 
 
         View headerView = LayoutInflater.from(mContext).inflate(R.layout.main_listview_header,null);
@@ -238,7 +198,6 @@ public class ZujiFragment extends MainBaseFrag{
         mRecyclerView = view.findViewById(R.id.recyclerview);
 
         mAdapter = new LocationAdapter(R.layout.location_list_item,null);
-        tvTime = view.findViewById(R.id.tv_server_time);
 
         mAdapter.addHeaderView(headerView);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mContext));
@@ -400,10 +359,6 @@ public class ZujiFragment extends MainBaseFrag{
         if(mReceiver != null){
             mContext.unregisterReceiver(mReceiver);
             mReceiver = null;
-        }
-        if(pedometer!= null){
-            pedometer.unRegister();
-            pedometer = null;
         }
     }
 

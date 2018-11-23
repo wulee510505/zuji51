@@ -151,6 +151,8 @@
                 android:id="@+id/lv_comment"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:divider="@color/ctv_black_4"
+                android:dividerHeight="1px"
                 android:layout_marginTop="8dp"
                 android:overScrollMode="never"
                 android:scrollbars="none" />
