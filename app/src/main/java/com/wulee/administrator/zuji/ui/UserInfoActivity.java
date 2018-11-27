@@ -168,14 +168,15 @@ public class UserInfoActivity extends BaseActivity {
             //TODO 消息：5.1、根据会话入口获取消息管理，发送好友请求
             BmobIMConversation messageManager = BmobIMConversation.obtain(BmobIMClient.getInstance(), conversationEntrance);
             AddFriendMessage msg = new AddFriendMessage();
-            PersonInfo currentUser = BmobUser.getCurrentUser(PersonInfo.class);
             msg.setContent("很高兴认识你，可以加个好友吗?");//给对方的一个留言信息
-            //TODO 这里只是举个例子，其实可以不需要传发送者的信息过去
-            Map<String, Object> map = new HashMap<>();
-            map.put("name", currentUser.getUsername());//发送者姓名
-            map.put("avatar", currentUser.getHeader_img_url());//发送者的头像
-            map.put("uid", currentUser.getObjectId());//发送者的uid
-            msg.setExtraMap(map);
+            PersonInfo currentUser = BmobUser.getCurrentUser(PersonInfo.class);
+            if(currentUser != null){
+                Map<String, Object> map = new HashMap<>();
+                map.put("name", currentUser.getUsername());//发送者姓名
+                map.put("avatar", currentUser.getHeader_img_url());//发送者的头像
+                map.put("uid", currentUser.getObjectId());//发送者的uid
+                msg.setExtraMap(map);
+            }
             messageManager.sendMessage(msg, new MessageSendListener() {
                 @Override
                 public void done(BmobIMMessage msg, BmobException e) {

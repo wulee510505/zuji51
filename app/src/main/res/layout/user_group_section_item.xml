@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:toos="http://schemas.android.com/tools"
+    android:background="#ededed"
+    android:orientation="horizontal">
+
+    <ImageView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@mipmap/icon_time"
+        android:layout_marginLeft="@dimen/dp_20"
+        android:layout_gravity="center_vertical"/>
+
+    <TextView
+        android:id="@+id/tv_group_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_vertical"
+        android:layout_marginLeft="@dimen/dp_10"
+        android:padding="@dimen/dp_10"
+        android:textColor="@color/colorAccent"
+        toos:text="2018-11-26"
+        android:textSize="@dimen/com_tv_size_middle" />
+</LinearLayout>
+

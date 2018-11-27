@@ -7,6 +7,7 @@ import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.widget.LinearLayoutManager;
+import android.text.Html;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.WindowManager;
@@ -30,6 +31,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import butterknife.ButterKnife;
@@ -40,11 +42,8 @@ import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.datatype.BmobDate;
 import cn.bmob.v3.exception.BmobException;
 import cn.bmob.v3.listener.FindListener;
-import cn.bmob.v3.listener.QueryListener;
 import cn.bmob.v3.listener.SaveListener;
 import cn.bmob.v3.listener.UpdateListener;
-
-import static com.wulee.administrator.zuji.App.aCache;
 
 
 public class StepActivity extends BaseActivity {
@@ -70,6 +69,7 @@ public class StepActivity extends BaseActivity {
     private OnStepCountChangeReceiver mReceiver;
 
     private StepRankingAdapter mAdapter;
+    private List<StepInfo> mDataList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,10 +93,12 @@ public class StepActivity extends BaseActivity {
         title.setText("今日步数");
 
         swipeLayout.setColorSchemeResources(R.color.left_menu_bg,R.color.colorAccent);
-        mAdapter = new StepRankingAdapter(this, R.layout.step_rank_list_item, null);
+        mAdapter = new StepRankingAdapter(this, R.layout.step_rank_list_item, mDataList);
         recyclerview.setLayoutManager(new LinearLayoutManager(this));
         recyclerview.addItemDecoration(new RecycleViewDivider(this, LinearLayoutManager.HORIZONTAL));
         recyclerview.setAdapter(mAdapter);
+
+        deleteStepInfo();
 
         queryStepRankList(true);
     }
@@ -148,7 +150,9 @@ public class StepActivity extends BaseActivity {
                 if (e == null) {
                     if (null != dataList && dataList.size() > 0) {
                         //数据重复问题，暂未想到解决的好办法
-                        mAdapter.setNewData(processReturnList(dataList));
+                        mDataList.clear();
+                        mDataList.addAll(processReturnList(dataList));
+                        mAdapter.setNewData(mDataList);
                     }
                 } else {
                     LogUtil.d("查询StepInfo失败"+e.getMessage()+","+e.getErrorCode());
@@ -158,21 +162,30 @@ public class StepActivity extends BaseActivity {
     }
 
     private List<StepInfo> processReturnList(List<StepInfo> dataList) {
+        ArrayList<StepInfo> newDataList = new ArrayList<>();
+        Iterator<StepInfo> it = dataList.iterator();
+        while(it.hasNext()) {
+            StepInfo obj = it.next();
+            if(!newDataList.contains(obj)) {
+                newDataList.add(obj);
+            }
+        }
         SortList<StepInfo> msList = new SortList<>();
-        msList.sortByMethod(dataList, "getCount", true);
+        msList.sortByMethod(newDataList, "getCount", true);
 
         PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         if (null != piInfo) {
-            for (int i = 0; i < dataList.size(); i++) {
-                StepInfo step = dataList.get(i);
+            for (int i = 0; i < newDataList.size(); i++) {
+                StepInfo step = newDataList.get(i);
                 if (null != step) {
                     if (TextUtils.equals(step.personInfo.getObjectId(), piInfo.getObjectId())) {
-                        tvRanking.setText("第 " + (i + 1) + " 名");
+                        String text = "第<font color='#FF4081'><big><big> " + (i + 1) + " </big></big></font>名";
+                        tvRanking.setText(Html.fromHtml(text));
                     }
                 }
             }
         }
-        return dataList;
+        return newDataList;
     }
 
 
@@ -210,12 +223,12 @@ public class StepActivity extends BaseActivity {
     }
 
 
-    /**
-     * 上传计步信息
-     */
-    private void uploadStepInfo(final int stepcount) {
-        final PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
 
+    /**
+     * 删除服务器上已有的计步信息
+     */
+    private void deleteStepInfo() {
+        final PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
         BmobQuery<StepInfo> bmobQuery = new BmobQuery<>();
         bmobQuery.addWhereEqualTo("personInfo", piInfo);
         bmobQuery.findObjects(new FindListener<StepInfo>() {
@@ -223,52 +236,50 @@ public class StepActivity extends BaseActivity {
             public void done(List<StepInfo> list, BmobException e) {
                 if (e == null) {
                     if (list != null && list.size() > 0) {
-                        String currdateStr = DateTimeUtils.formatTime(new Date());
-                        for (StepInfo step : list) {
-                            if (TextUtils.equals(step.getCreatedAt().substring(0, 10), currdateStr)) {//认为一天只创建一条数据，保证数据的唯一性
-                                aCache.put("step_info_id", step.getObjectId());
-                            }
+                        List<String> idList = new ArrayList<>();
+                        for(StepInfo stepInfo: list){
+                            idList.add(stepInfo.getObjectId());
+                        }
+                        for (int i = 0; i < idList.size(); i++) {
+                            String id = idList.get(i);
+                            StepInfo step = new StepInfo();
+                            step.setObjectId(id);
+                            step.delete(new UpdateListener() {
+                                @Override
+                                public void done(BmobException e) {
+                                    if (e == null) {
+                                        System.out.println("—— 删除成功 ——");
+                                    } else {
+                                        System.out.println("—— 删除失败 ——");
+                                    }
+                                }
+                            });
                         }
                     }
+                }
+            }
+        });
+    }
 
-                    final StepInfo stepInfo = new StepInfo();
-                    stepInfo.setCount(stepcount);
-                    //添加一对一关联
-                    stepInfo.personInfo = piInfo;
-                    final String stepInfoId = aCache.getAsString("step_info_id");
-                    if (TextUtils.isEmpty(stepInfoId)) {
-                        stepInfo.save(new SaveListener<String>() {
-                            @Override
-                            public void done(String objId, BmobException e) {
-                                if (e == null) {
-                                    aCache.put("step_info_id", objId);
-                                    System.out.println("—— 步数同步成功 ——");
-                                } else {
-                                    System.out.println("—— 步数同步失败 ——");
-                                }
-                            }
-                        });
-                    } else {
-                        BmobQuery<StepInfo> query = new BmobQuery<StepInfo>();
-                        query.getObject(stepInfoId, new QueryListener<StepInfo>() {
-                            @Override
-                            public void done(StepInfo stepInfo, BmobException e) {
-                                if(e == null && stepInfo != null){
-                                    stepInfo.setCount(stepcount);
-                                    stepInfo.update(stepInfoId, new UpdateListener() {
-                                        @Override
-                                        public void done(BmobException e) {
-                                            if (e == null) {
-                                                System.out.println("—— 步数更新成功 ——");
-                                            } else {
-                                                System.out.println("—— 步数更新失败 ——");
-                                            }
-                                        }
-                                    });
-                                }
-                            }
-                        });
-                    }
+
+    /**
+     * 上传计步信息
+     */
+    private void uploadStepInfo(final int stepcount) {
+        final PersonInfo piInfo = BmobUser.getCurrentUser(PersonInfo.class);
+        if(piInfo == null)
+            return;
+        final StepInfo stepInfo = new StepInfo();
+        stepInfo.setCount(stepcount);
+        //添加一对一关联
+        stepInfo.personInfo = piInfo;
+        stepInfo.save(new SaveListener<String>() {
+            @Override
+            public void done(String objId, BmobException e) {
+                if (e == null) {
+                    System.out.println("—— 步数同步成功 ——");
+                } else {
+                    System.out.println("—— 步数同步失败 ——");
                 }
             }
         });

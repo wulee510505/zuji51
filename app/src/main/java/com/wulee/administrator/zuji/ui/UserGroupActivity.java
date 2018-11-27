@@ -22,6 +22,7 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.adapter.UserGroupAdapter;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
+import com.wulee.administrator.zuji.entity.UserGroupItem;
 import com.wulee.administrator.zuji.utils.OtherUtil;
 import com.wulee.administrator.zuji.widget.BaseTitleLayout;
 import com.wulee.administrator.zuji.widget.RecycleViewDivider;
@@ -42,7 +43,6 @@ import cn.bmob.v3.listener.FindListener;
  * Created by wulee on 2017/12/6 09:52
  */
 public class UserGroupActivity extends BaseActivity {
-
 
     @InjectView(R.id.titlelayout)
     BaseTitleLayout titlelayout;
@@ -90,7 +90,7 @@ public class UserGroupActivity extends BaseActivity {
         }
         swipeLayout.setColorSchemeResources(R.color.left_menu_bg, R.color.colorAccent);
 
-        mAdapter = new UserGroupAdapter(R.layout.user_group_list_item, null, mContext);
+        mAdapter = new UserGroupAdapter(mContext ,null);
         recyclerview.setLayoutManager(new LinearLayoutManager(mContext));
         recyclerview.addItemDecoration(new RecycleViewDivider(mContext, LinearLayoutManager.HORIZONTAL, 1, ContextCompat.getColor(mContext, R.color.grayline)));
         recyclerview.setAdapter(mAdapter);
@@ -100,18 +100,20 @@ public class UserGroupActivity extends BaseActivity {
 
     private void addListener() {
         mAdapter.setOnItemClickListener((adapter, view, position) -> {
-            List<PersonInfo> piInfoList = mAdapter.getData();
+            List<UserGroupItem> piInfoList = mAdapter.getData();
             if (null != piInfoList && piInfoList.size() > 0) {
-                PersonInfo personInfo = piInfoList.get(position);
-                Intent intent = null;
-                if (null != personInfo) {
-                    if(currPiInfo != null && TextUtils.equals(currPiInfo.getObjectId(),personInfo.getObjectId())){
-                        intent = new Intent(mContext, PersonalInfoActivity.class);
-                    }else{
-                        intent = new Intent(mContext, UserInfoActivity.class);
-                        intent.putExtra("piInfo",personInfo);
+                UserGroupItem groupItem = piInfoList.get(position);
+                if (groupItem != null && groupItem.mItemType == UserGroupItem.ITEM) {
+                    Intent intent = null;
+                    if (null != groupItem.mPersonInfo) {
+                        if(currPiInfo != null && TextUtils.equals(currPiInfo.getObjectId(),groupItem.mPersonInfo.getObjectId())){
+                            intent = new Intent(mContext, PersonalInfoActivity.class);
+                        }else{
+                            intent = new Intent(mContext, UserInfoActivity.class);
+                            intent.putExtra("piInfo",groupItem.mPersonInfo);
+                        }
+                        startActivity(intent);
                     }
-                    startActivity(intent);
                 }
             }
         });
@@ -165,12 +167,16 @@ public class UserGroupActivity extends BaseActivity {
                 }
                 if (e == null) {
                     curPage++;
+                    ArrayList<UserGroupItem> list = null;
+                    if (dataList.size() > 0) {
+                        list = UserGroupItem.getData(dataList);
+                    }
                     if (isRefresh) {//下拉刷新需清理缓存
-                        mAdapter.setNewData(dataList);
+                        mAdapter.setNewData(list);
                         isRefresh = false;
                     } else {//正常请求 或 上拉加载更多时处理流程
                         if (dataList.size() > 0) {
-                            mAdapter.addData(dataList);
+                            mAdapter.addData(list);
                         }
                     }
                     if (dataList.size() < PAGE_SIZE) {
@@ -228,7 +234,8 @@ public class UserGroupActivity extends BaseActivity {
                 }
                 if(e == null){
                     if (dataList!=null && dataList.size() > 0) {
-                        mAdapter.setNewData(dataList);
+                        ArrayList<UserGroupItem>  list = UserGroupItem.getData(dataList);
+                        mAdapter.setNewData(list);
                     }
                     mAdapter.loadMoreEnd(true);
                 }else{

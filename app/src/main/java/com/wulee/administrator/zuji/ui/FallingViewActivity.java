@@ -21,7 +21,7 @@ public class FallingViewActivity extends AppCompatActivity {
 
     private String currHolidays;
 
-    private int res_snow = R.mipmap.icon_snow;
+    private int res_yuandan = R.mipmap.icon_yuandan;
     private int res_gold = R.mipmap.icon_gold;
     private int res_tree = R.mipmap.icon_tree;
     private int res_rose = R.mipmap.icon_rose;
@@ -38,11 +38,11 @@ public class FallingViewActivity extends AppCompatActivity {
         currHolidays = getIntent().getStringExtra(CURR_HOLIDAYS);
         Text2Speech.speech(this,"祝您"+ currHolidays +"快乐！",true);
 
-        mFallingView = (FallingView) findViewById(R.id.fallingview);
+        mFallingView = findViewById(R.id.fallingview);
 
         FallObject.Builder builder = null;
         if(TextUtils.equals(currHolidays, HolidayUtil.HOLIDAYS_NEWYEARSDAY)){//元旦
-            builder = new FallObject.Builder(getResources().getDrawable(res_snow));
+            builder = new FallObject.Builder(getResources().getDrawable(res_yuandan));
         }else  if(TextUtils.equals(currHolidays,HolidayUtil.HOLIDAYS_LABORDAY)){//劳动节
             builder = new FallObject.Builder(getResources().getDrawable(res_balloon));
         }else  if(TextUtils.equals(currHolidays,HolidayUtil.HOLIDAYS_NATIONALDAY)){//国庆节
@@ -55,15 +55,15 @@ public class FallingViewActivity extends AppCompatActivity {
             builder = new FallObject.Builder(getResources().getDrawable(res_rose));
         }
         FallObject fallObject = builder
-                .setSpeed(7,true)
+                .setSpeed(5,true)
                 .setSize(UIUtils.dip2px(32),UIUtils.dip2px(32),true)
                 .setWind(5,true,true)
                 .build();
 
 
-        mFallingView.addFallObject(fallObject,100);
+        mFallingView.addFallObject(fallObject,50);
 
-        CountDownHelper helper = new CountDownHelper(10, 1);
+        CountDownHelper helper = new CountDownHelper(15, 1);
         helper.setCountDownListener(new CountDownHelper.OnCountDownListener() {
             @Override
             public void tick(int second) {

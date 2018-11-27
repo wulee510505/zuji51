@@ -642,6 +642,7 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
             startActivity(new Intent(MainNewActivity.this,LoginActivity.class));
             UploadLocationService.stopService();
 
+
             BmobIM.getInstance().disConnect();//断开与IM服务器的连接
         });
         builder.setNegativeButton("取消", null);

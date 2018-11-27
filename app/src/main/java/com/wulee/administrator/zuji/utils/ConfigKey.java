@@ -25,4 +25,5 @@ public class ConfigKey {
     public static final String KEY_MESSAGE_COUNT = "key_message_count";
 
     public static final String KEY_LINKMAN_INSTALLATIONID = "key_linkman_installationid";
+
 }

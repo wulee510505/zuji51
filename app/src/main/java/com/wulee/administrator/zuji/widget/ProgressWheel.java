@@ -60,7 +60,7 @@ public class ProgressWheel extends View {
 
     // Set percentage
     private int mPercentage = 0;
-    private int mMaxSteps = 10000;
+    private int mMaxSteps = 20000;
 
     public ProgressWheel(Context context) {
         super(context);

@@ -185,4 +185,15 @@ public class PersonInfo extends BmobUser {
     public void setInstallationId(String installationId) {
         this.installationId = installationId;
     }
+
+    private String groupKey; //分组的key
+    public String getGroupKey() {
+        return groupKey;
+    }
+    public String buildGroupKey() {
+        return getCreatedAt().substring(0,10);
+    }
+    public void setGroupKey(String groupKey) {
+        this.groupKey = groupKey;
+    }
 }

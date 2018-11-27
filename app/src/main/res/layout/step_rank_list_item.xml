@@ -2,6 +2,7 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    xmlns:toos="http://schemas.android.com/tools"
     android:background="#fff"
     android:padding="15dp">
 
@@ -10,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:text="1"
+        toos:text="1"
         android:textStyle="bold"
         android:textSize="20sp"/>
 
@@ -28,42 +29,21 @@
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/iv_header"
         android:layout_marginLeft="10dp"
-        android:text="bbbbb"
+        toos:text="bbbbb"
         android:textColor="@color/baseGrayNor"
         android:textSize="15sp" />
 
-
-    <ImageView
-        android:id="@+id/iv_zan"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginRight="10dp"
-        android:layout_alignParentRight="true"
-        android:layout_centerVertical="true"
-        android:src="@drawable/bg_btn_zan"/>
-
-    <TextView
-        android:id="@+id/tv_zannum"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_marginRight="13dp"
-        android:textColor="@color/colorAccent"
-        android:textSize="12sp"
-        android:text="2"
-        android:maxLength="4"
-        android:singleLine="true"/>
 
     <TextView
         android:id="@+id/tv_step"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_toLeftOf="@id/iv_zan"
+        android:layout_alignParentRight="true"
         android:layout_marginRight="10dp"
         android:layout_centerVertical="true"
-        android:textColor="#F88F21"
+        android:textColor="@color/ctv_black_2"
         android:textSize="16sp"
-        android:text="1024步" />
+        toos:text="1024步" />
 
 
 </RelativeLayout>
