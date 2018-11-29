@@ -124,8 +124,8 @@ public class OtherUtil {
     private static void showNewToast(Context context, int resId, CharSequence text, int duration) {
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View layout = inflater.inflate(R.layout.custom_toast, null);
-        ImageView imageView = (ImageView) layout.findViewById(R.id.iv_icon);
-        TextView textView = (TextView) layout.findViewById(R.id.tv_content);
+        ImageView imageView = layout.findViewById(R.id.iv_icon);
+        TextView textView = layout.findViewById(R.id.tv_content);
         if (resId > 0) {
             imageView.setVisibility(View.VISIBLE);
             imageView.setBackgroundResource(resId);

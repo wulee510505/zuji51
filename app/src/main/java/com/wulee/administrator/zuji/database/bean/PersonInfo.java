@@ -25,6 +25,7 @@ public class PersonInfo extends BmobUser {
     private int integral;
     private PersonInfo linkmaninfo;
     private String installationId;//设备Id
+    private String appVersion;
 
     public int getIntegral() {
         return integral;
@@ -184,6 +185,14 @@ public class PersonInfo extends BmobUser {
 
     public void setInstallationId(String installationId) {
         this.installationId = installationId;
+    }
+
+    public String getAppVersion() {
+        return appVersion;
+    }
+
+    public void setAppVersion(String appVersion) {
+        this.appVersion = appVersion;
     }
 
     private String groupKey; //分组的key

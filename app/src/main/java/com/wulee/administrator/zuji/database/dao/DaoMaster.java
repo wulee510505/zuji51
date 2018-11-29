@@ -56,8 +56,15 @@ public class DaoMaster extends AbstractDaoMaster {
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
             Log.i("greenDAO", "Upgrading schema from version " + oldVersion + " to " + newVersion + " by dropping all tables");
-            dropAllTables(db, true);
-            onCreate(db);
+
+            if (newVersion > oldVersion) {
+                // 升级、数据库迁移操作
+
+            }else {
+                // 默认操作
+                dropAllTables(db, true);
+                onCreate(db);
+            }
         }
     }
 

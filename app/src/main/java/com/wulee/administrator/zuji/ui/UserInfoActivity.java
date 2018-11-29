@@ -181,9 +181,9 @@ public class UserInfoActivity extends BaseActivity {
                 @Override
                 public void done(BmobIMMessage msg, BmobException e) {
                     if (e == null) {//发送成功
-                        toast("好友请求发送成功，等待验证");
+                        OtherUtil.showToastText("好友请求发送成功，等待验证");
                     } else {//发送失败
-                        toast("发送失败:" + e.getMessage());
+                        OtherUtil.showToastText("发送失败:" + e.getMessage());
                     }
                 }
             });

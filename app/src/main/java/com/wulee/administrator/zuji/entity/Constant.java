@@ -42,7 +42,7 @@ public interface Constant {
 
 
     String KEY_LAST_SHOW_NOTICE_TIME = "key_last_show_notice_time";
-    long SHOW_NOTICE_INTERVAL =  24 * 60 * 60 * 1000;// 24小时
+    long SHOW_NOTICE_INTERVAL =  2 * 60 * 60 * 1000;// 2小时
 
     String KEY_SIGN_DATE= "key_sign_date";
 

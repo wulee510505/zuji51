@@ -2,15 +2,20 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:toos="http://schemas.android.com/tools"
     android:background="@drawable/bg_map_mark_pop"
-    android:orientation="vertical">
+    android:orientation="vertical"
+    android:paddingLeft="@dimen/dp_10"
+    android:paddingRight="@dimen/dp_10"
+    android:paddingTop="@dimen/dp_4"
+    android:paddingBottom="@dimen/dp_4">
 
     <TextView
         android:id="@+id/tv_1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="11111111111111"
+        toos:text="11111111111111"
         android:textColor="@color/ctv_white"
         android:textSize="15sp" />
 
@@ -19,8 +24,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="2222222222222222"
-        android:layout_marginTop="5dp"
+        toos:text="2222222222222222"
+        android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/ctv_white"
         android:textSize="15sp" />
 
@@ -30,8 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:text="3333333333333333"
-        android:layout_marginTop="5dp"
+        toos:text="3333333333333333"
+        android:layout_marginTop="@dimen/dp_4"
         android:textColor="@color/ctv_white"
         android:textSize="15sp"
         android:visibility="gone"/>

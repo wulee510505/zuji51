@@ -11,6 +11,7 @@ import com.wulee.administrator.zuji.R;
 import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.entity.Constant;
 import com.wulee.administrator.zuji.entity.Notice;
+import com.wulee.administrator.zuji.utils.ImageUtil;
 
 import java.util.List;
 
@@ -35,8 +36,11 @@ public class NoticeActivity extends BaseActivity {
     TextView tvContent;
     @InjectView(R.id.container)
     RelativeLayout container;
+    @InjectView(R.id.iv_zanshang)
+    ImageView ivZanshang;
 
     public static final int FLAG_HOMEKEY_DISPATCHED = 0x80000000;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,6 +64,7 @@ public class NoticeActivity extends BaseActivity {
                             container.setVisibility(View.VISIBLE);
                             aCache.put(Constant.KEY_LAST_SHOW_NOTICE_TIME, String.valueOf(System.currentTimeMillis()));
                             tvContent.setText(notice.getContent());
+                            ImageUtil.setDefaultImageView(ivZanshang,notice.getImgUrl(),-1,NoticeActivity.this);
                         } else {
                             container.setVisibility(View.GONE);
                             finish();

@@ -28,6 +28,7 @@
             android:layout_marginLeft="5dp"
             android:lineSpacingExtra="2dp"
             android:lineSpacingMultiplier="1.2"
+            android:autoLink="all"
             android:maxLines="2"
             toos:text="aaaaa"
             android:textColor="@color/baseGrayMore"

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:toos="http://schemas.android.com/tools"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:gravity="center"
     android:fitsSystemWindows="true">
 
 
@@ -11,9 +11,10 @@
         android:id="@+id/iv_close"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
         android:layout_alignParentRight="true"
-        android:src="@mipmap/icon_cancel"
-        android:background="@color/colorAccent"/>
+        android:background="@color/colorAccent"
+        android:src="@mipmap/icon_cancel" />
 
 
     <ScrollView
@@ -22,21 +23,33 @@
         android:layout_below="@id/iv_close"
         android:layout_margin="20dp"
         android:overScrollMode="never"
-        android:scrollbars="none"
-        android:layout_weight="1">
+        android:scrollbars="none">
 
-        <TextView
-            android:id="@+id/tv_content"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="@color/ctv_black_2"
-            android:textSize="@dimen/com_tv_size_middle"
-            android:gravity="center"
-            android:text=""
-            android:autoLink="all"
-            android:lineSpacingExtra="2dp"
-            android:lineSpacingMultiplier="1.2"/>
+            android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/tv_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:autoLink="all"
+                android:gravity="center"
+                android:lineSpacingExtra="2dp"
+                android:lineSpacingMultiplier="1.2"
+                android:textColor="@color/ctv_black_2"
+                android:textSize="@dimen/com_tv_size_middle"
+                toos:text="" />
+
+            <ImageView
+                android:id="@+id/iv_zanshang"
+                android:layout_width="300dp"
+                android:layout_height="300dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="@dimen/dp_10"
+                android:background="@mipmap/bg_pic_def_rect" />
+        </LinearLayout>
     </ScrollView>
 
 </RelativeLayout>

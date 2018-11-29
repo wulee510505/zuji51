@@ -16,6 +16,7 @@ import com.wulee.administrator.zuji.base.BaseActivity;
 import com.wulee.administrator.zuji.database.DBHandler;
 import com.wulee.administrator.zuji.database.bean.PersonInfo;
 import com.wulee.administrator.zuji.entity.Installation;
+import com.wulee.administrator.zuji.utils.AppUtils;
 import com.wulee.administrator.zuji.utils.Config;
 import com.wulee.administrator.zuji.utils.ConfigKey;
 
@@ -120,6 +121,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener{
                     PersonInfo pi = PersonInfo.getCurrentUser(PersonInfo.class);
                     if(null != pi){
                         pi.setMobile(mobile);
+                        pi.setAppVersion(AppUtils.getVersionName());
                         String installationId = BmobInstallationManager.getInstallationId();
                         if(!TextUtils.isEmpty(installationId)){
                             pi.setInstallationId(installationId);

@@ -9,6 +9,15 @@ import cn.bmob.v3.BmobObject;
 public class Notice extends BmobObject {
 
     private String content;
+    private String imgUrl;
+
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
 
     public String getContent() {
         return content;

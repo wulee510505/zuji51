@@ -37,6 +37,7 @@ import butterknife.OnClick;
 import cn.bmob.v3.BmobQuery;
 import cn.bmob.v3.BmobUser;
 import cn.bmob.v3.exception.BmobException;
+import cn.bmob.v3.listener.CountListener;
 import cn.bmob.v3.listener.FindListener;
 
 /**
@@ -79,6 +80,7 @@ public class UserGroupActivity extends BaseActivity {
 
         showProgressDialog(true);
         getUserList(0, STATE_REFRESH);
+        queryUserCount();
     }
 
     private void initView() {
@@ -138,6 +140,24 @@ public class UserGroupActivity extends BaseActivity {
             @Override
             public void onRightImg1ClickListener() {
                 startActivity(new Intent(mContext, NearUserActivity.class));
+            }
+        });
+    }
+
+
+    /**
+     * 查询所有用户数量
+      */
+    private  void queryUserCount(){
+        BmobQuery<PersonInfo> query = new BmobQuery<>();
+        query.count(PersonInfo.class, new CountListener() {
+            @Override
+            public void done(Integer count, BmobException e) {
+                if(e == null && count > 0 ){
+                    titlelayout.setCenterText("用户群（共"+count+"人）");
+                }else{
+                    Log.i("bmob","失败："+e.getMessage()+","+e.getErrorCode());
+                }
             }
         });
     }
@@ -245,5 +265,26 @@ public class UserGroupActivity extends BaseActivity {
             }
         });
     }
+
+    /**
+     * 按照注册日期进行分组
+     *//*
+    private Map<String, List<PersonInfo>> groupUser(List<PersonInfo> userList) throws Exception{
+        Map<String, List<PersonInfo>> resultMap = new HashMap<>();
+        try{
+            for(PersonInfo personInfo : userList){
+                if(resultMap.containsKey(personInfo.buildGroupKey())){
+                    resultMap.get(personInfo.buildGroupKey()).add(personInfo);
+                }else{//map中不存在，新建key，用来存放数据
+                    List<PersonInfo> tmpList = new ArrayList<>();
+                    tmpList.add(personInfo);
+                    resultMap.put(personInfo.buildGroupKey(), tmpList);
+                }
+            }
+        }catch(Exception e){
+            throw new Exception("分组时出现异常", e);
+        }
+        return resultMap;
+    }*/
 
 }

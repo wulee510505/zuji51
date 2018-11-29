@@ -141,6 +141,7 @@ public class App extends MultiDexApplication {
         Bugly.init(this, "ad97a458d2", true);
 
         UMConfigure.init(this, UMConfigure.DEVICE_TYPE_PHONE, "59279266b27b0a188d00044f");
+
     }
 
     @Override
@@ -237,6 +238,7 @@ public class App extends MultiDexApplication {
             e.printStackTrace();
         }
     }
+
 
 
     @Override

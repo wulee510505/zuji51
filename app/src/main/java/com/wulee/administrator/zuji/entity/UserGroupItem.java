@@ -21,26 +21,13 @@ public class UserGroupItem implements MultiItemEntity {
 
     public  int mItemType; //所属于的类型
 
-
     public final PersonInfo mPersonInfo; //listview显示的item的数据实体类
-
-    public int sectionPosition; //顶部悬浮的标题的位置
-    public int listPosition; //内容的位置
 
 
     public UserGroupItem(int itemType, PersonInfo personInfo) {
         super();
         this.mItemType =  itemType;
         this.mPersonInfo = personInfo;
-    }
-
-    public UserGroupItem(int itemType, PersonInfo personInfo,
-                         int sectionPosition, int listPosition) {
-        super();
-        this.mItemType = itemType;
-        this.mPersonInfo = personInfo;
-        this.sectionPosition = sectionPosition;
-        this.listPosition = listPosition;
     }
 
     /**

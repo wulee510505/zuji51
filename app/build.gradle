@@ -14,6 +14,9 @@ android {
     compileSdkVersion app.compileSdkVersion
     buildToolsVersion '27.0.3'
 
+    aaptOptions.cruncherEnabled = false
+    aaptOptions.useNewCruncher = false
+
     dexOptions {
         javaMaxHeapSize "4g"
     }

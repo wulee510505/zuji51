@@ -54,5 +54,16 @@
             android:textSize="13sp" />
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/tv_app_version"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="@dimen/dp_10"
+        android:layout_centerVertical="true"
+        android:singleLine="true"
+        toos:text="v1.5.8"
+        android:textColor="@color/ctv_black_3"
+        android:textSize="@dimen/com_tv_size_nor_lit" />
 
 </RelativeLayout>

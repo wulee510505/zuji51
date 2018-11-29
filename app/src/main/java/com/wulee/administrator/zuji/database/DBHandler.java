@@ -73,6 +73,10 @@ public class DBHandler {
         return null;
     }
 
+    public static List<PersonInfo> getAllPersonInfo() {
+        return  personInfoDao.loadAll();
+    }
+
 
     public static void updatePesonInfo(PersonInfo personInfo) {
         personInfoDao.insertOrReplace(personInfo);
