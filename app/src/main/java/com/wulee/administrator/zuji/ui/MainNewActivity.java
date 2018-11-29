@@ -165,7 +165,6 @@ public class MainNewActivity extends BaseActivity implements  ViewPager.OnPageCh
         if(interal > Constant.SHOW_NOTICE_INTERVAL){
             startActivity(new Intent(this,NoticeActivity.class));
         }
-        startActivity(new Intent(this,NoticeActivity.class));
 
         if(HolidayUtil.isHoliday(new Date())){
             startActivity(new Intent(this,FallingViewActivity.class).putExtra(FallingViewActivity.CURR_HOLIDAYS,HolidayUtil.getCurrHolidays()));
