@@ -3,7 +3,7 @@
 APK下载地址：
 
 http://bmob-cdn-8120.b0.upaiyun.com/2018/11/22/426c6fc3401f23068017330615c461c4.apk
-
+![](https://github.com/wulee510505/zuji/blob/master/screenshots/bg_zanshang.png)
 
 
 效果图如下：
